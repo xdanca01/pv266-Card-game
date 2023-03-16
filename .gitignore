@@ -1,3 +1,6 @@
+Assets/Sprites/Icons/*  # Please sync manually with https://drive.google.com/drive/u/0/folders/1OSyepByA4eyGChl5xFX1QsTq2ZGTnoH7
+Assets/Sprites/Artwork/*  # Please sync manually with https://drive.google.com/drive/u/0/folders/1EA9Mr-ADU7FkxH7H_yfZ9h1RT5Hjrjg8
+
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
@@ -58,4 +61,3 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
-
