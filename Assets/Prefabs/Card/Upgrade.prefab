@@ -153,7 +153,7 @@ MonoBehaviour:
     title: Poison
     value: 8
     description: Creature you hit gets poisoned. It takes 8 damage each round.
-    artwork: {fileID: 21300000, guid: e459d9b09de53de4d8f794c630615703, type: 3}
+    artwork: {fileID: 21300000, guid: ef488ca6e6cdfc341ad7cbac30df088d, type: 3}
   icon:
     mainText: HIT
     additionalText: POSION
@@ -271,14 +271,46 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2959723104344168363}
     m_Modifications:
+    - target: {fileID: 479149166852641498, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
+      propertyPath: fitToMaxSize
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3942122613344762800, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.07968128
+      objectReference: {fileID: 0}
+    - target: {fileID: 3942122613344762800, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.07968128
+      objectReference: {fileID: 0}
+    - target: {fileID: 3942122613344762801, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
+      propertyPath: m_Size.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3942122613344762801, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
+      propertyPath: m_Size.y
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 3942122613344762801, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: e459d9b09de53de4d8f794c630615703, type: 3}
+      objectReference: {fileID: 21300000, guid: ef488ca6e6cdfc341ad7cbac30df088d, type: 3}
+    - target: {fileID: 3942122613344762801, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3942122613344762801, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
+      propertyPath: m_MaskInteraction
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3942122613344762801, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3942122613344762801, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
     - target: {fileID: 3942122613586841628, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

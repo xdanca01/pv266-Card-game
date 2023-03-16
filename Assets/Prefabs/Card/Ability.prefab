@@ -244,7 +244,7 @@ MonoBehaviour:
   visual:
     title: Elven Sword
     value: 3
-    artwork: {fileID: 21300000, guid: 54e59c4493d083a4db96f1b89148e373, type: 3}
+    artwork: {fileID: 21300000, guid: 1db3efff173fdf2438cc7c47b94e47a8, type: 3}
   icon:
     badge: {fileID: 21300000, guid: 1db3efff173fdf2438cc7c47b94e47a8, type: 3}
   type: 0
@@ -264,11 +264,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3942122613344762800, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.082712986
+      value: 0.1953125
       objectReference: {fileID: 0}
     - target: {fileID: 3942122613344762800, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.082712986
+      value: 0.1953125
       objectReference: {fileID: 0}
     - target: {fileID: 3942122613344762801, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
       propertyPath: m_Size.x
@@ -281,7 +281,7 @@ PrefabInstance:
     - target: {fileID: 3942122613344762801, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 54e59c4493d083a4db96f1b89148e373, type: 3}
+      objectReference: {fileID: 21300000, guid: 1db3efff173fdf2438cc7c47b94e47a8, type: 3}
     - target: {fileID: 3942122613344762801, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
@@ -356,7 +356,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3942122613586841628, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.52
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 3942122613586841628, guid: feb8316318c42204cb618cfcb84e7a2e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

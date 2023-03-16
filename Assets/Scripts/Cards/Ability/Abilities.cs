@@ -7,8 +7,11 @@ using UnityEngine;
 
 public class Abilities : MonoBehaviour
 {
-    public Sprite[] artworks;
-    public Sprite[] icons;
+    public string ArtworkFolder;
+    public string IconFolder;
+
+    private Dictionary<string, Sprite> artworks;
+    private Dictionary<string, Sprite> icons;
 
     public GameObject AbilityPrefab;
 
@@ -19,26 +22,12 @@ public class Abilities : MonoBehaviour
     {
         foreach ((string name, string value) in columnNames.Zip(columns, (a,b)=>(a,b)))
         {
-            Debug.Log(name+"?="+ columnName+"|");
-
             if (name.Equals(columnName))
             {
                 return value;
             }
         }
         throw new System.Exception("Can't find column " + columnName);
-    }
-
-    private static Sprite GetSprite(string name, Sprite[] sprites)
-    {
-        foreach (Sprite sprite in sprites)
-        {
-            if (name.Equals(sprite.name))
-            {
-                return sprite;
-            }
-        }
-        throw new System.Exception("Can't find sprite " + name);
     }
 
     [EditorCools.Button]
@@ -79,8 +68,10 @@ public class Abilities : MonoBehaviour
 
             ability.visual.title = prefab.name;
             ability.visual.value = uint.Parse(GetColumn("Value", columns, columnNames));
-            ability.visual.artwork = GetSprite(GetColumn("Artwork", columns, columnNames), artworks);
-            ability.icon.badge = GetSprite(GetColumn("Icon", columns, columnNames), icons);
+            string iconName = GetColumn("Icon", columns, columnNames);
+            Sprite icon = Resources.Load<Sprite>(IconFolder + "/" + iconName);
+            ability.visual.artwork = icon;
+            ability.icon.badge = icon;
 
             ability.OnValidate();
         }
