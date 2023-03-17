@@ -51,7 +51,7 @@ public class Ability : Card, IAbility
         return percentage + "%";
     }
 
-    public IAbility MakeFreshCopy()
+    public IAbility Revert()
     {
         throw new NotImplementedException();
     }

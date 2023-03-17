@@ -49,6 +49,6 @@ public interface IAbility
 
     // Ability without applied effects
     // It is recomended that ability saves its default values in Start method
-    IAbility MakeFreshCopy();
+    IAbility Revert();
 
 }

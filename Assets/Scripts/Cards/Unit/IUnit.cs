@@ -10,7 +10,7 @@ public interface IUnit
 
     // make a copy with same hp but without applied effects
     // It is recomended that IUnit saves its abilities Start method
-    IUnit MakeFreshCopy();
+    IUnit Revert();
 
     // all abilities unit currently has
     // we can't extend them, but we can modify them

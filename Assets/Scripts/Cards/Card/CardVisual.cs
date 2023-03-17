@@ -31,7 +31,7 @@ public abstract class CardVisual : MonoBehaviour
         }
         visual.Title.text = Title;
         visual.Value.text = Value.ToString();
-        visual.Description.text = Description;
+        visual.Description.text = Description;        
         // will throw warning if set directly
         StartCoroutine(SetArtwork());
     }
