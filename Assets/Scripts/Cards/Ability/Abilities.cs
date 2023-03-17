@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class Abilities : MonoBehaviour
@@ -69,7 +70,7 @@ public class Abilities : MonoBehaviour
             ability.visual.title = prefab.name;
             ability.visual.value = uint.Parse(GetColumn("Value", columns, columnNames));
             string iconName = GetColumn("Icon", columns, columnNames);
-            Sprite icon = Resources.Load<Sprite>(IconFolder + "/" + iconName);
+            Sprite icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/"+IconFolder+"/"+ iconName + ".png");
             ability.visual.artwork = icon;
             ability.icon.badge = icon;
 

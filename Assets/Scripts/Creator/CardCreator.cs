@@ -18,6 +18,7 @@ public enum FSColor
     Black = 0x0,
     DarkGray = 0x525252,
     LightGray = 0x808080,
+    White = 0xFFFFFF
 }
 
 static class FSColorMethods
@@ -157,6 +158,40 @@ public class CardCreator : MonoBehaviour
             Text("Title", card, card.name, new Rect(-1f, 3.5f, 4f, 1.2f), FSFont.Geizer);
             return this;
         }
+        public Creator MiddleTitle()
+        {
+            Text("Title", card, card.name, new Rect(0f, 3.5f, 4f, 1.2f), FSFont.Geizer);
+            return this;
+        }
+
+
+        public Creator MaskedImage(string reason, Rect rect, string spriteFolder, string spriteName)
+        {
+            // mask
+            var mask = FindGameObject(reason + " Mask");
+            var spriteMask = FindComponent<SpriteMask>(mask);
+            spriteMask.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png");
+            var rectTransform = mask.GetComponent<RectTransform>();
+            rectTransform.transform.position = new Vector3(rect.x, rect.y, mask.transform.position.z);
+            rectTransform.localScale = new Vector3(rect.width, rect.height, 1);
+            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/"+ spriteFolder + "/" + spriteName + ".png");
+            var image = FindGameObject(reason, mask);
+            SetRect(image, new Rect(0, 0, 1, 1));
+            // inner sprite
+            bool fitToSmallerSize = true;
+            var spriteRenderer = FindComponent<SpriteRenderer>(image);
+            spriteRenderer.sprite = sprite;
+            spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            Vector3 spriteSize = spriteRenderer.sprite.bounds.size;
+            Transform transform = image.GetComponent<RectTransform>().transform;
+            float dimension = fitToSmallerSize ? Mathf.Max(spriteSize.x, spriteSize.y) : Mathf.Min(spriteSize.x, spriteSize.y);
+            float maskScaleX = rect.height > rect.width ? rect.width / rect.height : 1;
+            float maskScaleY = rect.width > rect.height ? rect.height / rect.width : 1; 
+            float spriteScaleX = spriteSize.y > spriteSize.x ? spriteSize.y / spriteSize.x : spriteSize.x / spriteSize.y;
+            float spriteScaleY = spriteSize.x > spriteSize.y ? spriteSize.x / spriteSize.y : spriteSize.y / spriteSize.x; 
+            transform.localScale = new Vector3(spriteScaleX / (dimension * maskScaleX), spriteScaleY / (dimension * maskScaleY), 1);
+            return this;
+        }
 
         public class Badge
         {
@@ -259,18 +294,31 @@ public class CardCreator : MonoBehaviour
 
         public ConstructedUnit(GameObject parent, uint hp)
         {
-            creator = new Creator("Warrior", parent).LeftTitle();
+            creator = new Creator("Warrior", parent).LeftTitle().MaskedImage("Artwork", new Rect(-1, 0.4f, 4, 5), "Artwork", "addroran");
             abilities = new Creator.SlotDrawer(creator, "Abilities", 3, true, new Vector2(-2, -3.25f));
             upgrades = new Creator.SlotDrawer(creator, "Upgrades", 2, false, new Vector2(2, -1));
-
             this.hp = new Creator.Badge(creator, hp, FSColor.Red);
             HP = 25;
+        }
+    
+    }
+
+    class ConstructedUpgrade : IUpgrade
+    {
+        private readonly Creator creator;
+
+        public IEffect Effect => throw new System.NotImplementedException();
+
+        public ConstructedUpgrade(GameObject parent)
+        {
+            creator = new Creator("Poison", parent).MiddleTitle().MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Artwork", "Potion Making");
         }
     }
 
     public void CreateExampleCard()
     {
-        var unit = new ConstructedUnit(gameObject, 30);
+        //var unit = new ConstructedUnit(gameObject, 30);
+        var upgrade = new ConstructedUpgrade(gameObject);
 
     }
 
