@@ -91,7 +91,7 @@ public class CardCreator : MonoBehaviour
         {
             return FindGameObject(name, card);
         }
-        
+
         public T FindComponent<T>(GameObject gameobject) where T : Component
         {
             if (!gameobject.TryGetComponent<T>(out T component))
@@ -152,17 +152,9 @@ public class CardCreator : MonoBehaviour
             Background();
         }
 
-        public Creator Title()
+        public Creator LeftTitle()
         {
             Text("Title", card, card.name, new Rect(-1f, 3.5f, 4f, 1.2f), FSFont.Geizer);
-            return this;
-        }
-
-        public Creator Slot(string reason, bool pointedUp)
-        {
-            var hexagon = Hexagon(reason, card, FSColor.DarkGray, pointedUp);
-            var child = Hexagon("Child", hexagon, FSColor.LightGray, pointedUp);
-            child.GetComponent<RectTransform>().localScale = new Vector3(1f / 3f, 1f / 3f, 1f);
             return this;
         }
 
@@ -183,7 +175,8 @@ public class CardCreator : MonoBehaviour
             public FSColor Color
             {
                 get => color;
-                set {
+                set
+                {
                     color = value;
                     creator.Hexagon("Hexagon", gameobject, color, true);
                 }
@@ -192,9 +185,52 @@ public class CardCreator : MonoBehaviour
             public uint Count
             {
                 get => count;
-                set {
+                set
+                {
                     count = value;
                     creator.Text("Text", gameobject, count.ToString(), new Rect(0f, 0f, 1.5f, 1.1f), FSFont.DeadRevolution);
+                }
+            }
+        }
+
+        public class Slot
+        {
+            private readonly GameObject gameobject;
+            private readonly Creator creator;
+            public Slot(Creator creator, string reason, GameObject parent, bool pointedUp, Vector2 position)
+            {
+                this.creator = creator;
+                gameobject = creator.Hexagon(reason, parent, FSColor.DarkGray, pointedUp);
+                gameobject.transform.position = new Vector3(position.x, position.y, gameobject.transform.position.z);
+                var child = creator.Hexagon("Child", gameobject, FSColor.LightGray, pointedUp);
+                child.GetComponent<RectTransform>().localScale = new Vector3(1f / 3f, 1f / 3f, 1f);                
+            }
+        }
+
+        public class Icon
+        {
+            private readonly GameObject gameobject;
+            private readonly Creator creator;
+            public Icon(Creator creator, string title, string description, string spriteName, FSColor color)
+            {
+                this.creator = creator;
+            }
+        }
+
+        public class SlotDrawer
+        {
+            private readonly List<Slot> list;
+            private readonly Creator creator;
+            
+            public SlotDrawer(Creator creator, string reason, int count, bool horizontal, Vector2 position)
+            {
+                this.creator = creator;
+                var parent = creator.FindGameObject(reason);
+                this.list = new List<Slot>();
+                for (int i = 0; i < count; i++)
+                {
+                    list.Add(new Slot(creator, reason + " " + i, parent, horizontal, 
+                        horizontal ? new Vector2(position.x + 2 * i, position.y) : new Vector2(position.x, position.y + 2 * i)));
                 }
             }
         }
@@ -209,6 +245,8 @@ public class CardCreator : MonoBehaviour
     {
         private readonly Creator creator;
         private readonly Creator.Badge hp;
+        private readonly Creator.SlotDrawer abilities;
+        private readonly Creator.SlotDrawer upgrades;
 
         public uint HP { get => hp.Count; set => hp.Count = value; }
 
@@ -221,9 +259,10 @@ public class CardCreator : MonoBehaviour
 
         public ConstructedUnit(GameObject parent, uint hp)
         {
-            creator = new Creator("Warrior", parent)
-                .Title()
-                .Slot("Upgrade 1", false);
+            creator = new Creator("Warrior", parent).LeftTitle();
+            abilities = new Creator.SlotDrawer(creator, "Abilities", 3, true, new Vector2(-2, -3.25f));
+            upgrades = new Creator.SlotDrawer(creator, "Upgrades", 2, false, new Vector2(2, -1));
+
             this.hp = new Creator.Badge(creator, hp, FSColor.Red);
             HP = 25;
         }
