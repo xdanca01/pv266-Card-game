@@ -53,7 +53,7 @@ public class CardCreator : MonoBehaviour
 {
     private class Creator
     {
-        private readonly GameObject card;
+        private readonly GameObject gameobject;
         private static readonly int cardWidth = 6;
         private static readonly int cardHeight = 9;
         private readonly Dictionary<string, GameObject> hiearchy = new Dictionary<string, GameObject>();
@@ -90,7 +90,7 @@ public class CardCreator : MonoBehaviour
 
         private GameObject FindGameObject(string name)
         {
-            return FindGameObject(name, card);
+            return FindGameObject(name, gameobject);
         }
 
         public T FindComponent<T>(GameObject gameobject) where T : Component
@@ -102,18 +102,7 @@ public class CardCreator : MonoBehaviour
             return component;
         }
 
-        private void Background()
-        {
-            var background = FindGameObject("Background");
-            var spriteRenderer = FindComponent<SpriteRenderer>(background);
-            spriteRenderer.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/9-SlicedWithBorder.png");
-            spriteRenderer.drawMode = SpriteDrawMode.Sliced;
-            spriteRenderer.size = new Vector2(cardWidth + 0.4f, cardHeight + 0.4f);
-            spriteRenderer.color = new Color(0f, 0f, 0f, 0.5f);
-            spriteRenderer.sortingOrder = -1;
-        }
-
-        private GameObject Text(string purpose, GameObject parent, string text, Rect rect, FSFont font)
+        private Creator Text(string purpose, GameObject parent, string text, Rect rect, FSFont font)
         {
             var textGO = FindGameObject(purpose, parent);
             SetRect(textGO, rect);
@@ -126,7 +115,7 @@ public class CardCreator : MonoBehaviour
             TMPro.font = font.ToAsset();
             TMPro.horizontalAlignment = HorizontalAlignmentOptions.Center;
             TMPro.verticalAlignment = VerticalAlignmentOptions.Middle;
-            return textGO;
+            return this;
         }
 
         private GameObject Hexagon(string reason, GameObject parent, FSColor color, bool pointedUp)
@@ -144,28 +133,41 @@ public class CardCreator : MonoBehaviour
 
         public Creator(string name, GameObject parent)
         {
-            card = new GameObject();
-            card.name = name;
-            card.transform.parent = parent.transform;
-            FindComponent<Canvas>(card);
-            SetRect(card, new Rect(0, 0, cardWidth, cardHeight));
-            FindComponent<GraphicRaycaster>(card);
-            Background();
+            gameobject = new GameObject();
+            gameobject.name = name;
+            gameobject.transform.parent = parent.transform;
+            FindComponent<Canvas>(gameobject);
+            SetRect(gameobject, new Rect(0, 0, cardWidth, cardHeight));
+            FindComponent<GraphicRaycaster>(gameobject);
+        }
+
+        public Creator Background()
+        {
+            var background = FindGameObject("Background");
+            var spriteRenderer = FindComponent<SpriteRenderer>(background);
+            spriteRenderer.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/9-SlicedWithBorder.png");
+            spriteRenderer.drawMode = SpriteDrawMode.Sliced;
+            spriteRenderer.size = new Vector2(cardWidth + 0.4f, cardHeight + 0.4f);
+            spriteRenderer.color = new Color(0f, 0f, 0f, 0.5f);
+            spriteRenderer.sortingOrder = -1;
+            return this;
         }
 
         public Creator LeftTitle()
         {
-            Text("Title", card, card.name, new Rect(-1f, 3.5f, 4f, 1.2f), FSFont.Geizer);
-            return this;
+            return Text("Title", gameobject, gameobject.name, new Rect(-1f, 3.5f, 4f, 1.2f), FSFont.Geizer);
         }
         public Creator MiddleTitle()
         {
-            Text("Title", card, card.name, new Rect(0f, 3.5f, 4f, 1.2f), FSFont.Geizer);
-            return this;
+            return Text("Title", gameobject, gameobject.name, new Rect(0f, 3.5f, 5f, 2f), FSFont.Geizer);
         }
 
+        public Creator Description(string text, FSFont font)
+        {
+            return Text("Description", gameobject, text, new Rect(0f, -3f, 5f, 2.75f), font);
+        }
 
-        public Creator MaskedImage(string reason, Rect rect, string spriteFolder, string spriteName)
+        public Creator MaskedImage(string reason, Rect rect, string spriteFolder, string spriteName, FSColor color)
         {
             // mask
             var mask = FindGameObject(reason + " Mask");
@@ -174,21 +176,22 @@ public class CardCreator : MonoBehaviour
             var rectTransform = mask.GetComponent<RectTransform>();
             rectTransform.transform.position = new Vector3(rect.x, rect.y, mask.transform.position.z);
             rectTransform.localScale = new Vector3(rect.width, rect.height, 1);
-            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/"+ spriteFolder + "/" + spriteName + ".png");
+            // inner sprite
             var image = FindGameObject(reason, mask);
             SetRect(image, new Rect(0, 0, 1, 1));
-            // inner sprite
+            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/" + spriteFolder + "/" + spriteName + ".png");
             bool fitToSmallerSize = true;
             var spriteRenderer = FindComponent<SpriteRenderer>(image);
             spriteRenderer.sprite = sprite;
+            spriteRenderer.color = color.ToColor();
             spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             Vector3 spriteSize = spriteRenderer.sprite.bounds.size;
             Transform transform = image.GetComponent<RectTransform>().transform;
             float dimension = fitToSmallerSize ? Mathf.Max(spriteSize.x, spriteSize.y) : Mathf.Min(spriteSize.x, spriteSize.y);
             float maskScaleX = rect.height > rect.width ? rect.width / rect.height : 1;
-            float maskScaleY = rect.width > rect.height ? rect.height / rect.width : 1; 
+            float maskScaleY = rect.width > rect.height ? rect.height / rect.width : 1;
             float spriteScaleX = spriteSize.y > spriteSize.x ? spriteSize.y / spriteSize.x : spriteSize.x / spriteSize.y;
-            float spriteScaleY = spriteSize.x > spriteSize.y ? spriteSize.x / spriteSize.y : spriteSize.y / spriteSize.x; 
+            float spriteScaleY = spriteSize.x > spriteSize.y ? spriteSize.x / spriteSize.y : spriteSize.y / spriteSize.x;
             transform.localScale = new Vector3(spriteScaleX / (dimension * maskScaleX), spriteScaleY / (dimension * maskScaleY), 1);
             return this;
         }
@@ -246,9 +249,13 @@ public class CardCreator : MonoBehaviour
         {
             private readonly GameObject gameobject;
             private readonly Creator creator;
-            public Icon(Creator creator, string title, string description, string spriteName, FSColor color)
+            public Icon(Creator creator, GameObject parent, string title, string description, string spriteName, FSColor color)
             {
-                this.creator = creator;
+                var icon = creator.MaskedImage("Icon", new Rect(0, 0, 2, 2), "Icons", spriteName, color).gameobject;
+                this.creator = creator
+                    .Text("Title", icon, title, new Rect(0f, 0.5f, 2f, 1f), FSFont.DeadRevolution)
+                    .Text("Description", icon, description, new Rect(0f, -0.5f, 2f, 1f), FSFont.DeadRevolution);
+                gameobject = creator.gameobject;
             }
         }
 
@@ -272,7 +279,7 @@ public class CardCreator : MonoBehaviour
 
         public GameObject Build()
         {
-            return card;
+            return gameobject;
         }
     }
 
@@ -294,7 +301,10 @@ public class CardCreator : MonoBehaviour
 
         public ConstructedUnit(GameObject parent, uint hp)
         {
-            creator = new Creator("Warrior", parent).LeftTitle().MaskedImage("Artwork", new Rect(-1, 0.4f, 4, 5), "Artwork", "addroran");
+            creator = new Creator("Warrior", parent)
+                .Background()
+                .LeftTitle()
+                .MaskedImage("Artwork", new Rect(-1, 0.4f, 4, 5), "Artwork", "addroran", FSColor.White);
             abilities = new Creator.SlotDrawer(creator, "Abilities", 3, true, new Vector2(-2, -3.25f));
             upgrades = new Creator.SlotDrawer(creator, "Upgrades", 2, false, new Vector2(2, -1));
             this.hp = new Creator.Badge(creator, hp, FSColor.Red);
@@ -306,20 +316,50 @@ public class CardCreator : MonoBehaviour
     class ConstructedUpgrade : IUpgrade
     {
         private readonly Creator creator;
+        private readonly Creator.Icon icon;
 
         public IEffect Effect => throw new System.NotImplementedException();
 
         public ConstructedUpgrade(GameObject parent)
         {
-            creator = new Creator("Poison", parent).MiddleTitle().MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Artwork", "Potion Making");            
+            creator = new Creator("Poison", parent)
+                .Background()
+                .MiddleTitle()
+                .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Artwork", "Potion Making", FSColor.White)
+                .Description("Creature you hit gets poisoned. It takes 8 damage each round.", FSFont.Dumbledor);
+            icon = new Creator.Icon(creator, parent, "Hit", "Poison", "erlenmeyer", FSColor.Blue);
+        }
+    }
+
+    class ConstructedAbility : IAbility
+    {
+        private readonly Creator creator;
+        private readonly Creator.Icon icon;
+
+        public uint Percentage { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public uint Low { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public uint High { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+
+        public AbilityType Type => throw new System.NotImplementedException();
+
+        public IAbility Revert() => throw new System.NotImplementedException();
+        
+        public ConstructedAbility(GameObject parent)
+        {
+            creator = new Creator("Elven Sword", parent)
+                .Background()
+                .MiddleTitle()
+                .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Icons", "broadsword", FSColor.Yellow)
+                .Description("80% 6-9\nLIGHT DMG", FSFont.DeadRevolution);
+            //icon = new Creator.Icon(creator, parent, "80%", "6-9", "broadsword", FSColor.Yellow);
         }
     }
 
     public void CreateExampleCard()
     {
         //var unit = new ConstructedUnit(gameObject, 30);
-        var upgrade = new ConstructedUpgrade(gameObject);
-
+        //var upgrade = new ConstructedUpgrade(gameObject);
+        var ability = new ConstructedAbility(gameObject);        
     }
 
     [EditorCools.Button]
