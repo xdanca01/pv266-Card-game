@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-class ConstructedAbility : IAbility, Interactable
+class Ability : IAbility, Interactable
 {
     public Card.Creator Card { get; }
     public Card.Creator.Icon Icon { get; }
@@ -13,7 +13,7 @@ class ConstructedAbility : IAbility, Interactable
 
     public void RemoveEffects() => throw new System.NotImplementedException();
         
-    public ConstructedAbility(GameObject parent, uint percentage, uint low, uint high, AbilityType type)
+    public Ability(GameObject parent, uint percentage, uint low, uint high, AbilityType type)
     {
         Card = new Card.Creator("Elven Sword", parent)
             .Background()

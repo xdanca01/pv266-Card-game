@@ -1,13 +1,11 @@
 ﻿using UnityEngine;
 
-class ConstructedUpgrade : IUpgrade, Interactable
+class Upgrade : IUpgrade, Interactable
 {
     public Card.Creator Card { get; }
     public Card.Creator.Icon Icon { get; }
-
     public IEffect Effect { get; }
-
-    public ConstructedUpgrade(GameObject parent, IEffect effect)
+    public Upgrade(GameObject parent, IEffect effect)
     {
         Card = new Card.Creator("Poison", parent)
             .Background()
