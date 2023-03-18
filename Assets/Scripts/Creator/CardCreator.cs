@@ -311,7 +311,7 @@ public class CardCreator : MonoBehaviour
 
         public ConstructedUpgrade(GameObject parent)
         {
-            creator = new Creator("Poison", parent).MiddleTitle().MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Artwork", "Potion Making");
+            creator = new Creator("Poison", parent).MiddleTitle().MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Artwork", "Potion Making");            
         }
     }
 
