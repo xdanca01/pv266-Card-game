@@ -23,11 +23,12 @@ class Unit : IUnit
         creator = new Card.Creator("Warrior", parent)
             .Background()
             .LeftTitle()
-            .MaskedImage("Artwork", new Rect(-1, 0.4f, 4, 5), "Artwork", "addroran", FSColor.White, 1.0f);
+            .MaskedImage("Artwork", new Rect(-1, 0.4f, 4, 5), "Artwork", "addroran", FSColor.White);
         abilities = new Card.Creator.SlotDrawer<Ability>(creator, "Abilities", 3, true, new Vector2(-2, -3.25f));
         abilities.Set(1, ability);
-        abilities.Set(1, null);
+        //abilities.Set(1, null);
         abilities.Set(2, ability);
+        ability.Percentage = 90;
         upgrades = new Card.Creator.SlotDrawer<Upgrade>(creator, "Upgrades", 2, false, new Vector2(2, -1));
         this.hp = new Card.Creator.Badge(creator, hp, FSColor.Red);
         HP = 25;

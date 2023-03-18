@@ -152,9 +152,9 @@ public partial class Card
             return mask;
         }
 
-        public Creator MaskedImage(string reason, Rect rect, string spriteFolder, string spriteName, FSColor color, float alpha)
+        public Creator MaskedImage(string reason, Rect rect, string spriteFolder, string spriteName, FSColor color)
         {
-            MaskedImageGameObject(reason, gameobject, rect, spriteFolder, spriteName, color, alpha);
+            MaskedImageGameObject(reason, gameobject, rect, spriteFolder, spriteName, color, 1.0f);
             return this;
         }
     }

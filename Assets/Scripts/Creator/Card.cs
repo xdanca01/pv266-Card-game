@@ -11,6 +11,7 @@ public partial class Card : MonoBehaviour
         //var upgrade = new ConstructedUpgrade(gameObject);
         var ability = new Ability(gameObject, 70, 6, 9, AbilityType.Heal);
         var unit = new Unit(gameObject, 30, ability);
+
     }
 
     [EditorCools.Button]

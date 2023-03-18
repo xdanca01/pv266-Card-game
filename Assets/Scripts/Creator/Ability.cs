@@ -5,11 +5,37 @@ class Ability : IAbility, Interactable
     public Card.Creator Card { get; }
     public Card.Creator.Icon Icon { get; }
 
-    public uint Percentage { get => Percentage; set => throw new System.NotImplementedException(); }
-    public uint Low { get => Low; set => throw new System.NotImplementedException(); }
-    public uint High { get => High; set => throw new System.NotImplementedException(); }
+    private uint percentage;
+    public uint Percentage { get => percentage; set {
+            percentage = value;
+            UpdateDescription();
+        }
+    }
+
+    private uint low;
+    public uint Low { get => low; set {
+            low = value;
+            UpdateDescription();
+        }
+    }
+
+    private uint high;
+    public uint High { get => high; set {
+            high = value;
+            UpdateDescription();
+        }
+    }
 
     public AbilityType Type { get; }
+
+    private void UpdateDescription()
+    {
+        var percentage = Percentage + "%";
+        var range = Low + "-" + High;
+        Card.Description(percentage + " " + range + "\n" + Type.ToString(), FSFont.DeadRevolution);
+        Icon.Title = percentage;
+        Icon.Description = range;
+    }
 
     public void RemoveEffects() => throw new System.NotImplementedException();
         
@@ -18,9 +44,13 @@ class Ability : IAbility, Interactable
         Card = new Card.Creator("Elven Sword", parent)
             .Background()
             .MiddleTitle()
-            .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Icons", "broadsword", FSColor.Yellow, 1.0f)
-            .Description("80% 6-9\nLIGHT DMG", FSFont.DeadRevolution);
-        Icon = new Card.Creator.Icon(Card, "Elven Sword", "80%", "6-9", "broadsword", FSColor.Yellow);
+            .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Icons", "broadsword", type.ToFSColor());
+        this.percentage = percentage;
+        this.low = low;
+        this.high = high;
+        this.Type = type;
+        Icon = new Card.Creator.Icon(Card, "Elven Sword", "", "", "broadsword", type.ToFSColor());
+        UpdateDescription();
     }
 }
 
