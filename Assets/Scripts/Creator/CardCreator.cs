@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using UnityEngine;
 
-public class CardCreator : MonoBehaviour
+public partial class CardCreator : MonoBehaviour
 {
     class ConstructedUnit : IUnit
     {
@@ -27,11 +27,12 @@ public class CardCreator : MonoBehaviour
                 .MaskedImage("Artwork", new Rect(-1, 0.4f, 4, 5), "Artwork", "addroran", FSColor.White, 1.0f);
             abilities = new Creator.SlotDrawer(creator, "Abilities", 3, true, new Vector2(-2, -3.25f));
             abilities.Assign(1, ability);
+            abilities.Assign(1, null);
+            abilities.Assign(2, ability);
             upgrades = new Creator.SlotDrawer(creator, "Upgrades", 2, false, new Vector2(2, -1));
             this.hp = new Creator.Badge(creator, hp, FSColor.Red);
             HP = 25;
-        }
-    
+        }    
     }
 
     class ConstructedUpgrade : IUpgrade
