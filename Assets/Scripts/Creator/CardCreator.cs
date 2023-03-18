@@ -167,10 +167,10 @@ public class CardCreator : MonoBehaviour
             return Text("Description", gameobject, text, new Rect(0f, -3f, 5f, 2.75f), font);
         }
 
-        public Creator MaskedImage(string reason, Rect rect, string spriteFolder, string spriteName, FSColor color)
+        private GameObject MaskedImageGameObject(string reason, GameObject parent, Rect rect, string spriteFolder, string spriteName, FSColor color)
         {
-            // mask
-            var mask = FindGameObject(reason + " Mask");
+            // outer mask
+            var mask = FindGameObject(reason + " Mask", parent);
             var spriteMask = FindComponent<SpriteMask>(mask);
             spriteMask.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png");
             var rectTransform = mask.GetComponent<RectTransform>();
@@ -193,6 +193,12 @@ public class CardCreator : MonoBehaviour
             float spriteScaleX = spriteSize.y > spriteSize.x ? spriteSize.y / spriteSize.x : spriteSize.x / spriteSize.y;
             float spriteScaleY = spriteSize.x > spriteSize.y ? spriteSize.x / spriteSize.y : spriteSize.y / spriteSize.x;
             transform.localScale = new Vector3(spriteScaleX / (dimension * maskScaleX), spriteScaleY / (dimension * maskScaleY), 1);
+            return mask;
+        }
+
+        public Creator MaskedImage(string reason, Rect rect, string spriteFolder, string spriteName, FSColor color)
+        {
+            MaskedImageGameObject(reason, gameobject, rect, spriteFolder, spriteName, color);
             return this;
         }
 
@@ -249,13 +255,21 @@ public class CardCreator : MonoBehaviour
         {
             private readonly GameObject gameobject;
             private readonly Creator creator;
-            public Icon(Creator creator, GameObject parent, string title, string description, string spriteName, FSColor color)
+            public Icon(Creator creator, string title, string description, string spriteName, FSColor color)
             {
-                var icon = creator.MaskedImage("Icon", new Rect(0, 0, 2, 2), "Icons", spriteName, color).gameobject;
+                gameobject = creator.FindGameObject("Icon");
+                creator.MaskedImageGameObject("Image", gameobject, new Rect(0, 0, 2, 2), "Icons", spriteName, color);
                 this.creator = creator
-                    .Text("Title", icon, title, new Rect(0f, 0.5f, 2f, 1f), FSFont.DeadRevolution)
-                    .Text("Description", icon, description, new Rect(0f, -0.5f, 2f, 1f), FSFont.DeadRevolution);
-                gameobject = creator.gameobject;
+                    .Text("Title", gameobject, title, new Rect(0f, 0.5f, 2f, 1f), FSFont.DeadRevolution)
+                    .Text("Description", gameobject, description, new Rect(0f, -0.5f, 2f, 1f), FSFont.DeadRevolution);
+            }
+            public void Hide()
+            {
+                gameobject.SetActive(false);
+            }
+            public void Show()
+            {
+                gameobject.SetActive(true);
             }
         }
 
@@ -275,11 +289,6 @@ public class CardCreator : MonoBehaviour
                         horizontal ? new Vector2(position.x + 2 * i, position.y) : new Vector2(position.x, position.y + 2 * i)));
                 }
             }
-        }
-
-        public GameObject Build()
-        {
-            return gameobject;
         }
     }
 
@@ -327,7 +336,7 @@ public class CardCreator : MonoBehaviour
                 .MiddleTitle()
                 .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Artwork", "Potion Making", FSColor.White)
                 .Description("Creature you hit gets poisoned. It takes 8 damage each round.", FSFont.Dumbledor);
-            icon = new Creator.Icon(creator, parent, "Hit", "Poison", "erlenmeyer", FSColor.Blue);
+            icon = new Creator.Icon(creator, "Hit", "Poison", "erlenmeyer", FSColor.Blue);
         }
     }
 
@@ -351,7 +360,8 @@ public class CardCreator : MonoBehaviour
                 .MiddleTitle()
                 .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Icons", "broadsword", FSColor.Yellow)
                 .Description("80% 6-9\nLIGHT DMG", FSFont.DeadRevolution);
-            //icon = new Creator.Icon(creator, parent, "80%", "6-9", "broadsword", FSColor.Yellow);
+            icon = new Creator.Icon(creator, "80%", "6-9", "broadsword", FSColor.Yellow);
+            icon.Hide();
         }
     }
 
