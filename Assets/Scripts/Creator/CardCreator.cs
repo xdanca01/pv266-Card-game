@@ -19,13 +19,14 @@ public class CardCreator : MonoBehaviour
             throw new System.NotImplementedException();
         }
 
-        public ConstructedUnit(GameObject parent, uint hp)
+        public ConstructedUnit(GameObject parent, uint hp, Creator.Icon ability)
         {
             creator = new Creator("Warrior", parent)
                 .Background()
                 .LeftTitle()
-                .MaskedImage("Artwork", new Rect(-1, 0.4f, 4, 5), "Artwork", "addroran", FSColor.White);
+                .MaskedImage("Artwork", new Rect(-1, 0.4f, 4, 5), "Artwork", "addroran", FSColor.White, 1.0f);
             abilities = new Creator.SlotDrawer(creator, "Abilities", 3, true, new Vector2(-2, -3.25f));
+            abilities.Assign(1, ability);
             upgrades = new Creator.SlotDrawer(creator, "Upgrades", 2, false, new Vector2(2, -1));
             this.hp = new Creator.Badge(creator, hp, FSColor.Red);
             HP = 25;
@@ -45,16 +46,16 @@ public class CardCreator : MonoBehaviour
             creator = new Creator("Poison", parent)
                 .Background()
                 .MiddleTitle()
-                .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Artwork", "Potion Making", FSColor.White)
+                .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Artwork", "Potion Making", FSColor.White, 1.0f)
                 .Description("Creature you hit gets poisoned. It takes 8 damage each round.", FSFont.Dumbledor);
-            icon = new Creator.Icon(creator, "Hit", "Poison", "erlenmeyer", FSColor.Blue);
+            icon = new Creator.Icon(creator, "Poison", "Hit", "Poison", "erlenmeyer", FSColor.Blue);
         }
     }
 
     class ConstructedAbility : IAbility
     {
         private readonly Creator creator;
-        private readonly Creator.Icon icon;
+        public readonly Creator.Icon icon;
 
         public uint Percentage { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         public uint Low { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
@@ -66,13 +67,12 @@ public class CardCreator : MonoBehaviour
         
         public ConstructedAbility(GameObject parent)
         {
-            creator = new Creator("Elven Sword", parent)
+            creator = new Creator("Elven Sword", parent);/*
                 .Background()
                 .MiddleTitle()
                 .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Icons", "broadsword", FSColor.Yellow)
-                .Description("80% 6-9\nLIGHT DMG", FSFont.DeadRevolution);
-            icon = new Creator.Icon(creator, "80%", "6-9", "broadsword", FSColor.Yellow);
-            icon.Hide();
+                .Description("80% 6-9\nLIGHT DMG", FSFont.DeadRevolution);*/
+            icon = new Creator.Icon(creator, "Elven Sword", "80%", "6-9", "broadsword", FSColor.Yellow);
         }
     }
 
@@ -80,7 +80,8 @@ public class CardCreator : MonoBehaviour
     {
         //var unit = new ConstructedUnit(gameObject, 30);
         //var upgrade = new ConstructedUpgrade(gameObject);
-        var ability = new ConstructedAbility(gameObject);        
+        var ability = new ConstructedAbility(gameObject);
+        var unit = new ConstructedUnit(gameObject, 30, ability.icon);
     }
 
     [EditorCools.Button]

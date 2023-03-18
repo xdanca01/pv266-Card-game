@@ -3,6 +3,8 @@ using UnityEngine;
 using TMPro;
 using UnityEditor;
 using UnityEngine.UI;
+using Unity.VisualScripting;
+using UnityEngine.Profiling;
 
 public enum FSColor
 {
@@ -19,13 +21,13 @@ public enum FSColor
 
 static class FSColorMethods
 {
-    public static Color ToColor(this FSColor color) => ToColorAlpha(color, 1.0f);
-    public static Color ToColorAlpha(this FSColor color, float alpha) => new(
+    public static Color ToColor(this FSColor color, float alpha) => new(
         (((int)color & 0xFF0000) >> 16) / 255.0f,
         (((int)color & 0x00FF00) >> 8) / 255.0f,
         ((int)color & 0x0000FF) / 255.0f,
         alpha
     );
+    public static Color ToColor(this FSColor color) => ToColor(color, 1.0f);
 }
 
 public enum FSFont
@@ -161,7 +163,7 @@ public class Creator
         return Text("Description", gameobject, text, new Rect(0f, -3f, 5f, 2.75f), font);
     }
 
-    private GameObject MaskedImageGameObject(string reason, GameObject parent, Rect rect, string spriteFolder, string spriteName, FSColor color)
+    private GameObject MaskedImageGameObject(string reason, GameObject parent, Rect rect, string spriteFolder, string spriteName, FSColor color, float alpha)
     {
         // outer mask
         var mask = FindGameObject(reason + " Mask", parent);
@@ -177,7 +179,7 @@ public class Creator
         bool fitToSmallerSize = true;
         var spriteRenderer = FindComponent<SpriteRenderer>(image);
         spriteRenderer.sprite = sprite;
-        spriteRenderer.color = color.ToColor();
+        spriteRenderer.color = color.ToColor(alpha);
         spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
         Vector3 spriteSize = spriteRenderer.sprite.bounds.size;
         Transform transform = image.GetComponent<RectTransform>().transform;
@@ -190,9 +192,9 @@ public class Creator
         return mask;
     }
 
-    public Creator MaskedImage(string reason, Rect rect, string spriteFolder, string spriteName, FSColor color)
+    public Creator MaskedImage(string reason, Rect rect, string spriteFolder, string spriteName, FSColor color, float alpha)
     {
-        MaskedImageGameObject(reason, gameobject, rect, spriteFolder, spriteName, color);
+        MaskedImageGameObject(reason, gameobject, rect, spriteFolder, spriteName, color, alpha);
         return this;
     }
 
@@ -231,39 +233,62 @@ public class Creator
         }
     }
 
+    public class Icon
+    {
+        private readonly Creator creator;
+        string title;
+        string description;
+        string spriteName;
+        string fullTitle;
+        FSColor color;
+
+        public Icon(Creator creator, string fullTitle, string title, string description, string spriteName, FSColor color)
+        {
+            this.creator = creator;
+            this.fullTitle = fullTitle;
+            this.title = title;
+            this.description = description;
+            this.spriteName = spriteName;
+            this.color = color;
+        }
+        
+        public GameObject Create(GameObject parent)
+        {
+            var gameobject = creator.FindGameObject(fullTitle + " Icon", parent);
+            creator.SetRect(gameobject, parent.GetComponent<RectTransform>().rect);
+            creator.MaskedImageGameObject("Image", gameobject, new Rect(0, 0, 2, 2), "Icons", spriteName, color, 0.5f).transform.position = gameobject.transform.position;            
+            creator.Text("Title", gameobject, title, new Rect(0f, 0.5f, 2f, 1f), FSFont.DeadRevolution);
+            creator.Text("Description", gameobject, description, new Rect(0f, -0.5f, 2f, 1f), FSFont.DeadRevolution);
+            gameobject.transform.position = parent.transform.position;
+            return gameobject;
+        }
+
+    }
+
     public class Slot
     {
         private readonly GameObject gameobject;
+        private readonly GameObject empty;
         private readonly Creator creator;
+
         public Slot(Creator creator, string reason, GameObject parent, bool pointedUp, Vector2 position)
         {
             this.creator = creator;
-            gameobject = creator.Hexagon(reason, parent, FSColor.DarkGray, pointedUp);
-            gameobject.transform.position = new Vector3(position.x, position.y, gameobject.transform.position.z);
-            var child = creator.Hexagon("Child", gameobject, FSColor.LightGray, pointedUp);
+            gameobject = creator.FindGameObject(reason, parent);
+            creator.SetRect(gameobject, new Rect(position.x, position.y, 2, 2));
+            empty = creator.Hexagon("Empty", gameobject, FSColor.DarkGray, pointedUp);
+            empty.transform.position = new Vector3(position.x, position.y, empty.transform.position.z);
+            var child = creator.Hexagon("Child", empty, FSColor.LightGray, pointedUp);
             child.GetComponent<RectTransform>().localScale = new Vector3(1f / 3f, 1f / 3f, 1f);
+            child.GetComponent<SpriteRenderer>().sortingOrder = 1;
         }
-    }
-
-    public class Icon
-    {
-        private readonly GameObject gameobject;
-        private readonly Creator creator;
-        public Icon(Creator creator, string title, string description, string spriteName, FSColor color)
+        public void Assign(Icon icon)
         {
-            gameobject = creator.FindGameObject("Icon");
-            creator.MaskedImageGameObject("Image", gameobject, new Rect(0, 0, 2, 2), "Icons", spriteName, color);
-            this.creator = creator
-                .Text("Title", gameobject, title, new Rect(0f, 0.5f, 2f, 1f), FSFont.DeadRevolution)
-                .Text("Description", gameobject, description, new Rect(0f, -0.5f, 2f, 1f), FSFont.DeadRevolution);
-        }
-        public void Hide()
-        {
-            gameobject.SetActive(false);
-        }
-        public void Show()
-        {
-            gameobject.SetActive(true);
+            empty.SetActive(icon == null);
+            if (icon != null)
+            {
+                icon.Create(gameobject);
+            }
         }
     }
 
@@ -272,7 +297,7 @@ public class Creator
         private readonly List<Slot> list;
         private readonly Creator creator;
 
-        public SlotDrawer(Creator creator, string reason, int count, bool horizontal, Vector2 position)
+        public SlotDrawer(Creator creator, string reason, uint count, bool horizontal, Vector2 position)
         {
             this.creator = creator;
             var parent = creator.FindGameObject(reason);
@@ -282,6 +307,15 @@ public class Creator
                 list.Add(new Slot(creator, reason + " " + i, parent, horizontal,
                     horizontal ? new Vector2(position.x + 2 * i, position.y) : new Vector2(position.x, position.y + 2 * i)));
             }
+        }
+
+        public void Assign(uint nth, Icon icon)
+        {
+            if (list.Count <= nth)
+            {
+                throw new System.Exception("Slot drawers does not have " + nth + " slots but only " + list.Count);
+            }
+            list[(int)nth].Assign(icon);
         }
     }
 }
