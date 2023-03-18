@@ -9,7 +9,7 @@ public partial class Card : MonoBehaviour
     {
         //var unit = new ConstructedUnit(gameObject, 30);
         //var upgrade = new ConstructedUpgrade(gameObject);
-        var ability = new Ability(gameObject, 70, 6, 9, AbilityType.Heal);
+        var ability = new Ability(gameObject, "Elven Sword", AbilityType.FastAttack, 70, 9, 6, "broadsword");
         var unit = new Unit(gameObject, 30, ability);
 
     }

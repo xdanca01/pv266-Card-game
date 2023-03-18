@@ -25,7 +25,7 @@ public static class AbilityTypeUtils
         AbilityType.FastAttack or AbilityType.SlowAttack => false,
         _ => throw new NotImplementedException(),
     };
-    public static string ToString(this AbilityType type) => type switch
+    public static string ToShortString(this AbilityType type) => type switch
     {
         AbilityType.FastAttack => "FAST DMG",
         AbilityType.SlowAttack => "SLOW DMG",

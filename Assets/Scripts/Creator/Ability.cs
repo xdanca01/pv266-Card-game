@@ -32,24 +32,24 @@ class Ability : IAbility, Interactable
     {
         var percentage = Percentage + "%";
         var range = Low + "-" + High;
-        Card.Description(percentage + " " + range + "\n" + Type.ToString(), FSFont.DeadRevolution);
+        Card.Description(percentage + " " + range + "\n" + Type.ToShortString(), FSFont.DeadRevolution);
         Icon.Title = percentage;
         Icon.Description = range;
     }
 
     public void RemoveEffects() => throw new System.NotImplementedException();
         
-    public Ability(GameObject parent, uint percentage, uint low, uint high, AbilityType type)
+    public Ability(GameObject parent, string title, AbilityType type, uint percentage, uint low, uint high, string spriteName)
     {
-        Card = new Card.Creator("Elven Sword", parent)
+        Card = new Card.Creator(title, parent)
             .Background()
             .MiddleTitle()
-            .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Icons", "broadsword", type.ToFSColor());
+            .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Icons", spriteName, type.ToFSColor());
         this.percentage = percentage;
         this.low = low;
         this.high = high;
         this.Type = type;
-        Icon = new Card.Creator.Icon(Card, "Elven Sword", "", "", "broadsword", type.ToFSColor());
+        Icon = new Card.Creator.Icon(Card, "Elven Sword", "", "", spriteName, type.ToFSColor());
         UpdateDescription();
     }
 }
