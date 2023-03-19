@@ -72,6 +72,24 @@ public partial class Card : MonoBehaviour
         }
     }
 
+    [EditorCools.Button]
+    public void CreateUnits()
+    {
+        DeleteAll();
+        var table = File.ReadLines("Assets/Data/Units.csv");
+        var columnNames = table.First().Split(",");
+        var columnsCount = 4;
+        foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
+        {
+            var columns = line.Split(",");
+            var title = GetColumn("Title", columns, columnNames);
+            var hp = uint.Parse(GetColumn("HP", columns, columnNames));
+            var artwork = GetColumn("Artwork", columns, columnNames);
+            var unit = new Unit(gameObject, title, hp, null, null, null, null, null, artwork);
+            unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount), RowSize * (i / columnsCount)));
+        }
+    }
+
     public void CreateExampleCard()
     {
         var upgrade = new Upgrade(gameObject, "Poison", "Unit you hit gets poisoned. It takes 3 damage each round.", "Hit", "Poison", "erlenmeyer", FSColor.Blue);
@@ -84,7 +102,7 @@ public partial class Card : MonoBehaviour
             for(int column = 0; column < 4; column++)
             {
                 var unit = new Unit(gameObject, "Cavalier " + row + " " + column, 30, ability, null, ability, upgrade, null, "addroran");
-                unit.creator.SetPosition(new Vector2(column * ColumnSize - 21, row * RowSize - 10));
+                unit.Card.SetPosition(new Vector2(column * ColumnSize - 21, row * RowSize - 10));
             }
         }
     }
