@@ -1,0 +1,27 @@
+Title,Value,Type,Percentage,Low,High,Icon
+Long sword,6,LIGHT,80%,6,9,broadsword
+Javelin,6,HEAVY,60%,8,12,energy-sword
+Second Wind,5,HEAL,100%,2,8,jasmine
+Long Bow,7,LIGHT,70%,6,14,high-shot
+Short Sword,7,HEAVY,50%,12,16,plain-dagger
+Magic Apple,6,HEAL,100%,4,8,shiny-apple
+Staff,8,LIGHT,80%,8,12,wizard-staff
+Fireball,8,HEAVY,40%,14,26,flame
+Healing Prayer,10,HEAL,100%,6,14,heart-wings
+Eat,9,LIGHT,90%,8,12,broadsword
+Waves,9,HEAVY,40%,15,30,broadsword
+Sink,6,HEAL,100%,5,7,broadsword
+Whip,3.5,LIGHT,50%,6,8,broadsword
+Hook,5,LIGHT,90%,4,6,broadsword
+Wood Kick,5,HEAVY,50%,6,10,broadsword
+Claw,3,LIGHT,100%,4,5,broadsword
+Gun shot,7,LIGHT,80%,6,7,broadsword
+Barrel explosion,7,HEAVY,30%,10,15,broadsword
+Piranha Bite,3,LIGHT,90%,4,5,broadsword
+Shark Bite,6,HEAVY,70%,7,8,broadsword
+Poop throw,2,LIGHT,100%,3,4,broadsword
+Stick hit,4,LIGHT,80%,5,8,broadsword
+Punch,5,HEAVY,60%,5,8,broadsword
+Charge,6,HEAVY,50%,5,10,broadsword
+Drown,5,HEAVY,10%,20,30,broadsword
+Sing,4,LIGHT,70%,5,7,broadsword

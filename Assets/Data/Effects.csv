@@ -1,0 +1,5 @@
+Title,Condition,Description,Icon Title,Icon Description,Icon,Color
+Poison,AttackSuccess,Creature you hit is Poisoned. It takes 3 damage each round.,Hit,Poisoned,erlenmeyer,Blue
+Healing spring,RoundStart,You receive 5 hp each round,Healing,5 HP,water-fountain,Red
+Poisoned,RoundStart,Take 3 damage on the begining of each turn.,Poisoned,3 DMG,bird-mask,Violet
+Double Attack,RoundStart,You deal twice as much damage to enemies,Double,Attack,crossed-swords,Orange
