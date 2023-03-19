@@ -49,7 +49,7 @@ public partial class Card
             return FindGameObject(name, gameobject);
         }
 
-        public T FindComponent<T>(GameObject gameobject) where T : Component
+        private T FindComponent<T>(GameObject gameobject) where T : Component
         {
             if (!gameobject.TryGetComponent<T>(out T component))
             {
@@ -156,6 +156,11 @@ public partial class Card
         {
             MaskedImageGameObject(reason, gameobject, rect, spriteFolder, spriteName, color, 1.0f);
             return this;
+        }
+
+        public void SetPosition(Vector2 position)
+        {
+            gameobject.transform.position = new Vector3(position.x, position.y, gameobject.transform.position.z);
         }
     }
 }

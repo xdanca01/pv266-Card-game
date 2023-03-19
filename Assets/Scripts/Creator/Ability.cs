@@ -49,7 +49,7 @@ class Ability : IAbility, Interactable
         this.low = low;
         this.high = high;
         this.Type = type;
-        Icon = new Card.Creator.Icon(Card, "Elven Sword", "", "", spriteName, type.ToFSColor());
+        Icon = new Card.Creator.Icon(Card, title, "", "", spriteName, type.ToFSColor());
         UpdateDescription();
     }
 }
