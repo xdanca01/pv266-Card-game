@@ -8,8 +8,8 @@ public partial class Card : MonoBehaviour
 {
     public void CreateAbilities()
     {
-        var text = File.ReadAllText("Assets/Data/Abilities.csv");
-        Debug.Log(text);
+        var table = File.ReadAllText("Assets/Data/Abilities.csv");
+        Debug.Log(table);
     }
 
     public void CreateExampleCard()

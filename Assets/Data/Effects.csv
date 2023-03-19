@@ -1,0 +1,5 @@
+Title,Condition,Description,Icon
+Poison,AttackSuccess,Creature you hit is Poisoned. It takes 3 damage each round.,erlenmeyer
+Healing spring,RoundStart,You receive 5 hp,heart-tower
+Poisoned,RoundStart,Take 3 damage on the begining of each turn.,bird-mask
+Double Attack,RoundStart,You deal twice as much damage to enemies,crossed-swords
