@@ -51,11 +51,30 @@ public partial class Card : MonoBehaviour
         }
     }
 
-
+    [EditorCools.Button]
+    public void CreateEffects()
+    {
+        DeleteAll();
+        var table = File.ReadLines("Assets/Data/Effects.csv");
+        var columnNames = table.First().Split(",");
+        var columnsCount = 4;
+        foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
+        {
+            var columns = line.Split(",");
+            var title = GetColumn("Title", columns, columnNames);
+            var description = GetColumn("Description", columns, columnNames);
+            var iconTitle = GetColumn("Icon Title", columns, columnNames);
+            var iconDescription = GetColumn("Icon Description", columns, columnNames);
+            var icon = GetColumn("Icon", columns, columnNames);
+            var color = FSColorMethods.Parse(GetColumn("Color", columns, columnNames));
+            var upgrade = new Upgrade(gameObject, title, description, iconTitle, iconDescription, icon, color);
+            upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount), RowSize * (i / columnsCount)));
+        }
+    }
 
     public void CreateExampleCard()
     {
-        var upgrade = new Upgrade(gameObject, "Poison", "Unit you hit gets poisoned. It takes 3 damage each round.", "Potion Making", "erlenmeyer", new Poison());
+        var upgrade = new Upgrade(gameObject, "Poison", "Unit you hit gets poisoned. It takes 3 damage each round.", "Hit", "Poison", "erlenmeyer", FSColor.Blue);
         upgrade.Card.SetPosition(new Vector2(7, 0));
         var ability = new Ability(gameObject, "Elven Sword", AbilityType.LightAttack, 70, 9, 6, "broadsword");
         ability.Card.SetPosition(new Vector2(14, 0));

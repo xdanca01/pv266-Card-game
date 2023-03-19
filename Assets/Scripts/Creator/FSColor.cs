@@ -6,6 +6,7 @@ public enum FSColor
     Yellow = 0xBF9F00,
     Orange = 0xBF6000,
     Red = 0xBF0000,
+    Green = 0x00AE00,
     Blue = 0x00A0FF,
     Violet = 0xAE00FF,
     Black = 0x0,
@@ -29,5 +30,19 @@ static class FSColorMethods
         AbilityType.HeavyAttack => FSColor.Orange,
         AbilityType.Heal => FSColor.Red,
         _ => throw new NotImplementedException()
+    };
+    public static FSColor Parse(string str) => str switch
+    {
+        "Yellow" => FSColor.Yellow,
+        "Orange" => FSColor.Orange,
+        "Red" => FSColor.Red,
+        "Green" => FSColor.Green,
+        "Blue" => FSColor.Blue,
+        "Violet" => FSColor.Violet,
+        "Black" => FSColor.Black,
+        "DarkGray" => FSColor.DarkGray,
+        "LightGray" => FSColor.LightGray,
+        "White" => FSColor.White,
+        _ => throw new NotImplementedException(),
     };
 }
