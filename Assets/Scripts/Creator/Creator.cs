@@ -115,7 +115,7 @@ public partial class Card
         }
         public Creator MiddleTitle()
         {
-            return Text("Title", gameobject, gameobject.name, new Rect(0f, 3.5f, 5f, 2f), FSFont.Geizer);
+            return Text("Title", gameobject, gameobject.name, new Rect(0f, 3.5f, 5f, 1.2f), FSFont.Geizer);
         }
 
         public Creator Description(string text, FSFont font)

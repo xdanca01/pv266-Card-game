@@ -25,8 +25,8 @@ static class FSColorMethods
     public static Color ToColor(this FSColor color) => ToColor(color, 1.0f);
     public static FSColor ToFSColor(this AbilityType ability) => ability switch
     {
-        AbilityType.FastAttack => FSColor.Yellow,
-        AbilityType.SlowAttack => FSColor.Orange,
+        AbilityType.LightAttack => FSColor.Yellow,
+        AbilityType.HeavyAttack => FSColor.Orange,
         AbilityType.Heal => FSColor.Red,
         _ => throw new NotImplementedException()
     };
