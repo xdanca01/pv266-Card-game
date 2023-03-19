@@ -1,10 +1,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
 public partial class Card : MonoBehaviour
 {
+    public void CreateAbilities()
+    {
+        var text = File.ReadAllText("Assets/Data/Abilities.csv");
+        Debug.Log(text);
+    }
+
     public void CreateExampleCard()
     {
         var upgrade = new Upgrade(gameObject, "Poison", "Unit you hit gets poisoned. It takes 3 damage each round.", "Potion Making", "erlenmeyer", new Poison());
@@ -29,6 +36,6 @@ public partial class Card : MonoBehaviour
         {
             DestroyImmediate(transform.GetChild(i).gameObject);
         }
-        CreateExampleCard();
+        CreateAbilities();
     }
 }
