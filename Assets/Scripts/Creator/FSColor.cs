@@ -29,7 +29,7 @@ static class FSColorMethods
         AbilityType.LightAttack => FSColor.Yellow,
         AbilityType.HeavyAttack => FSColor.Orange,
         AbilityType.Heal => FSColor.Red,
-        _ => throw new NotImplementedException()
+        _ => throw new NotImplementedException(),
     };
     public static FSColor Parse(string str) => str switch
     {
@@ -43,6 +43,6 @@ static class FSColorMethods
         "DarkGray" => FSColor.DarkGray,
         "LightGray" => FSColor.LightGray,
         "White" => FSColor.White,
-        _ => throw new NotImplementedException(),
+        _ => throw new NotImplementedException(str),
     };
 }

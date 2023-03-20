@@ -21,6 +21,7 @@ public partial class Card : MonoBehaviour
         throw new System.Exception("Can't find column " + columnName);
     }
 
+    [EditorCools.Button]
     private void DeleteAll()
     {
         for (int i = transform.childCount - 1; i >= 0; i--)
@@ -30,12 +31,12 @@ public partial class Card : MonoBehaviour
     }
 
     [EditorCools.Button]
-    public void CreateAbilities()
+    private Dictionary<string, Ability> CreateAbilities()
     {
-        DeleteAll();
         var table = File.ReadLines("Assets/Data/Abilities.csv");
         var columnNames = table.First().Split(",");
-        var columnsCount = 4;
+        var columnsCount = 7;
+        Dictionary<string, Ability> abilities = new();
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
             var columns = line.Split(",");
@@ -47,17 +48,19 @@ public partial class Card : MonoBehaviour
             var icon = GetColumn("Icon", columns, columnNames);
             var type = AbilityTypeUtils.Parse(GetColumn("Type", columns, columnNames));
             var ability = new Ability(gameObject, title, type, percentage, low, high, icon);
-            ability.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount), RowSize * (i / columnsCount)));
+            ability.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * columnsCount, RowSize * (i / columnsCount)));
+            abilities.Add(title.ToLower(), ability);
         }
+        return abilities;
     }
 
     [EditorCools.Button]
-    public void CreateEffects()
+    private Dictionary<string, Upgrade> CreateUpgrades()
     {
-        DeleteAll();
         var table = File.ReadLines("Assets/Data/Effects.csv");
         var columnNames = table.First().Split(",");
         var columnsCount = 4;
+        Dictionary<string, Upgrade> upgrades = new();
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
             var columns = line.Split(",");
@@ -69,7 +72,9 @@ public partial class Card : MonoBehaviour
             var color = FSColorMethods.Parse(GetColumn("Color", columns, columnNames));
             var upgrade = new Upgrade(gameObject, title, description, iconTitle, iconDescription, icon, color);
             upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount), RowSize * (i / columnsCount)));
+            upgrades.Add(title.ToLower(), upgrade);
         }
+        return upgrades;
     }
 
     [EditorCools.Button]
@@ -78,15 +83,27 @@ public partial class Card : MonoBehaviour
         DeleteAll();
         var table = File.ReadLines("Assets/Data/Units.csv");
         var columnNames = table.First().Split(",");
-        var columnsCount = 4;
+        var columnsCount = 7;
+        var upgrades = CreateUpgrades();
+        var abilities = CreateAbilities();
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
             var columns = line.Split(",");
             var title = GetColumn("Title", columns, columnNames);
             var hp = uint.Parse(GetColumn("HP", columns, columnNames));
             var artwork = GetColumn("Artwork", columns, columnNames);
-            var unit = new Unit(gameObject, title, hp, null, null, null, null, null, artwork);
-            unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount), RowSize * (i / columnsCount)));
+            var firstAbilityStr = GetColumn("First Ability", columns, columnNames).ToLower();
+            var firstAbility = firstAbilityStr != "" ? abilities[firstAbilityStr] : null;
+            var secondAbilityStr = GetColumn("Second Ability", columns, columnNames).ToLower();
+            var secondAbility = secondAbilityStr != "" ? abilities[secondAbilityStr] : null;
+            var thirdAbilityStr = GetColumn("Third Ability", columns, columnNames).ToLower();
+            var thirdAbility = thirdAbilityStr != "" ? abilities[thirdAbilityStr] : null;
+            var firstUpgradeStr = GetColumn("First Upgrade", columns, columnNames).ToLower();
+            var firstUpgrade = firstUpgradeStr != "" ? upgrades[firstUpgradeStr] : null;
+            var secondUpgradeStr = GetColumn("Second Upgrade", columns, columnNames).ToLower();
+            var secondUpgrade = secondUpgradeStr != "" ? upgrades[secondUpgradeStr] : null;
+            var unit = new Unit(gameObject, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
+            unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * columnsCount, RowSize * (i / columnsCount) - RowSize * 3));
         }
     }
 

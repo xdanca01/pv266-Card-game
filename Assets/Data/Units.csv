@@ -1,8 +1,8 @@
 Title,HP,First Ability,Second Ability,Third Ability,First Upgrade,Second Upgrade,Approximate Power Level,Artwork
 Warrior,30,Long Sword,Javelin,Second Wind,,,64,Human Fighter
-Archer,24,Long Bow,Short Sword,Magic Apple,,,64,Archer
+Archer,24,Long Bow,Short Sword,Magic Apple,,,64,archer
 Mage,12,Staff,Fireball,Healing Prayer,,,64,Deadly Shock
-Octopus,50,Eat,Waves,Sink,Natural enviroment,,98,kraken
+Octopus,50,Eat,Waves,Sink,Healing spring,,98,kraken
 Tentacle,1,Whip,,,,,8,deep-tentacle
 Stone,15,,,,,,0,Guardians Fall
 Tree,10,,,,,,0,Ancestral Spirit Tree
