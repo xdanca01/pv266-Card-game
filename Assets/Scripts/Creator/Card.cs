@@ -36,6 +36,8 @@ public partial class Card : MonoBehaviour
         var table = File.ReadLines("Assets/Data/Abilities.csv");
         var columnNames = table.First().Split(",");
         var columnsCount = 7;
+        var parent = new GameObject("Abilities");
+        parent.transform.parent = gameObject.transform;
         Dictionary<string, Ability> abilities = new();
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
@@ -47,7 +49,7 @@ public partial class Card : MonoBehaviour
             var high = uint.Parse(GetColumn("High", columns, columnNames));
             var icon = GetColumn("Icon", columns, columnNames);
             var type = AbilityTypeUtils.Parse(GetColumn("Type", columns, columnNames));
-            var ability = new Ability(gameObject, title, type, percentage, low, high, icon);
+            var ability = new Ability(parent, title, type, percentage, low, high, icon);
             ability.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * columnsCount, RowSize * (i / columnsCount)));
             abilities.Add(title.ToLower(), ability);
         }
@@ -60,6 +62,8 @@ public partial class Card : MonoBehaviour
         var table = File.ReadLines("Assets/Data/Effects.csv");
         var columnNames = table.First().Split(",");
         var columnsCount = 4;
+        var parent = new GameObject("Upgrades");
+        parent.transform.parent = gameObject.transform;
         Dictionary<string, Upgrade> upgrades = new();
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
@@ -70,7 +74,7 @@ public partial class Card : MonoBehaviour
             var iconDescription = GetColumn("Icon Description", columns, columnNames);
             var icon = GetColumn("Icon", columns, columnNames);
             var color = FSColorMethods.Parse(GetColumn("Color", columns, columnNames));
-            var upgrade = new Upgrade(gameObject, title, description, iconTitle, iconDescription, icon, color);
+            var upgrade = new Upgrade(parent, title, description, iconTitle, iconDescription, icon, color);
             upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount), RowSize * (i / columnsCount)));
             upgrades.Add(title.ToLower(), upgrade);
         }
@@ -78,7 +82,7 @@ public partial class Card : MonoBehaviour
     }
 
     [EditorCools.Button]
-    public void CreateUnits()
+    private (Dictionary<string, Upgrade>, Dictionary<string, Ability>, Dictionary<string, Unit>) CreateUnits()
     {
         DeleteAll();
         var table = File.ReadLines("Assets/Data/Units.csv");
@@ -86,6 +90,9 @@ public partial class Card : MonoBehaviour
         var columnsCount = 7;
         var upgrades = CreateUpgrades();
         var abilities = CreateAbilities();
+        var parent = new GameObject("Units");
+        parent.transform.parent = gameObject.transform;
+        Dictionary<string, Unit> units = new();
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
             var columns = line.Split(",");
@@ -102,11 +109,63 @@ public partial class Card : MonoBehaviour
             var firstUpgrade = firstUpgradeStr != "" ? upgrades[firstUpgradeStr] : null;
             var secondUpgradeStr = GetColumn("Second Upgrade", columns, columnNames).ToLower();
             var secondUpgrade = secondUpgradeStr != "" ? upgrades[secondUpgradeStr] : null;
-            var unit = new Unit(gameObject, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
+            var unit = new Unit(parent, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
             unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * columnsCount, RowSize * (i / columnsCount) - RowSize * 3));
+            units.Add(title, unit);
         }
+        return (upgrades, abilities, units);
     }
 
+    [EditorCools.Button]
+    private void CreateBattlefield()
+    {
+        var (upgrades, abilities, units) = CreateUnits();
+        var table = File.ReadLines("Assets/Data/Map.csv");
+        var columnNames = table.First().Split(",");
+        string basedTitle = "Adinkira 'hene";
+        var rows = 0u;
+        var columnss = 0u;
+        foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
+        {
+            var columns = line.Split(",");
+            var title = GetColumn("Title", columns, columnNames);
+            if (title == basedTitle)
+            {
+                rows = uint.Parse(GetColumn("Rows", columns, columnNames));
+                columnss = uint.Parse(GetColumn("Columns", columns, columnNames));
+                break;
+            }
+        }
+        if (rows == 0u && columnss == 0u)
+        {
+            throw new System.Exception("Battlefield not found: " + basedTitle);
+        }
+        table = File.ReadLines("Assets/Data/Battlefield.csv");
+        columnNames = table.First().Split(",");
+        var island = new GameObject(basedTitle);
+        island.transform.parent = gameObject.transform;
+        foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
+        {
+            var columns = line.Split(",");
+            var title = GetColumn("Title", columns, columnNames);
+            var row = uint.Parse(GetColumn("Row", columns, columnNames));
+            var column = uint.Parse(GetColumn("Column", columns, columnNames));
+            if (title == basedTitle)
+            {
+                var unitOrEffect = GetColumn("Title", columns, columnNames);
+                var side = GetColumn("Side", columns, columnNames) == "ALLY" ? column - columnss / 2 : column + (columnss + 1) / 2;
+                if (units.TryGetValue(unitOrEffect, out Unit unit))
+                {
+                    unit.Card.SetPosition(new Vector2(row * RowSize, side * ColumnSize));
+                }
+                else if (upgrades.TryGetValue(unitOrEffect, out Upgrade effect))
+                {
+                    effect.Card.SetPosition(new Vector2(row * RowSize, side * ColumnSize));
+                }
+            }
+        }
+    }
+    
     public void CreateExampleCard()
     {
         var upgrade = new Upgrade(gameObject, "Poison", "Unit you hit gets poisoned. It takes 3 damage each round.", "Hit", "Poison", "erlenmeyer", FSColor.Blue);
