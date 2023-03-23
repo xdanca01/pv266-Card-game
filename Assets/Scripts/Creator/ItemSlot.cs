@@ -4,7 +4,7 @@ public partial class Card
 {
     public partial class Creator
     {
-        public class Slot<T> where T: Interactable
+        public class ItemSlot<T> where T: Interactable
         {
             private readonly GameObject gameobject;
             private readonly GameObject empty;
@@ -12,7 +12,7 @@ public partial class Card
             private GameObject icon;
             private T interactible;
 
-            public Slot(Creator creator, string reason, GameObject parent, bool pointedUp, Vector2 position)
+            public ItemSlot(Creator creator, string reason, GameObject parent, bool pointedUp, Vector2 position)
             {
                 this.creator = creator;
                 gameobject = creator.FindGameObject(reason, parent);

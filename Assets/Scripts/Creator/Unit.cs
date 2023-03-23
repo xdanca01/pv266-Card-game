@@ -33,6 +33,6 @@ class Unit : IUnit
         upgrades = new Card.Creator.SlotDrawer<Upgrade>(Card, "Upgrades", 2, false, new Vector2(2, -1));
         upgrades.Set(0, firstUpgrade);
         upgrades.Set(1, secondUpgrade);
-    }    
+    }
 }
 

@@ -35,7 +35,7 @@ public partial class Card : MonoBehaviour
     {
         var table = File.ReadLines("Assets/Data/Abilities.csv");
         var columnNames = table.First().Split(",");
-        var columnsCount = 7;
+        var columnsCount = 6;
         var parent = new GameObject("Abilities");
         parent.transform.parent = gameObject.transform;
         Dictionary<string, Ability> abilities = new();
@@ -50,7 +50,7 @@ public partial class Card : MonoBehaviour
             var icon = GetColumn("Icon", columns, columnNames);
             var type = AbilityTypeUtils.Parse(GetColumn("Type", columns, columnNames));
             var ability = new Ability(parent, title, type, percentage, low, high, icon);
-            ability.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * columnsCount, RowSize * (i / columnsCount)));
+            ability.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), RowSize * (i / columnsCount + 1)));
             abilities.Add(title.ToLower(), ability);
         }
         return abilities;
@@ -61,7 +61,7 @@ public partial class Card : MonoBehaviour
     {
         var table = File.ReadLines("Assets/Data/Effects.csv");
         var columnNames = table.First().Split(",");
-        var columnsCount = 4;
+        var columnsCount = 6;
         var parent = new GameObject("Upgrades");
         parent.transform.parent = gameObject.transform;
         Dictionary<string, Upgrade> upgrades = new();
@@ -75,7 +75,7 @@ public partial class Card : MonoBehaviour
             var icon = GetColumn("Icon", columns, columnNames);
             var color = FSColorMethods.Parse(GetColumn("Color", columns, columnNames));
             var upgrade = new Upgrade(parent, title, description, iconTitle, iconDescription, icon, color);
-            upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount), RowSize * (i / columnsCount)));
+            upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount + 1), RowSize * (i / columnsCount + 1)));
             upgrades.Add(title.ToLower(), upgrade);
         }
         return upgrades;
@@ -87,7 +87,7 @@ public partial class Card : MonoBehaviour
         DeleteAll();
         var table = File.ReadLines("Assets/Data/Units.csv");
         var columnNames = table.First().Split(",");
-        var columnsCount = 7;
+        var columnsCount = 6;
         var upgrades = CreateUpgrades();
         var abilities = CreateAbilities();
         var parent = new GameObject("Units");
@@ -110,7 +110,7 @@ public partial class Card : MonoBehaviour
             var secondUpgradeStr = GetColumn("Second Upgrade", columns, columnNames).ToLower();
             var secondUpgrade = secondUpgradeStr != "" ? upgrades[secondUpgradeStr] : null;
             var unit = new Unit(parent, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
-            unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * columnsCount, RowSize * (i / columnsCount) - RowSize * 3));
+            unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), - RowSize * (i / columnsCount + 2)));
             units.Add(title, unit);
         }
         return (upgrades, abilities, units);
@@ -125,6 +125,7 @@ public partial class Card : MonoBehaviour
         string basedTitle = "Adinkira 'hene";
         var rows = 0u;
         var columnss = 0u;
+        //gameobject = creator.FindGameObject(, gameobject);
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
             var columns = line.Split(",");
@@ -140,10 +141,21 @@ public partial class Card : MonoBehaviour
         {
             throw new System.Exception("Battlefield not found: " + basedTitle);
         }
+        var bats = new GameObject("Battlefields");
+        bats.transform.parent = transform;
+        var parent = new GameObject(basedTitle);
+        parent.transform.parent = bats.transform;
+        var cardSlots = new Creator.CardSlot[rows,columnss];
+        for (int row = 0; row < rows; row++)
+        {
+            for (int column = 0; column < columnss; column++)
+            {
+                var verticalLine = column >= columnss / 2 ? 0.5f : 0;
+                cardSlots[row,column] = new Card.Creator.CardSlot("Row " + row + " Column " + column, parent, new Vector2((column + verticalLine + 1) * ColumnSize, -(row + 2) * RowSize));
+            }
+        }
         table = File.ReadLines("Assets/Data/Battlefield.csv");
         columnNames = table.First().Split(",");
-        var island = new GameObject(basedTitle);
-        island.transform.parent = gameObject.transform;
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
             var columns = line.Split(",");
@@ -152,15 +164,15 @@ public partial class Card : MonoBehaviour
             var column = uint.Parse(GetColumn("Column", columns, columnNames));
             if (title == basedTitle)
             {
-                var unitOrEffect = GetColumn("Title", columns, columnNames);
+                var unitOrEffect = GetColumn("Unit or Effect", columns, columnNames);
                 var side = GetColumn("Side", columns, columnNames) == "ALLY" ? column - columnss / 2 : column + (columnss + 1) / 2;
                 if (units.TryGetValue(unitOrEffect, out Unit unit))
                 {
-                    unit.Card.SetPosition(new Vector2(row * RowSize, side * ColumnSize));
+                    //unit.Card.SetPosition(new Vector2(row * RowSize, side * ColumnSize));
                 }
                 else if (upgrades.TryGetValue(unitOrEffect, out Upgrade effect))
                 {
-                    effect.Card.SetPosition(new Vector2(row * RowSize, side * ColumnSize));
+                    //effect.Card.SetPosition(new Vector2(row * RowSize, side * ColumnSize));
                 }
             }
         }

@@ -9,17 +9,17 @@ public partial class Card
     {
         public class SlotDrawer<T> where T : Interactable
         {
-            private readonly List<Slot<T>> list;
+            private readonly List<ItemSlot<T>> list;
             private readonly Creator creator;
 
             public SlotDrawer(Creator creator, string reason, uint count, bool horizontal, Vector2 position)
             {
                 this.creator = creator;
                 var parent = creator.FindGameObject(reason);
-                this.list = new List<Slot<T>>();
+                this.list = new List<ItemSlot<T>>();
                 for (int i = 0; i < count; i++)
                 {
-                    list.Add(new Slot<T>(creator, reason + " " + i, parent, horizontal,
+                    list.Add(new ItemSlot<T>(creator, reason + " " + i, parent, horizontal,
                         horizontal ? new Vector2(position.x + 2 * i, position.y) : new Vector2(position.x, position.y + 2 * i)));
                 }
             }
