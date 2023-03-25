@@ -1,23 +1,27 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class Upgrade : IUpgrade, Interactable
+public class Upgrade : MonoBehaviour, IUpgrade, Interactable
 {
-    public Card.Creator Card { get; }
-    public Card.Creator.Icon Icon { get; }
-    public IEffect Effect { get; }
-    public Func<GameObject, Upgrade> FreshCopy;
+    public Creator Card { get; private set; }
+    public Icon Icon { get; private set; }
+    public IEffect Effect { get; private set; }
+    public Func<GameObject, Upgrade> FreshCopy { get; private set; }
 
-    public Upgrade(GameObject parent, string title, string description, string iconTitle, string iconDescription, string icon, FSColor color)
+    public static Upgrade New(GameObject parent, string title, string description, string iconTitle, string iconDescription, string icon, FSColor color)
     {
-        Card = new Card.Creator(title, parent)
+        var Card = new Creator(title, parent)
             .Background()
             .MiddleTitle()
             .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Icons", icon, color)
             .Description(description, FSFont.Dumbledor);
-        Icon = new Card.Creator.Icon(Card, title, iconTitle, iconDescription, icon, color);
-        Effect = new Poison(); // TODO!
-        FreshCopy = (GameObject parent) => new Upgrade(parent, title, description, iconTitle, iconDescription, icon, color);
+        var upgrade = Card.gameobject.GetOrAddComponent<Upgrade>();
+        upgrade.Card = Card;
+        upgrade.Icon = new Icon(Card, title, iconTitle, iconDescription, icon, color);
+        upgrade.Effect = new Poison(); // TODO!
+        upgrade.FreshCopy = (GameObject parent) => New(parent, title, description, iconTitle, iconDescription, icon, color);
+        return upgrade;
     }
 }
 

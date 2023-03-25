@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface Interactable
 {
-    public Card.Creator.Icon Icon { get; }
-    public Card.Creator Card { get; }
+    public Icon Icon { get; }
+    public Creator Card { get; }
 }

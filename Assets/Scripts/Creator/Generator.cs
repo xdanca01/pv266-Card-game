@@ -5,7 +5,7 @@ using System.Linq;
 using System;
 using UnityEngine;
 
-public partial class Card : MonoBehaviour
+public class Generator : MonoBehaviour
 {
     private static int ColumnSize = 7;
     private static int RowSize = 10;
@@ -50,7 +50,7 @@ public partial class Card : MonoBehaviour
             var high = uint.Parse(GetColumn("High", columns, columnNames));
             var icon = GetColumn("Icon", columns, columnNames);
             var type = AbilityTypeUtils.Parse(GetColumn("Type", columns, columnNames));
-            var ability = new Ability(parent, title, type, percentage, low, high, icon);
+            var ability = Ability.New(parent, title, type, percentage, low, high, icon);
             ability.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), RowSize * (i / columnsCount + 1)));
             abilities.Add(title.ToLower(), ability);
         }
@@ -75,7 +75,7 @@ public partial class Card : MonoBehaviour
             var iconDescription = GetColumn("Icon Description", columns, columnNames);
             var icon = GetColumn("Icon", columns, columnNames);
             var color = FSColorMethods.Parse(GetColumn("Color", columns, columnNames));
-            var upgrade = new Upgrade(parent, title, description, iconTitle, iconDescription, icon, color);
+            var upgrade = Upgrade.New(parent, title, description, iconTitle, iconDescription, icon, color);
             upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount + 1), RowSize * (i / columnsCount + 1)));
             upgrades.Add(title.ToLower(), upgrade);
         }
@@ -110,7 +110,7 @@ public partial class Card : MonoBehaviour
             var firstUpgrade = firstUpgradeStr != "" ? upgrades[firstUpgradeStr] : null;
             var secondUpgradeStr = GetColumn("Second Upgrade", columns, columnNames).ToLower();
             var secondUpgrade = secondUpgradeStr != "" ? upgrades[secondUpgradeStr] : null;
-            var unit = new Unit(parent, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
+            var unit = Unit.New(parent, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
             unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), - RowSize * (i / columnsCount + 2)));
             units.Add(title, unit);
         }
@@ -126,7 +126,6 @@ public partial class Card : MonoBehaviour
         string basedTitle = "Dono";
         var rows = 0u;
         var columnss = 0u;
-        //gameobject = creator.FindGameObject(, gameobject);
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
             var columns = line.Split(",");
@@ -146,7 +145,7 @@ public partial class Card : MonoBehaviour
         bats.transform.parent = transform;
         var parent = new GameObject(basedTitle);
         parent.transform.parent = bats.transform;
-        var cardSlots = new Creator.CardSlot[rows,columnss,2];
+        var cardSlots = new CardSlot[rows,columnss,2];
         Func<uint, uint, bool, Vector2> getPosition = (row, column, friendly) =>
         {
             var verticalLine = friendly ? 0: columnss + 0.5f;
@@ -156,10 +155,10 @@ public partial class Card : MonoBehaviour
         {
             for (uint column = 0; column < columnss; column++)
             {
-                cardSlots[row, column, 1] = new Card.Creator.CardSlot(
+                cardSlots[row, column, 1] = CardSlot.New(
                     "Ally Row " + row + " Column " + column, parent,
                     getPosition(row, column, true));
-                cardSlots[row,column,0] = new Card.Creator.CardSlot(
+                cardSlots[row,column,0] = CardSlot.New(
                     "Enemy Row " + row + " Column " + column, parent,
                     getPosition(row, column, false));
             }
@@ -190,20 +189,18 @@ public partial class Card : MonoBehaviour
     
     public void CreateExampleCard()
     {
-        var upgrade = new Upgrade(gameObject, "Poison", "Unit you hit gets poisoned. It takes 3 damage each round.", "Hit", "Poison", "erlenmeyer", FSColor.Blue);
+        var upgrade = Upgrade.New(gameObject, "Poison", "Unit you hit gets poisoned. It takes 3 damage each round.", "Hit", "Poison", "erlenmeyer", FSColor.Blue);
         upgrade.Card.SetPosition(new Vector2(7, 0));
-        var ability = new Ability(gameObject, "Elven Sword", AbilityType.LightAttack, 70, 9, 6, "broadsword");
+        var ability = Ability.New(gameObject, "Elven Sword", AbilityType.LightAttack, 70, 9, 6, "broadsword");
         ability.Card.SetPosition(new Vector2(14, 0));
 
         for(int row = 0; row < 3; row++)
         {
             for(int column = 0; column < 4; column++)
             {
-                var unit = new Unit(gameObject, "Cavalier " + row + " " + column, 30, ability, null, ability, upgrade, null, "addroran");
+                var unit = Unit.New(gameObject, "Cavalier " + row + " " + column, 30, ability, null, ability, upgrade, null, "addroran");
                 unit.Card.SetPosition(new Vector2(column * ColumnSize - 21, row * RowSize - 10));
             }
         }
     }
-
-
 }
