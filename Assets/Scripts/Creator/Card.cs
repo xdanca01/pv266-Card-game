@@ -149,17 +149,17 @@ public partial class Card : MonoBehaviour
         var cardSlots = new Creator.CardSlot[rows,columnss,2];
         Func<uint, uint, bool, Vector2> getPosition = (row, column, friendly) =>
         {
-            var verticalLine = friendly ? 0 : (columnss + 0.5f);
+            var verticalLine = friendly ? 0: columnss + 0.5f;
             return new Vector2((column + verticalLine + 1) * ColumnSize, -(row + 2) * RowSize);
         };
         for (uint row = 0; row < rows; row++)
         {
             for (uint column = 0; column < columnss; column++)
             {
-                cardSlots[row,column,0] = new Card.Creator.CardSlot(
+                cardSlots[row, column, 1] = new Card.Creator.CardSlot(
                     "Ally Row " + row + " Column " + column, parent,
                     getPosition(row, column, true));
-                cardSlots[row,column,1] = new Card.Creator.CardSlot(
+                cardSlots[row,column,0] = new Card.Creator.CardSlot(
                     "Enemy Row " + row + " Column " + column, parent,
                     getPosition(row, column, false));
             }
@@ -175,14 +175,14 @@ public partial class Card : MonoBehaviour
             if (title == basedTitle)
             {
                 var unitOrEffect = GetColumn("Unit or Effect", columns, columnNames);
-                var friendly = GetColumn("Side", columns, columnNames) == "ALLY";                
+                var friendly = GetColumn("Side", columns, columnNames) == "ALLY" ? 1 : 0;                
                 if (units.TryGetValue(unitOrEffect, out Unit unit))
                 {
-                    unit.FreshCopy(bats).Card.SetPosition(getPosition(row - 1, column - 1, friendly));
+                    cardSlots[row - 1, column - 1, friendly].SetUnit(unit.FreshCopy(bats));
                 }
                 else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
                 {
-                    effect.FreshCopy(bats).Card.SetPosition(getPosition(row - 1, column - 1, friendly));
+                    cardSlots[row - 1, column - 1, friendly].SetUpgrade(effect.FreshCopy(bats));
                 }
                 else
                 {

@@ -3,7 +3,7 @@ using System.Linq;
 using System;
 using UnityEngine;
 
-class Unit : IUnit
+public class Unit : IUnit
 {
     public readonly Card.Creator Card;
     private readonly Card.Creator.Badge hp;

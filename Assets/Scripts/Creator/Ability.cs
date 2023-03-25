@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-class Ability : IAbility, Interactable
+public class Ability : IAbility, Interactable
 {
     public Card.Creator Card { get; }
     public Card.Creator.Icon Icon { get; }

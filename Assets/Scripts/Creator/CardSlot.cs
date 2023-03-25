@@ -12,6 +12,8 @@ public partial class Card
             private GameObject upgrade;
             private readonly Creator creator;
 
+            private GameObject Empty => gameobject.transform.GetChild(0).gameObject;
+
             public CardSlot(string reason, GameObject parent, Vector2 position)
             {
                 this.creator = new Card.Creator(reason, parent).Background();
@@ -20,7 +22,7 @@ public partial class Card
             }
 
             // if icon = null then slot will become empty
-            private void SetUnit(Unit unit)
+            public void SetUnit(Unit unit)
             {
                 if (this.unit != null)
                 {
@@ -28,18 +30,19 @@ public partial class Card
                 }
                 if (unit == null)
                 {
-                    gameobject.SetActive(upgrade == null);
+                    Empty.SetActive(upgrade == null);
                     this.unit = null;
                 }
                 else
                 {
-                    gameobject.SetActive(false);
+                    Empty.SetActive(false);
                     this.unit = unit.Card.gameobject;
+                    this.unit.transform.SetParent(gameobject.transform);
                     this.unit.transform.position = this.gameobject.transform.position;
                 }
             }
 
-            private void SetUpgrade(Upgrade upgrade)
+            public void SetUpgrade(Upgrade upgrade)
             {
                 if (this.upgrade != null)
                 {
@@ -47,13 +50,14 @@ public partial class Card
                 }
                 if (upgrade == null)
                 {
-                    gameobject.SetActive(unit == null);
+                    Empty.SetActive(unit == null);
                     this.upgrade = null;
                 }
                 else
                 {
-                    gameobject.SetActive(false);
+                    Empty.SetActive(false);
                     this.upgrade = upgrade.Card.gameobject;
+                    this.upgrade.transform.SetParent(gameobject.transform);
                     this.upgrade.transform.position = this.gameobject.transform.position;
                 }
             }

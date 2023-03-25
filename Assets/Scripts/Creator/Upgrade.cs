@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-class Upgrade : IUpgrade, Interactable
+public class Upgrade : IUpgrade, Interactable
 {
     public Card.Creator Card { get; }
     public Card.Creator.Icon Icon { get; }
