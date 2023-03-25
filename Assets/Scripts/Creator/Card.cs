@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System;
 using UnityEngine;
 
 public partial class Card : MonoBehaviour
@@ -145,13 +146,22 @@ public partial class Card : MonoBehaviour
         bats.transform.parent = transform;
         var parent = new GameObject(basedTitle);
         parent.transform.parent = bats.transform;
-        var cardSlots = new Creator.CardSlot[rows,columnss];
-        for (int row = 0; row < rows; row++)
+        var cardSlots = new Creator.CardSlot[rows,columnss,2];
+        Func<uint, uint, bool, Vector2> getPosition = (row, column, friendly) =>
         {
-            for (int column = 0; column < columnss; column++)
+            var verticalLine = friendly ? 0 : (columnss + 0.5f);
+            return new Vector2((column + verticalLine + 1) * ColumnSize, -(row + 2) * RowSize);
+        };
+        for (uint row = 0; row < rows; row++)
+        {
+            for (uint column = 0; column < columnss; column++)
             {
-                var verticalLine = column >= columnss / 2 ? 0.5f : 0;
-                cardSlots[row,column] = new Card.Creator.CardSlot("Row " + row + " Column " + column, parent, new Vector2((column + verticalLine + 1) * ColumnSize, -(row + 2) * RowSize));
+                cardSlots[row,column,0] = new Card.Creator.CardSlot(
+                    "Ally Row " + row + " Column " + column, parent,
+                    getPosition(row, column, true));
+                cardSlots[row,column,1] = new Card.Creator.CardSlot(
+                    "Enemy Row " + row + " Column " + column, parent,
+                    getPosition(row, column, false));
             }
         }
         table = File.ReadLines("Assets/Data/Battlefield.csv");
@@ -165,14 +175,19 @@ public partial class Card : MonoBehaviour
             if (title == basedTitle)
             {
                 var unitOrEffect = GetColumn("Unit or Effect", columns, columnNames);
-                var side = GetColumn("Side", columns, columnNames) == "ALLY" ? column - columnss / 2 : column + (columnss + 1) / 2;
+                var friendly = GetColumn("Side", columns, columnNames) == "ALLY";                
                 if (units.TryGetValue(unitOrEffect, out Unit unit))
                 {
-                    //unit.Card.SetPosition(new Vector2(row * RowSize, side * ColumnSize));
+                    unit.FreshCopy(bats).Card.SetPosition(getPosition(row - 1, column - 1, friendly));
                 }
-                else if (upgrades.TryGetValue(unitOrEffect, out Upgrade effect))
+                else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
                 {
-                    //effect.Card.SetPosition(new Vector2(row * RowSize, side * ColumnSize));
+                    effect.FreshCopy(bats).Card.SetPosition(getPosition(row - 1, column - 1, friendly));
+                }
+                else
+                {
+                    Debug.Log(unitOrEffect);
+                    upgrades.Keys.ToList().ForEach(Debug.Log);
                 }
             }
         }

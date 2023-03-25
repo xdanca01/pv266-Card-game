@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 class Upgrade : IUpgrade, Interactable
 {
     public Card.Creator Card { get; }
     public Card.Creator.Icon Icon { get; }
     public IEffect Effect { get; }
+    public Func<GameObject, Upgrade> FreshCopy;
+
     public Upgrade(GameObject parent, string title, string description, string iconTitle, string iconDescription, string icon, FSColor color)
     {
         Card = new Card.Creator(title, parent)
@@ -14,6 +17,7 @@ class Upgrade : IUpgrade, Interactable
             .Description(description, FSFont.Dumbledor);
         Icon = new Card.Creator.Icon(Card, title, iconTitle, iconDescription, icon, color);
         Effect = new Poison(); // TODO!
+        FreshCopy = (GameObject parent) => new Upgrade(parent, title, description, iconTitle, iconDescription, icon, color);
     }
 }
 
