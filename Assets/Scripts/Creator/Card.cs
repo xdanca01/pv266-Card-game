@@ -123,7 +123,7 @@ public partial class Card : MonoBehaviour
         var (upgrades, abilities, units) = CreateUnits();
         var table = File.ReadLines("Assets/Data/Map.csv");
         var columnNames = table.First().Split(",");
-        string basedTitle = "Adinkira 'hene";
+        string basedTitle = "Dono";
         var rows = 0u;
         var columnss = 0u;
         //gameobject = creator.FindGameObject(, gameobject);
@@ -183,11 +183,6 @@ public partial class Card : MonoBehaviour
                 else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
                 {
                     cardSlots[row - 1, column - 1, friendly].SetUpgrade(effect.FreshCopy(bats));
-                }
-                else
-                {
-                    Debug.Log(unitOrEffect);
-                    upgrades.Keys.ToList().ForEach(Debug.Log);
                 }
             }
         }

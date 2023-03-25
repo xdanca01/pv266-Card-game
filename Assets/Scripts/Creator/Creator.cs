@@ -31,17 +31,20 @@ public partial class Card
             return gameobject.name;
         }
 
+
         private GameObject FindGameObject(string name, GameObject parent)
         {
-            var parentName = GetFullName(parent);
-            var fullName = parentName + "/" + name;
-            if (!hiearchy.TryGetValue(fullName, out GameObject gameobject))
+            var transform = parent.transform.Find(name);
+            if (transform == null)
             {
-                gameobject = new GameObject(name, typeof(RectTransform));
+                var gameobject = new GameObject(name, typeof(RectTransform));
                 gameobject.GetComponent<RectTransform>().SetParent(parent.transform, false);
-                hiearchy.Add(fullName, gameobject);
+                return gameobject;
+            } 
+            else
+            {
+                return transform.gameObject;
             }
-            return gameobject;
         }
 
         private GameObject FindGameObject(string name)
