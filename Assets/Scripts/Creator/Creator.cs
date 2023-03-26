@@ -82,7 +82,8 @@ public class Creator
         gameobject = new GameObject();
         gameobject.name = name;
         gameobject.transform.parent = parent.transform;
-        FindComponent<Canvas>(gameobject);
+        var canvas = FindComponent<Canvas>(gameobject);
+        canvas.worldCamera = Camera.main;
         SetRect(gameobject, new Rect(0, 0, cardWidth, cardHeight));
         FindComponent<GraphicRaycaster>(gameobject);
     }

@@ -1,9 +1,9 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ItemSlot : MonoBehaviour
 {
-    private GameObject gameobject;
     private GameObject empty;
     private Creator creator;
     private GameObject icon;
@@ -13,9 +13,11 @@ public class ItemSlot : MonoBehaviour
     {
         var gameobject = creator.FindGameObject(reason, parent);
         var itemSlot = gameobject.AddComponent<ItemSlot>();
-        itemSlot.gameobject = gameobject;
         itemSlot.creator = creator;
         creator.SetRect(gameobject, new Rect(position.x, position.y, 2, 2));
+        var box2D = creator.FindComponent<BoxCollider2D>(gameobject);
+        box2D.size = new Vector2(2, 2);
+        box2D.isTrigger = true;
         itemSlot.empty = creator.Hexagon("Empty", gameobject, FSColor.DarkGray, pointedUp);
         itemSlot.empty.transform.position = new Vector3(position.x, position.y, itemSlot.empty.transform.position.z);
         var child = creator.Hexagon("Child", itemSlot.empty, FSColor.LightGray, pointedUp);
@@ -23,6 +25,12 @@ public class ItemSlot : MonoBehaviour
         child.GetComponent<SpriteRenderer>().sortingOrder = 1;
         return itemSlot;
     }
+
+    public void OnMouseEnter()
+    {
+        Debug.Log("Enter: " + gameObject.name);
+    }
+
     // if icon = null then slot will become empty
     public void Set(Interactable interactible)
     {
@@ -39,7 +47,7 @@ public class ItemSlot : MonoBehaviour
         else
         {
             empty.SetActive(false);
-            icon = interactible.Icon.Create(gameobject);
+            icon = interactible.Icon.Create(gameObject);
             this.interactible = interactible;
         }
     }
