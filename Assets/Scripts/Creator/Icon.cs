@@ -5,7 +5,6 @@ public class Icon
 {
     private readonly Creator creator;
     private readonly string fullTitle;
-    public GameObject gameobject;
     private string title;
     public string Title { get => title; set {
             title = value;
@@ -39,7 +38,7 @@ public class Icon
 
     public GameObject Create(GameObject parent)
     {
-        gameobject = creator.FindGameObject(fullTitle + " Icon", parent);                
+        var gameobject = creator.FindGameObject(fullTitle + " Icon", parent);                
         creator.SetRect(gameobject, parent.GetComponent<RectTransform>().rect);
         creator.MaskedImageGameObject("Image", gameobject, new Rect(0, 0, 2, 2), "Icons", spriteName, color, 0.5f).transform.position = gameobject.transform.position;
         creator.Text("Title", gameobject, title, new Rect(0f, 0.5f, 2f, 1f), FSFont.DeadRevolution);

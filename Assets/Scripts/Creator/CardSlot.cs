@@ -4,20 +4,18 @@ using UnityEngine.UIElements;
 
 public class CardSlot : MonoBehaviour
 {
-    private GameObject gameobject;
     private GameObject unit;
     private GameObject upgrade;
     private Creator creator;
 
-    private GameObject Empty => gameobject.transform.GetChild(0).gameObject;
+    private GameObject Empty => gameObject.transform.GetChild(0).gameObject;
 
     public static CardSlot New(string reason, GameObject parent, Vector2 position)
     {
         var creator = new Creator(reason, parent).Background();
         var cardSlot = creator.gameobject.GetOrAddComponent<CardSlot>();
         cardSlot.creator = creator;
-        cardSlot.gameobject = cardSlot.creator.gameobject;
-        cardSlot.gameobject.transform.position = position;
+        cardSlot.gameObject.transform.position = position;
         return cardSlot;
     }
 
@@ -37,8 +35,8 @@ public class CardSlot : MonoBehaviour
         {
             Empty.SetActive(false);
             this.unit = unit.Card.gameobject;
-            this.unit.transform.SetParent(gameobject.transform);
-            this.unit.transform.position = this.gameobject.transform.position;
+            this.unit.transform.SetParent(gameObject.transform);
+            this.unit.transform.position = this.gameObject.transform.position;
         }
     }
 
@@ -57,8 +55,8 @@ public class CardSlot : MonoBehaviour
         {
             Empty.SetActive(false);
             this.upgrade = upgrade.Card.gameobject;
-            this.upgrade.transform.SetParent(gameobject.transform);
-            this.upgrade.transform.position = this.gameobject.transform.position;
+            this.upgrade.transform.SetParent(gameObject.transform);
+            this.upgrade.transform.position = this.gameObject.transform.position;
         }
     }
 }
