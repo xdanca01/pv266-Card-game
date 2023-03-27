@@ -8,8 +8,8 @@ using System.Linq;
 public class Creator
 {
     public readonly GameObject gameobject;
-    private static readonly int cardWidth = 6;
-    private static readonly int cardHeight = 9;
+    public static readonly int cardWidth = 6;
+    public static readonly int cardHeight = 9;
 
     public void SetRect(GameObject gameobject, Rect rect)
     {

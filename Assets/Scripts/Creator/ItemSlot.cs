@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ItemSlot : MonoBehaviour
+public class ItemSlot : MonoBehaviour, IPointerEnterHandler
 {
     private GameObject empty;
     private Creator creator;
@@ -26,7 +26,7 @@ public class ItemSlot : MonoBehaviour
         return itemSlot;
     }
 
-    public void OnMouseEnter()
+    public void OnPointerEnter(PointerEventData eventData)
     {
         Debug.Log("Enter: " + gameObject.name);
     }

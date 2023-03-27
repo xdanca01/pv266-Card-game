@@ -1,8 +1,9 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
 
-public class CardSlot : MonoBehaviour
+public class CardSlot : MonoBehaviour, IPointerEnterHandler
 {
     private GameObject unit;
     private GameObject upgrade;
@@ -16,7 +17,15 @@ public class CardSlot : MonoBehaviour
         var cardSlot = creator.gameobject.GetOrAddComponent<CardSlot>();
         cardSlot.creator = creator;
         cardSlot.gameObject.transform.position = position;
+        var box2D = creator.gameobject.AddComponent<BoxCollider2D>();
+        box2D.size = new Vector2(Creator.cardWidth + 0.5f, Creator.cardHeight + 0.5f);
+        box2D.isTrigger = true;
         return cardSlot;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        Debug.Log("Enter:" + gameObject.name);
     }
 
     // if icon = null then slot will become empty
