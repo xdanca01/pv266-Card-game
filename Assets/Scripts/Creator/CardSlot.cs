@@ -17,9 +17,6 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler
         var cardSlot = creator.gameobject.GetOrAddComponent<CardSlot>();
         cardSlot.creator = creator;
         cardSlot.gameObject.transform.position = position;
-        var box2D = creator.gameobject.AddComponent<BoxCollider2D>();
-        box2D.size = new Vector2(Creator.cardWidth + 0.5f, Creator.cardHeight + 0.5f);
-        box2D.isTrigger = true;
         return cardSlot;
     }
 

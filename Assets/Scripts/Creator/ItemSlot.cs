@@ -14,9 +14,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler
         var itemSlot = gameobject.AddComponent<ItemSlot>();
         itemSlot.creator = creator;
         creator.SetRect(gameobject, new Rect(position.x, position.y, 2, 2));
-        var box2D = creator.FindComponent<BoxCollider2D>(gameobject);
-        box2D.size = new Vector2(2, 2);
-        box2D.isTrigger = true;
         itemSlot.empty = creator.Hexagon("Empty", gameobject, FSColor.DarkGray, pointedUp);
         itemSlot.empty.transform.position = new Vector3(position.x, position.y, itemSlot.empty.transform.position.z);
         var child = creator.Hexagon("Child", itemSlot.empty, FSColor.LightGray, pointedUp);
