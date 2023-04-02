@@ -12,6 +12,7 @@ public class SlotDrawer : MonoBehaviour
     public static SlotDrawer New(Creator creator, string reason, uint count, bool horizontal, Vector2 position)
     {
         var parent = creator.FindGameObject(reason);
+        creator.FindComponent<RectTransform>(parent).sizeDelta = new Vector2(Creator.cardWidth, Creator.cardHeight);
         var slotDrawer = parent.AddComponent<SlotDrawer>();
         slotDrawer.creator = creator;
         slotDrawer.list = new List<ItemSlot>();
