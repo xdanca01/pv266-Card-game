@@ -4,11 +4,14 @@ using System.IO;
 using System.Linq;
 using System;
 using UnityEngine;
+using UnityEditor;
 
 public class Generator : MonoBehaviour
 {
     public static readonly int ColumnSize = 7;
     public static readonly int RowSize = 10;
+    Battlefield battlefield;
+    bool generated = false;
 
     public static string GetColumn(string columnName, string[] columns, string[] columnNames)
     {
@@ -143,9 +146,10 @@ public class Generator : MonoBehaviour
         }
         var bats = new GameObject("Battlefields");
         bats.transform.parent = transform;
-        Battlefield.New(basedTitle, units, upgrades, bats, rowsCount, columnsCount);
+        battlefield = Battlefield.New(basedTitle, units, upgrades, bats, rowsCount, columnsCount);
+        Debug.Log("created" + battlefield.AllySlots[0, 0].battlefield);
     }
-    
+
     public void CreateExampleCard()
     {
         var upgrade = Upgrade.New(gameObject, "Poison", "Unit you hit gets poisoned. It takes 3 damage each round.", "Hit", "Poison", "erlenmeyer", FSColor.Blue);
@@ -160,6 +164,15 @@ public class Generator : MonoBehaviour
                 var unit = Unit.New(gameObject, "Cavalier " + row + " " + column, 30, ability, null, ability, upgrade, null, "addroran");
                 unit.Card.SetPosition(new Vector2(column * ColumnSize - 21, row * RowSize - 10));
             }
+        }
+    }
+
+    private void Update()
+    {
+        if (EditorApplication.isPlaying && !generated)
+        {
+            CreateBattlefield();
+            generated = true;
         }
     }
 }

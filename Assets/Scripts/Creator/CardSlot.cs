@@ -1,28 +1,42 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using Image = UnityEngine.UI.Image;
 
 public class CardSlot : MonoBehaviour, IPointerEnterHandler
 {
     private GameObject unit;
     private GameObject upgrade;
     private Creator creator;
+    public Battlefield battlefield;
 
     private GameObject Empty => gameObject.transform.GetChild(0).gameObject;
 
-    public static CardSlot New(string reason, GameObject parent, Vector2 position)
+    public static CardSlot New(string reason, GameObject parent, Vector2 position, Battlefield battlefield)
     {
         var creator = new Creator(reason, parent).Background();
-        var cardSlot = creator.gameobject.GetOrAddComponent<CardSlot>();
+        var cardSlot = creator.gameobject.AddComponent<CardSlot>();
         cardSlot.creator = creator;
         cardSlot.gameObject.transform.position = position;
+        cardSlot.battlefield = battlefield;
         return cardSlot;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Enter:" + gameObject.name);
+        battlefield.CardSlotClicked(this);
+    }
+
+    public bool IsEmpty()
+    {
+        return this.unit == null;
+    }
+
+    public void SetColor(FSColor color)
+    {
+        GameObject background = this.unit != null ? this.unit.transform.Find("Background").gameObject : Empty;
+        background.GetComponent<Image>().color = color.ToColor(0.5f);
     }
 
     // if icon = null then slot will become empty

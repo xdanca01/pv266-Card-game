@@ -5,18 +5,20 @@ using System.Linq;
 using System;
 using UnityEngine;
 
-
 public class Battlefield : MonoBehaviour
 {
-    public CardSlot[,,] CardSlots { get; private set; }
+    public CardSlot[,] AllySlots { get; private set; }
+    public CardSlot[,] EnemySlots { get; private set; }
+    private CardSlot cardSlotToMoveTo;
 
     // Start is called before the first frame update
-    public static GameObject New(string title, Dictionary<string, Unit> units, Dictionary<string, Upgrade> upgrades, GameObject parent, uint rowsCount, uint columnsCount)
+    public static Battlefield New(string title, Dictionary<string, Unit> units, Dictionary<string, Upgrade> upgrades, GameObject parent, uint rowsCount, uint columnsCount)
     {
         var gameobject = new GameObject(title);
         var battlefield = gameobject.AddComponent<Battlefield>();
         gameobject.transform.parent = parent.transform;
-        battlefield.CardSlots = new CardSlot[rowsCount, columnsCount, 2];
+        battlefield.AllySlots = new CardSlot[rowsCount, columnsCount];
+        battlefield.EnemySlots = new CardSlot[rowsCount, columnsCount];
         Func<uint, uint, bool, Vector2> getPosition = (row, column, friendly) =>
         {
             var verticalLine = friendly ? 0 : columnsCount + 0.5f;
@@ -26,12 +28,12 @@ public class Battlefield : MonoBehaviour
         {
             for (uint column = 0; column < columnsCount; column++)
             {
-                battlefield.CardSlots[row, column, 1] = CardSlot.New(
+                battlefield.AllySlots[row, column] = CardSlot.New(
                     "Ally Row " + row + " Column " + column, gameobject,
-                    getPosition(row, column, true));
-                battlefield.CardSlots[row, column, 0] = CardSlot.New(
+                    getPosition(row, column, true), battlefield);
+                battlefield.EnemySlots[row, column] = CardSlot.New(
                     "Enemy Row " + row + " Column " + column, gameobject,
-                    getPosition(row, column, false));
+                    getPosition(row, column, false), battlefield);
             }
         }
         var table = File.ReadLines("Assets/Data/Battlefield.csv");
@@ -45,23 +47,28 @@ public class Battlefield : MonoBehaviour
             if (someTitle == title)
             {
                 var unitOrEffect = Generator.GetColumn("Unit or Effect", columns, columnNames);
-                var friendly = Generator.GetColumn("Side", columns, columnNames) == "ALLY" ? 1 : 0;
+                var slots = Generator.GetColumn("Side", columns, columnNames) == "ALLY" ? battlefield.AllySlots : battlefield.EnemySlots;
                 if (units.TryGetValue(unitOrEffect, out Unit unit))
                 {
-                    battlefield.CardSlots[row - 1, column - 1, friendly].SetUnit(unit.FreshCopy(gameobject));
+                    slots[row - 1, column - 1].SetUnit(unit.FreshCopy(gameobject));
                 }
                 else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
                 {
-                    battlefield.CardSlots[row - 1, column - 1, friendly].SetUpgrade(effect.FreshCopy(gameobject));
+                    slots[row - 1, column - 1].SetUpgrade(effect.FreshCopy(gameobject));
                 }
             }
         }
-        return gameobject;
+
+        return battlefield;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void CardSlotClicked(CardSlot slot)
     {
-        
+        if (cardSlotToMoveTo != null)
+        {
+            cardSlotToMoveTo.SetColor(FSColor.Black);
+        }
+        slot.SetColor(FSColor.Green);
+        cardSlotToMoveTo = slot;
     }
 }
