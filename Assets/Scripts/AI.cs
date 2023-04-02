@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class AI : MonoBehaviour
 {
@@ -17,8 +18,8 @@ public class AI : MonoBehaviour
     /// </returns>
     public Dictionary<Unit, Tuple<Unit, Ability>> chooseTargets(IBattlefield bf)
     {
-        Monsters = bf.Monsters;
-        Heroes = bf.Heroes;
+        Monsters = (ReadOnlyCollection<ReadOnlyCollection<IUnit>>)bf.Monsters.AsReadOnlyCollection();
+        Heroes = (ReadOnlyCollection<ReadOnlyCollection<IUnit>>)bf.Heroes.AsReadOnlyCollection();
         Dictionary<Unit, Tuple<Unit, Ability>> actions = new Dictionary<Unit, Tuple<Unit, Ability>>();
         
         //calculate priority
