@@ -7,10 +7,10 @@ using UnityEngine;
 
 public class Generator : MonoBehaviour
 {
-    private static int ColumnSize = 7;
-    private static int RowSize = 10;
+    public static readonly int ColumnSize = 7;
+    public static readonly int RowSize = 10;
 
-    private static string GetColumn(string columnName, string[] columns, string[] columnNames)
+    public static string GetColumn(string columnName, string[] columns, string[] columnNames)
     {
         foreach ((string name, string value) in columnNames.Zip(columns, (a, b) => (a, b)))
         {
@@ -124,67 +124,26 @@ public class Generator : MonoBehaviour
         var table = File.ReadLines("Assets/Data/Map.csv");
         var columnNames = table.First().Split(",");
         string basedTitle = "Dono";
-        var rows = 0u;
-        var columnss = 0u;
+        var rowsCount = 0u;
+        var columnsCount = 0u;
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
             var columns = line.Split(",");
             var title = GetColumn("Title", columns, columnNames);
             if (title == basedTitle)
             {
-                rows = uint.Parse(GetColumn("Rows", columns, columnNames));
-                columnss = uint.Parse(GetColumn("Columns", columns, columnNames));
+                rowsCount = uint.Parse(GetColumn("Rows", columns, columnNames));
+                columnsCount = uint.Parse(GetColumn("Columns", columns, columnNames));
                 break;
             }
         }
-        if (rows == 0u && columnss == 0u)
+        if (rowsCount == 0u && columnsCount == 0u)
         {
             throw new System.Exception("Battlefield not found: " + basedTitle);
         }
         var bats = new GameObject("Battlefields");
         bats.transform.parent = transform;
-        var parent = new GameObject(basedTitle);
-        parent.transform.parent = bats.transform;
-        var cardSlots = new CardSlot[rows,columnss,2];
-        Func<uint, uint, bool, Vector2> getPosition = (row, column, friendly) =>
-        {
-            var verticalLine = friendly ? 0: columnss + 0.5f;
-            return new Vector2((column + verticalLine + 1) * ColumnSize, -(row + 2) * RowSize);
-        };
-        for (uint row = 0; row < rows; row++)
-        {
-            for (uint column = 0; column < columnss; column++)
-            {
-                cardSlots[row, column, 1] = CardSlot.New(
-                    "Ally Row " + row + " Column " + column, parent,
-                    getPosition(row, column, true));
-                cardSlots[row,column,0] = CardSlot.New(
-                    "Enemy Row " + row + " Column " + column, parent,
-                    getPosition(row, column, false));
-            }
-        }
-        table = File.ReadLines("Assets/Data/Battlefield.csv");
-        columnNames = table.First().Split(",");
-        foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
-        {
-            var columns = line.Split(",");
-            var title = GetColumn("Title", columns, columnNames);
-            var row = uint.Parse(GetColumn("Row", columns, columnNames));
-            var column = uint.Parse(GetColumn("Column", columns, columnNames));
-            if (title == basedTitle)
-            {
-                var unitOrEffect = GetColumn("Unit or Effect", columns, columnNames);
-                var friendly = GetColumn("Side", columns, columnNames) == "ALLY" ? 1 : 0;                
-                if (units.TryGetValue(unitOrEffect, out Unit unit))
-                {
-                    cardSlots[row - 1, column - 1, friendly].SetUnit(unit.FreshCopy(bats));
-                }
-                else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
-                {
-                    cardSlots[row - 1, column - 1, friendly].SetUpgrade(effect.FreshCopy(bats));
-                }
-            }
-        }
+        Battlefield.New(basedTitle, units, upgrades, bats, rowsCount, columnsCount);
     }
     
     public void CreateExampleCard()
