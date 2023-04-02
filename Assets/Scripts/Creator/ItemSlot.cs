@@ -1,5 +1,4 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class ItemSlot : MonoBehaviour, IPointerEnterHandler
@@ -22,7 +21,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler
         itemSlot.empty.transform.position = new Vector3(position.x, position.y, itemSlot.empty.transform.position.z);
         var child = creator.Hexagon("Child", itemSlot.empty, FSColor.LightGray, pointedUp);
         child.GetComponent<RectTransform>().localScale = new Vector3(1f / 3f, 1f / 3f, 1f);
-        child.GetComponent<SpriteRenderer>().sortingOrder = 1;
         return itemSlot;
     }
 

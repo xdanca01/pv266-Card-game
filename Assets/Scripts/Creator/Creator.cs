@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEditor;
 using UnityEngine.UI;
-using System.Linq;
 
 public class Creator
 {
@@ -68,12 +66,13 @@ public class Creator
     {
         var hexagon = FindGameObject(reason, parent);
         SetRect(hexagon, new Rect(0f, 0f, 1f, 1f));
-        var spriteRenderer = FindComponent<SpriteRenderer>(hexagon);
-        spriteRenderer.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(
+        var image = FindComponent<Image>(hexagon);
+        image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(
             pointedUp ? "Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/HexagonPointed-TopWithBorder.png"
                         : "Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/HexagonFlat-TopWithBorder.png");
-        spriteRenderer.color = color.ToColor();
-        hexagon.GetComponent<RectTransform>().localScale = new Vector3(2f, 2f, 1f);
+        image.color = color.ToColor();
+        image.preserveAspect = true; 
+        hexagon.GetComponent<RectTransform>().localScale = new Vector3(2f, 2f, 1f);        
         return hexagon;
     }
 
@@ -91,12 +90,12 @@ public class Creator
     public Creator Background()
     {
         var background = FindGameObject("Background");
-        var spriteRenderer = FindComponent<SpriteRenderer>(background);
-        spriteRenderer.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/9-SlicedWithBorder.png");
-        spriteRenderer.drawMode = SpriteDrawMode.Sliced;
-        spriteRenderer.size = new Vector2(cardWidth + 0.4f, cardHeight + 0.4f);
-        spriteRenderer.color = new Color(0f, 0f, 0f, 0.5f);
-        spriteRenderer.sortingOrder = -1;
+        var image = FindComponent<Image>(background);
+        image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/9-Sliced.png");
+        image.type = Image.Type.Sliced;
+        image.pixelsPerUnitMultiplier = 100;
+        FindComponent<RectTransform>(background).sizeDelta = new Vector2(cardWidth + 0.4f, cardHeight + 0.4f);
+        image.color = new Color(0f, 0f, 0f, 0.5f);
         return this;
     }
 
@@ -118,28 +117,21 @@ public class Creator
     {
         // outer mask
         var mask = FindGameObject(reason + " Mask", parent);
-        var spriteMask = FindComponent<SpriteMask>(mask);
-        spriteMask.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/v2/Square.png");
-        var rectTransform = mask.GetComponent<RectTransform>();
-        rectTransform.transform.position = new Vector3(rect.x, rect.y, mask.transform.position.z);
-        rectTransform.localScale = new Vector3(rect.width, rect.height, 1);
-        // inner sprite
+        var maskMask = FindComponent<RectMask2D>(mask);
+        var maskRectTransform = mask.GetComponent<RectTransform>();
+        maskRectTransform.transform.position = new Vector3(rect.x, rect.y, mask.transform.position.z);
+        maskRectTransform.sizeDelta = new Vector2(rect.width, rect.height);
+        // inner image
         var image = FindGameObject(reason, mask);
         SetRect(image, new Rect(0, 0, 1, 1));
-        Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/" + spriteFolder + "/" + spriteName + ".png");
-        bool fitToSmallerSize = true;
-        var spriteRenderer = FindComponent<SpriteRenderer>(image);
-        spriteRenderer.sprite = sprite;
-        spriteRenderer.color = color.ToColor(alpha);
-        spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-        Vector3 spriteSize = spriteRenderer.sprite.bounds.size;
-        Transform transform = image.GetComponent<RectTransform>().transform;
-        float dimension = fitToSmallerSize ? Mathf.Max(spriteSize.x, spriteSize.y) : Mathf.Min(spriteSize.x, spriteSize.y);
-        float maskScaleX = rect.height > rect.width ? rect.width / rect.height : 1;
-        float maskScaleY = rect.width > rect.height ? rect.height / rect.width : 1;
-        float spriteScaleX = spriteSize.y > spriteSize.x ? spriteSize.y / spriteSize.x : spriteSize.x / spriteSize.y;
-        float spriteScaleY = spriteSize.x > spriteSize.y ? spriteSize.x / spriteSize.y : spriteSize.y / spriteSize.x;
-        transform.localScale = new Vector3(spriteScaleX / (dimension * maskScaleX), spriteScaleY / (dimension * maskScaleY), 1);
+        Sprite imageSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/" + spriteFolder + "/" + spriteName + ".png");
+        var imageRenderer = FindComponent<Image>(image);
+        imageRenderer.sprite = imageSprite;
+        imageRenderer.color = color.ToColor(alpha);
+        imageRenderer.preserveAspect = true;
+        RectTransform imageRect = image.GetComponent<RectTransform>();
+        Vector3 spriteSize = imageSprite.bounds.size;
+        imageRect.sizeDelta = spriteSize.x > spriteSize.y ? new Vector2(spriteSize.x, rect.height) : new Vector2(rect.width, spriteSize.y);
         return mask;
     }
 
