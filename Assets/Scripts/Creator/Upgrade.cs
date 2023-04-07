@@ -21,6 +21,7 @@ public class Upgrade : MonoBehaviour, IUpgrade, Interactable
         upgrade.Icon = Icon.New(Card, Card.gameobject, iconTitle, iconDescription, icon, color);
         upgrade.Effect = new Poison(); // TODO!
         upgrade.FreshCopy = (GameObject parent) => New(parent, title, description, iconTitle, iconDescription, icon, color);
+        upgrade.Icon.gameObject.SetActive(false);
         return upgrade;
     }
 }

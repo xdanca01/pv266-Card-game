@@ -38,12 +38,12 @@ public abstract class SlotDrawer<I, S, D> : MonoBehaviour where I: Interactable 
         {
             throw new System.Exception("Slot drawers does not have " + nth + " slots but only " + list.Count);
         }
-        return (I)list[(int)nth].Get();
+        return list[(int)nth].Get();
     }
 
     public List<I> GetAll()
     {
-        return list.Select(i => (I) i.Get()).ToList();
+        return list.Select(i => i.Get()).ToList();
     }
 }
     

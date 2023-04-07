@@ -7,9 +7,10 @@ using System;
 public class Creator
 {
     public readonly GameObject gameobject;
-    public static readonly int cardWidth = 6;
-    public static readonly int cardHeight = 9;
-
+    public static readonly float cardWidth = 6f;
+    public static readonly float cardHeight = 9f;
+    public static readonly float cardWidthWithBorder = cardWidth + 0.4f;
+    public static readonly float cardHeightWithBorder = cardHeight + 0.4f;
     public void SetRect(GameObject gameobject, Rect rect)
     {
         var transform = gameobject.GetComponent<RectTransform>();
@@ -101,7 +102,7 @@ public class Creator
         image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/9-Sliced.png");
         image.type = Image.Type.Sliced;
         image.pixelsPerUnitMultiplier = 100;
-        FindComponent<RectTransform>(background).sizeDelta = new Vector2(cardWidth + 0.4f, cardHeight + 0.4f);
+        FindComponent<RectTransform>(background).sizeDelta = new Vector2(cardWidthWithBorder, cardHeightWithBorder);
         image.color = new Color(0f, 0f, 0f, 0.5f);
         return this;
     }

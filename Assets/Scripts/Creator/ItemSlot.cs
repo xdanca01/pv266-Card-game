@@ -6,7 +6,7 @@ public abstract class ItemSlot<I, S> : MonoBehaviour where I: Interactable where
     private GameObject empty;
     private Creator creator;
     protected Icon icon;
-    private I interactible;
+    protected I interactible;
 
     public static S New(Creator creator, string reason, GameObject parent, bool pointedUp, Vector2 position)
     {
