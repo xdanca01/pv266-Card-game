@@ -1,15 +1,12 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System;
 using UnityEngine;
 
 public class Battlefield : MonoBehaviour
 {
     public CardSlot[,] AllySlots { get; private set; }
     public CardSlot[,] EnemySlots { get; private set; }
-    private CardSlot cardSlotToMoveTo;
 
     // Start is called before the first frame update
     public static Battlefield New(string title, Dictionary<string, Unit> units,
@@ -20,13 +17,9 @@ public class Battlefield : MonoBehaviour
         gameobject.transform.parent = parent.transform;
         battlefield.AllySlots = new CardSlot[rowsCount, columnsCount];
         battlefield.EnemySlots = new CardSlot[rowsCount, columnsCount];
-        Func<uint, uint, bool, Vector2> GetPosition = (row, column, friendly) =>
-        {
-            var verticalLine = friendly ? 0 : columnsCount + 0.5f;
-            return new Vector2(
-                (column + verticalLine + 1) * Generator.ColumnSize, 
-                -(row + 2) * Generator.RowSize);
-        };
+        Vector2 GetPosition(uint row, uint column, bool friendly) => new(
+            (column + (float)(friendly ? 0 : columnsCount + 0.5f) + 1) * Generator.ColumnSize,
+            -(row + 2) * Generator.RowSize);
         for (uint row = 0; row < rowsCount; row++)
         {
             for (uint column = 0; column < columnsCount; column++)
