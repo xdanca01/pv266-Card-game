@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 
-public class CardSlot : MonoBehaviour, IPointerEnterHandler
+public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private GameObject unit;
     private GameObject upgrade;
@@ -25,7 +25,12 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        battlefield.CardSlotClicked(this);
+        SetColor(FSColor.Green);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        SetColor(FSColor.Black);
     }
 
     public bool IsEmpty()

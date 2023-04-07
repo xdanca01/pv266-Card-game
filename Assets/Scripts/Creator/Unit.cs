@@ -2,7 +2,6 @@
 using System.Linq;
 using System;
 using UnityEngine;
-using Unity.VisualScripting;
 
 public class Unit : MonoBehaviour, IUnit
 {

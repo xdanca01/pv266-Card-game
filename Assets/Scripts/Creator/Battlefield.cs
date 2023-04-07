@@ -68,11 +68,6 @@ public class Battlefield : MonoBehaviour
 
     public void CardSlotClicked(CardSlot slot)
     {
-        if (cardSlotToMoveTo != null)
-        {
-            cardSlotToMoveTo.SetColor(FSColor.Black);
-        }
-        slot.SetColor(FSColor.Green);
-        cardSlotToMoveTo = slot;
+        Debug.Log(slot);
     }
 }

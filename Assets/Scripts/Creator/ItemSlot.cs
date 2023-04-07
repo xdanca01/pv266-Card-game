@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ItemSlot : MonoBehaviour, IPointerEnterHandler
+public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private GameObject empty;
     private Creator creator;
@@ -23,7 +23,18 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Enter: " + gameObject.name);
+        if (this.icon != null)
+        {
+            icon.TextColor = FSColor.Green;
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (this.icon != null)
+        {
+            icon.TextColor = FSColor.White;
+        }
     }
 
     // if icon = null then slot will become empty

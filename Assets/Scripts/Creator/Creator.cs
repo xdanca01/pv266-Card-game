@@ -47,7 +47,7 @@ public class Creator
         return component;
     }
 
-    public Creator Text(string purpose, GameObject parent, string text, Rect rect, FSFont font)
+    public Creator Text(string purpose, GameObject parent, string text, Rect rect, FSFont font, FSColor color)
     {
         var textGO = FindGameObject(purpose, parent);
         SetRect(textGO, rect);
@@ -58,9 +58,15 @@ public class Creator
         TMPro.fontSizeMax = 100;
         TMPro.fontSizeMin = 0;
         TMPro.font = font.ToAsset();
+        TMPro.color = color.ToColor();
         TMPro.horizontalAlignment = HorizontalAlignmentOptions.Center;
         TMPro.verticalAlignment = VerticalAlignmentOptions.Middle;
         return this;
+    }
+
+    public Creator Text(string purpose, GameObject parent, string text, Rect rect, FSFont font)
+    {
+        return Text(purpose, parent, text, rect, font, FSColor.White);
     }
 
     public GameObject Hexagon(string reason, GameObject parent, FSColor color, bool pointedUp)
