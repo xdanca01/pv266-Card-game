@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public abstract class ItemSlot<I, S> : MonoBehaviour where I: Interactable where S: ItemSlot<I, S>
 {
     private GameObject empty;
     private Creator creator;
-    private Icon icon;
-    private Interactable interactible;
+    protected Icon icon;
+    private I interactible;
 
-    public static ItemSlot New(Creator creator, string reason, GameObject parent, bool pointedUp, Vector2 position)
+    public static S New(Creator creator, string reason, GameObject parent, bool pointedUp, Vector2 position)
     {
         var gameobject = creator.FindGameObject(reason, parent);
-        var itemSlot = gameobject.AddComponent<ItemSlot>();
+        var itemSlot = gameobject.AddComponent<S>();
         itemSlot.creator = creator;
         creator.SetRect(gameobject, new Rect(position.x, position.y, 2, 2));
         itemSlot.empty = creator.Hexagon("Empty", gameobject, FSColor.DarkGray, pointedUp);
@@ -21,24 +21,8 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         return itemSlot;
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (this.icon != null)
-        {
-            icon.TextColor = FSColor.Green;
-        }
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (this.icon != null)
-        {
-            icon.TextColor = FSColor.White;
-        }
-    }
-
     // if icon = null then slot will become empty
-    public void Set(Interactable interactible)
+    public void Set(I interactible)
     {
         if (this.icon != null)
         {
@@ -57,7 +41,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             this.interactible = interactible;
         }
     }
-    public Interactable Get()
+    public I Get()
     {
         return interactible;
     }

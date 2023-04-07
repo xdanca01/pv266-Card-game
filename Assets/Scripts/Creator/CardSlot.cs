@@ -9,7 +9,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private GameObject unit;
     private GameObject upgrade;
     private Creator creator;
-    public Battlefield battlefield;
+    private Battlefield battlefield;
 
     private GameObject Empty => gameObject.transform.GetChild(0).gameObject;
 

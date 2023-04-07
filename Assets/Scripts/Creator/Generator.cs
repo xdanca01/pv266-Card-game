@@ -147,7 +147,6 @@ public class Generator : MonoBehaviour
         var bats = new GameObject("Battlefields");
         bats.transform.parent = transform;
         battlefield = Battlefield.New(basedTitle, units, upgrades, bats, rowsCount, columnsCount);
-        Debug.Log("created" + battlefield.AllySlots[0, 0].battlefield);
     }
 
     public void CreateExampleCard()

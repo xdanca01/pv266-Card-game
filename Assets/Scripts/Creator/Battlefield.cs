@@ -8,7 +8,6 @@ public class Battlefield : MonoBehaviour
     public CardSlot[,] AllySlots { get; private set; }
     public CardSlot[,] EnemySlots { get; private set; }
 
-    // Start is called before the first frame update
     public static Battlefield New(string title, Dictionary<string, Unit> units,
         Dictionary<string, Upgrade> upgrades, GameObject parent, uint rowsCount, uint columnsCount)
     {
@@ -55,7 +54,6 @@ public class Battlefield : MonoBehaviour
                 }
             }
         }
-
         return battlefield;
     }
 
