@@ -5,7 +5,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler
 {
     private GameObject empty;
     private Creator creator;
-    private GameObject icon;
+    private Icon icon;
     private Interactable interactible;
 
     public static ItemSlot New(Creator creator, string reason, GameObject parent, bool pointedUp, Vector2 position)
@@ -42,7 +42,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler
         else
         {
             empty.SetActive(false);
-            icon = interactible.Icon.Create(gameObject);
+            icon = interactible.Icon.FreshCopy(gameObject);
             this.interactible = interactible;
         }
     }

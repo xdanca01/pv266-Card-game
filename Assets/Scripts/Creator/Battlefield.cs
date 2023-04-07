@@ -12,17 +12,20 @@ public class Battlefield : MonoBehaviour
     private CardSlot cardSlotToMoveTo;
 
     // Start is called before the first frame update
-    public static Battlefield New(string title, Dictionary<string, Unit> units, Dictionary<string, Upgrade> upgrades, GameObject parent, uint rowsCount, uint columnsCount)
+    public static Battlefield New(string title, Dictionary<string, Unit> units,
+        Dictionary<string, Upgrade> upgrades, GameObject parent, uint rowsCount, uint columnsCount)
     {
         var gameobject = new GameObject(title);
         var battlefield = gameobject.AddComponent<Battlefield>();
         gameobject.transform.parent = parent.transform;
         battlefield.AllySlots = new CardSlot[rowsCount, columnsCount];
         battlefield.EnemySlots = new CardSlot[rowsCount, columnsCount];
-        Func<uint, uint, bool, Vector2> getPosition = (row, column, friendly) =>
+        Func<uint, uint, bool, Vector2> GetPosition = (row, column, friendly) =>
         {
             var verticalLine = friendly ? 0 : columnsCount + 0.5f;
-            return new Vector2((column + verticalLine + 1) * Generator.ColumnSize, -(row + 2) * Generator.RowSize);
+            return new Vector2(
+                (column + verticalLine + 1) * Generator.ColumnSize, 
+                -(row + 2) * Generator.RowSize);
         };
         for (uint row = 0; row < rowsCount; row++)
         {
@@ -30,10 +33,10 @@ public class Battlefield : MonoBehaviour
             {
                 battlefield.AllySlots[row, column] = CardSlot.New(
                     "Ally Row " + row + " Column " + column, gameobject,
-                    getPosition(row, column, true), battlefield);
+                    GetPosition(row, column, true), battlefield);
                 battlefield.EnemySlots[row, column] = CardSlot.New(
                     "Enemy Row " + row + " Column " + column, gameobject,
-                    getPosition(row, column, false), battlefield);
+                    GetPosition(row, column, false), battlefield);
             }
         }
         var table = File.ReadLines("Assets/Data/Battlefield.csv");
@@ -47,7 +50,8 @@ public class Battlefield : MonoBehaviour
             if (someTitle == title)
             {
                 var unitOrEffect = Generator.GetColumn("Unit or Effect", columns, columnNames);
-                var slots = Generator.GetColumn("Side", columns, columnNames) == "ALLY" ? battlefield.AllySlots : battlefield.EnemySlots;
+                var slots = Generator.GetColumn("Side", columns, columnNames) == "ALLY"
+                    ? battlefield.AllySlots : battlefield.EnemySlots;
                 if (units.TryGetValue(unitOrEffect, out Unit unit))
                 {
                     slots[row - 1, column - 1].SetUnit(unit.FreshCopy(gameobject));

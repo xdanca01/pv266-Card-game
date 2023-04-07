@@ -18,7 +18,7 @@ public class Upgrade : MonoBehaviour, IUpgrade, Interactable
             .Description(description, FSFont.Dumbledor);
         var upgrade = Card.gameobject.GetOrAddComponent<Upgrade>();
         upgrade.Card = Card;
-        upgrade.Icon = new Icon(Card, title, iconTitle, iconDescription, icon, color);
+        upgrade.Icon = Icon.New(Card, Card.gameobject, iconTitle, iconDescription, icon, color);
         upgrade.Effect = new Poison(); // TODO!
         upgrade.FreshCopy = (GameObject parent) => New(parent, title, description, iconTitle, iconDescription, icon, color);
         return upgrade;
