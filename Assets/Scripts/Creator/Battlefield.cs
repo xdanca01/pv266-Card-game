@@ -3,10 +3,24 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
+using System.ComponentModel;
+
+namespace System.Runtime.CompilerServices
+{
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    internal class IsExternalInit { }
+}
+
 public class Battlefield : MonoBehaviour
 {
     public CardSlot[,] AllySlots { get; private set; }
     public CardSlot[,] EnemySlots { get; private set; }
+
+    private record CardPosition {
+        public bool Ally { get; init; }
+        public uint Row { get; init; }
+        public uint Column { get; init; }
+    }
 
     public static Battlefield New(string title, Dictionary<string, Unit> units,
         Dictionary<string, Upgrade> upgrades, GameObject parent, uint rowsCount, uint columnsCount)
@@ -57,8 +71,88 @@ public class Battlefield : MonoBehaviour
         return battlefield;
     }
 
-    public void CardSlotClicked(CardSlot slot)
+    private CardSlot[,] Slots(bool ally) => ally ? AllySlots : EnemySlots;
+    private CardSlot Get(CardPosition position) => Slots(position.Ally)[position.Row, position.Column];
+
+    private CardPosition FindPosition(CardSlot of)
     {
-        Debug.Log(slot);
+        for (uint side = 0; side < 2; side++)
+        {
+            var ally = side == 0;
+            var slots = Slots(ally);
+            for (uint row = 0; row < slots.GetLength(0); row++)
+            {
+                for (uint column = 0; column < slots.GetLength(1); column++)
+                {
+                    if (slots[row, column] == of)
+                    {
+                        return new CardPosition{ Ally=ally, Row=row, Column=column};
+                    }
+                }
+            }
+        }
+        throw new System.Exception("FindPosition found nothing");
     }
+
+    public interface CardAction
+    {
+        void Execute();
+        bool Assign(CardSlot target);
+        IReadOnlyList<CardSlot> PossibleTargets();
+    }
+
+    public class Move : CardAction
+    {
+        CardSlot executor;
+        CardSlot target;
+        Battlefield battlefield;
+
+        public Move(Battlefield battlefield, CardSlot executor)
+        {
+            this.battlefield = battlefield;
+            this.executor = executor;
+        }
+
+        public IReadOnlyList<CardSlot> PossibleTargets()
+        {
+            var executorPosition = battlefield.FindPosition(this.executor);
+            var slots = battlefield.Slots(executorPosition.Ally);
+            List<CardSlot> list = new();
+            foreach (var cardSlot in slots) 
+            {
+                if (cardSlot != this.executor)
+                {
+                    list.Add(cardSlot);
+                }                
+            }
+            return list;
+        }
+
+        public bool Assign(CardSlot target)
+        {
+            if (!PossibleTargets().Contains(target))
+            {
+                return false;
+            }
+            this.target = target;
+            return true;
+        }
+
+        public void Execute()
+        {
+            var executorUnit = executor.GetUnit();
+            executor.SetUnit(target.GetUnit());
+            target.SetUnit(executorUnit);            
+        }
+    }
+
+    //class AbilityAction : CardAction
+    //{
+    //    Ability ability;
+    //    CardSlot target;
+    //}
+
+
+    Dictionary<CardSlot, CardAction> actions;
+
 }

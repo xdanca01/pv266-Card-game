@@ -31,7 +31,6 @@ public class UpgradeSlot : ItemSlot<Upgrade, UpgradeSlot>, IPointerMoveHandler, 
         {
             transformed.y -= objectHeight;
         }
-        Debug.Log((transformed.x + objectWidth) + " " + screenWidth);
         return transformed + camPos;
     }
 
