@@ -103,12 +103,14 @@ public class Battlefield : MonoBehaviour
         protected CardSlot executor;
         protected CardSlot target;
         protected Battlefield battlefield;
+        public FSColor color { get; private set; }
 
-        public CardAction(Battlefield battlefield, CardSlot executor)
+        public CardAction(Battlefield battlefield, CardSlot executor, FSColor color)
         {
             this.battlefield = battlefield;
             this.executor = executor;
             battlefield.actions[this.executor] = this;
+            this.color = color;
         }
 
         public CardSlot GetExecutor()
@@ -133,7 +135,7 @@ public class Battlefield : MonoBehaviour
 
     public class Move : CardAction
     {
-        public Move(Battlefield battlefield, CardSlot executor) : base(battlefield, executor) { }
+        public Move(Battlefield battlefield, CardSlot executor) : base(battlefield, executor, FSColor.Blue) { }
 
         public override IReadOnlyList<CardSlot> PossibleTargets()
         {
@@ -162,7 +164,7 @@ public class Battlefield : MonoBehaviour
     {
         Ability ability;
 
-        public AbilityAction(Battlefield battlefield, CardSlot executor, Ability ability) : base(battlefield, executor)
+        public AbilityAction(Battlefield battlefield, CardSlot executor, Ability ability) : base(battlefield, executor, ability.Type.ToFSColor())
         {
             this.ability = ability;
         }

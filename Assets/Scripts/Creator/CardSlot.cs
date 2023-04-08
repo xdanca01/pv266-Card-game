@@ -66,7 +66,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             var executor = actionInProgress.GetExecutor();
             executor.actionCommited = actionInProgress;
             var from = executor.gameObject.transform.position;
-            executor.creator.Line("Action", from, transform.position, FSColor.White);
+            executor.creator.Line("Action", from, transform.position, actionInProgress.color);
             foreach (var target in actionInProgress.PossibleTargets())
             {
                 target.RemoveFlag(CardFlag.Highlighted);
