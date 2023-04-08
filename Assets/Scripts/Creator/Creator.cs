@@ -3,6 +3,8 @@ using TMPro;
 using UnityEditor;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class Creator
 {
@@ -152,5 +154,21 @@ public class Creator
     public void SetPosition(Vector2 position)
     {
         gameobject.transform.position = new Vector3(position.x, position.y, gameobject.transform.position.z);
+    }
+
+    public LineRenderer Line(string reason, Vector3 from, Vector3 to)
+    {
+        GameObject go = FindGameObject(reason);
+        LineRenderer line = FindComponent<LineRenderer>(go);
+        line.startWidth = 0.1f;
+        line.endWidth = 0.1f;
+        line.startColor = FSColor.DarkGray.ToColor();
+        line.endColor = FSColor.White.ToColor();
+        line.SetPositions(new Vector3[]{ from, to});
+        line.useWorldSpace = true;
+        line.material = new Material(Shader.Find("Sprites/Default"));
+        line.sortingOrder = 1;
+
+        return line;
     }
 }

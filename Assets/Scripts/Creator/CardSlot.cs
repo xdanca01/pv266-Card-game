@@ -17,7 +17,8 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private Upgrade upgrade;
     private Creator creator;
     private Battlefield battlefield;
-    private static Battlefield.CardAction action; // static is important, since we can assign only one action at any time
+    private static Battlefield.CardAction actionInProgress;
+    private Battlefield.CardAction actionCommited;
     private CardFlag flag;
 
     private GameObject Empty => gameObject.transform.GetChild(0).gameObject;
@@ -49,21 +50,25 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             return;
         }
-        if (action == default)
+        if (actionInProgress == default)
         {
-            action = new Battlefield.Move(battlefield, this);
-            foreach (var target in action.PossibleTargets())
+            actionInProgress = new Battlefield.Move(battlefield, this);
+            foreach (var target in actionInProgress.PossibleTargets())
             {
                 target.AddFlag(CardFlag.Highlighted);
             }
         }
         else
-        {            
-            foreach (var target in action.PossibleTargets())
+        {
+            actionInProgress.GetExecutor().actionCommited = actionInProgress;
+            actionInProgress.GetExecutor().creator.Line(
+                "Action", actionInProgress.GetExecutor().gameObject.transform.position, 
+                transform.position);            
+            foreach (var target in actionInProgress.PossibleTargets())
             {
                 target.RemoveFlag(CardFlag.Highlighted);
             }
-            action = default;
+            actionInProgress = default;
         }
     }
 

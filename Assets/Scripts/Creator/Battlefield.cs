@@ -96,6 +96,8 @@ public class Battlefield : MonoBehaviour
 
     public interface CardAction
     {
+        CardSlot GetExecutor();
+
         void Execute();
         bool Assign(CardSlot target);
         IReadOnlyList<CardSlot> PossibleTargets();
@@ -111,6 +113,11 @@ public class Battlefield : MonoBehaviour
         {
             this.battlefield = battlefield;
             this.executor = executor;
+        }
+
+        public CardSlot GetExecutor()
+        {
+            return this.executor;
         }
 
         public IReadOnlyList<CardSlot> PossibleTargets()
