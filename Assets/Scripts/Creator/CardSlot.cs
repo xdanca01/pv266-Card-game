@@ -118,6 +118,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             Empty.SetActive(false);
             this.unit = unit;
+            this.unit.abilities.SetCardSlot(this);
             this.unit.transform.SetParent(gameObject.transform);
             this.unit.transform.position = this.gameObject.transform.position;
         }

@@ -149,23 +149,6 @@ public class Generator : MonoBehaviour
         battlefield = Battlefield.New(basedTitle, units, upgrades, bats, rowsCount, columnsCount);
     }
 
-    public void CreateExampleCard()
-    {
-        var upgrade = Upgrade.New(gameObject, "Poison", "Unit you hit gets poisoned. It takes 3 damage each round.", "Hit", "Poison", "erlenmeyer", FSColor.Blue);
-        upgrade.Card.SetPosition(new Vector2(7, 0));
-        var ability = Ability.New(gameObject, "Elven Sword", AbilityType.LightAttack, 70, 9, 6, "broadsword");
-        ability.Card.SetPosition(new Vector2(14, 0));
-
-        for(int row = 0; row < 3; row++)
-        {
-            for(int column = 0; column < 4; column++)
-            {
-                var unit = Unit.New(gameObject, "Cavalier " + row + " " + column, 30, ability, null, ability, upgrade, null, "addroran");
-                unit.Card.SetPosition(new Vector2(column * ColumnSize - 21, row * RowSize - 10));
-            }
-        }
-    }
-
     private void Update()
     {
         if (EditorApplication.isPlaying && !generated)

@@ -6,8 +6,9 @@ using System.Linq;
 
 public abstract class SlotDrawer<I, S, D> : MonoBehaviour where I: Interactable where S: ItemSlot<I, S> where D: SlotDrawer<I, S, D>
 {
-    private List<S> list;
+    protected List<S> list;
     private Creator creator;
+
     public static D New(Creator creator, string reason, uint count, bool horizontal, Vector2 position)
     {
         var parent = creator.FindGameObject(reason);
@@ -46,4 +47,3 @@ public abstract class SlotDrawer<I, S, D> : MonoBehaviour where I: Interactable 
         return list.Select(i => i.Get()).ToList();
     }
 }
-    
