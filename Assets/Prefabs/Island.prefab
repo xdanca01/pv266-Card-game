@@ -31,7 +31,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1015049870132985283}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -107,7 +107,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1015049870132985283}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -152,6 +152,82 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2307675494080331697
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8976035029679654045}
+  - component: {fileID: 9152238982301914427}
+  - component: {fileID: 7580514353462305843}
+  m_Layer: 5
+  m_Name: ActiveCircle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &8976035029679654045
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2307675494080331697}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.08, y: 0.08, z: 0.08}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 1015049870132985283}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 20, y: 20}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &9152238982301914427
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2307675494080331697}
+  m_CullTransparentMesh: 1
+--- !u!114 &7580514353462305843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2307675494080331697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.28202227, g: 1, b: 0.1273585, a: 0.392}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &7352339162415531972
 GameObject:
   m_ObjectHideFlags: 0
@@ -183,7 +259,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1015049870132985283}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -255,7 +331,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 1024
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -320,6 +396,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8976035029679654045}
   - {fileID: 5948757246907986081}
   - {fileID: 5848764252986031823}
   - {fileID: 6772864123118061718}
@@ -644,7 +721,7 @@ GameObject:
   - component: {fileID: 8865850457980537217}
   m_Layer: 5
   m_Name: Island
-  m_TagString: Untagged
+  m_TagString: Island
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -678,9 +755,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 838bc993ec56d42a198814281f074c6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IslandName: 
   _generateRandomVisual: 1
   _islandShape: {fileID: 21300000, guid: a8f4b3f6c7a184a49a46715661fb528e, type: 3}
   _islandTexture: {fileID: 21300000, guid: e27534f26f8f2412f9812b35f83f1fad, type: 3}
+  _islandType: {fileID: 545141256355175359}
   _allShapes:
   - {fileID: 21300000, guid: b5717249148b1da48b1dfa07a5bfaada, type: 3}
   - {fileID: 21300000, guid: 25e01e93421d02d44a9f55284768cbf4, type: 3}
@@ -717,6 +796,7 @@ MonoBehaviour:
   _lineRendererPrefab: {fileID: 7686577462508489427, guid: 4dc37e757d3ba473ab2be6feb61b4036, type: 3}
   _nextIslands: []
   _isladInfo: {fileID: 7950111407040769846}
+  _activeCircle: {fileID: 2307675494080331697}
   _islandNames: {fileID: 11400000, guid: ad24041be80194dae971813973b143ac, type: 2}
   _islandNameText: {fileID: 8348941902693590175}
 --- !u!1001 &1309943118698727434
@@ -734,6 +814,70 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_Colors.m_NormalColor.b
+      value: 0.740566
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_Colors.m_NormalColor.g
+      value: 0.740566
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_Colors.m_NormalColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_Colors.m_ColorMultiplier
+      value: 1.52
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.b
+      value: 0.46226418
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.g
+      value: 0.46226418
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.r
+      value: 0.46226418
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8865850457980537217}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StartBattle
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: IslandController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: IslandController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378696628061938, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969378698032502543, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
+      propertyPath: m_text
+      value: Go
+      objectReference: {fileID: 0}
     - target: {fileID: 8969378698288654140, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
       propertyPath: m_Name
       value: PopUpLandFight
@@ -744,7 +888,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8969378698288654143, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8969378698288654143, guid: 95a005f7ca7602f4f93ea8bf4e2e59f0, type: 3}
       propertyPath: m_LocalPosition.x
