@@ -17,8 +17,8 @@ public class AI : MonoBehaviour
     /// </returns>
     public Dictionary<Unit, Tuple<Unit, Ability>> chooseTargets(IBattlefield bf)
     {
-        Monsters = bf.Monsters;
-        Heroes = bf.Heroes;
+        //Monsters = bf.Monsters;
+        //Heroes = bf.Heroes;
         Dictionary<Unit, Tuple<Unit, Ability>> actions = new Dictionary<Unit, Tuple<Unit, Ability>>();
         
         //calculate priority

@@ -8,13 +8,16 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler ,IPointerClickHandler
 {
     public bool ActiveIsland { get; set; }
     public bool IslandCanBeNext { get; set; }
+    [SerializeField] public String IslandName;
     [SerializeField] private bool _generateRandomVisual;
     [SerializeField] private Sprite _islandShape;
     [SerializeField] private Sprite _islandTexture;
+
+    [SerializeField] private Image _islandType;
 
     [SerializeField] private Sprite[] _allShapes;
     [SerializeField] private Sprite[] _allTextures;
@@ -24,10 +27,13 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] private IslandController[] _nextIslands;
 
     [SerializeField] private GameObject _isladInfo;
+    [SerializeField] private GameObject _activeCircle;
 
     [SerializeField] private StringDataSO _islandNames;
 
     [SerializeField] private TextMeshProUGUI _islandNameText;
+
+    private GameObject _goButton;
     
     private LineRenderer[] _nextIsladsLineRenderer;
 
@@ -37,11 +43,12 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     private void Awake()
     {
-          
         _islandShapeImage = transform.GetChild(0).GetComponent<SpriteRenderer>();
         _islandTextureImage = transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
 
         _spriteMask = transform.GetChild(0).GetComponent<SpriteMask>();
+        var GoButton = this.transform.GetComponentInChildren<Button>(true);
+        _goButton = GoButton.gameObject;
     }
     private void OnEnable()
     {
@@ -57,6 +64,8 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
     {
         if (ActiveIsland)
         {
+            showButtonInChild();
+            _activeCircle.SetActive(true);
             foreach (var lineRenderer in _nextIsladsLineRenderer)
             {
                 lineRenderer.startColor = Color.green;
@@ -69,6 +78,7 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
         }
         else
         {
+            _activeCircle.SetActive(false);
             foreach (var lineRenderer in _nextIsladsLineRenderer)
             {
                 lineRenderer.startColor = Color.white;
@@ -86,8 +96,15 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
         ChangeIslandLook();
         GenerateLines();
 
-        var islandName = _islandNames.GetRandomName();
-        _islandNameText.text = islandName;
+        if(IslandName != "")
+        {
+            _islandNameText.text = IslandName;
+        }
+        else
+        {
+            var islandName = _islandNames.GetRandomName();
+            _islandNameText.text = islandName;
+        }
     }
 
     private void GenerateLines()
@@ -121,13 +138,72 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
         _spriteMask.sprite = shape;
     }
-    
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _isladInfo.SetActive(true);
+        _islandType.color = Color.red;
+        
     }
     public void OnPointerExit(PointerEventData eventData)
     {
+        _islandType.color = Color.white;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        GameObject[] Islands = GameObject.FindGameObjectsWithTag("Island");
+        foreach(var i in Islands)
+        {
+            i.GetComponent<IslandController>().HidePopup();
+        }
+        _isladInfo.SetActive(true);
+    }
+
+    public void HidePopup()
+    {
         _isladInfo.SetActive(false);
+    }
+
+    public void StartBattle()
+    {
+        GameObject map = GameObject.FindGameObjectsWithTag("MapController")[0];
+        MapController controller = map.GetComponent<MapController>();
+        controller.StartBattle(this);
+        //TODO create battlefield
+    }
+
+    public bool IsPreviousFor(IslandController nextIsland)
+    {
+        foreach(var island in _nextIslands)
+        {
+            if(island == nextIsland)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void showButton()
+    {
+        //_goButton.SetActive(true);
+        _goButton.GetComponent<Button>().interactable = true;
+    }
+    public void hideButton()
+    {
+        //_goButton.SetActive(false);
+        _goButton.GetComponent<Button>().interactable = false;
+    }
+
+    public void showButtonInChild()
+    {
+        GameObject[] Islands = GameObject.FindGameObjectsWithTag("Island");
+        foreach (var i in Islands)
+        {
+            i.GetComponent<IslandController>().hideButton();
+        }
+        foreach(var next in _nextIslands)
+        {
+            next.showButton();
+        }
     }
 }
