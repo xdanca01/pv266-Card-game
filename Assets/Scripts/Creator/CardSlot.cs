@@ -63,10 +63,10 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         else
         {
-            actionInProgress.GetExecutor().actionCommited = actionInProgress;
-            actionInProgress.GetExecutor().creator.Line(
-                "Action", actionInProgress.GetExecutor().gameObject.transform.position, 
-                    transform.position);            
+            var executor = actionInProgress.GetExecutor();
+            executor.actionCommited = actionInProgress;
+            var from = executor.gameObject.transform.position;
+            executor.creator.Line("Action", from, transform.position, FSColor.Blue);
             foreach (var target in actionInProgress.PossibleTargets())
             {
                 target.RemoveFlag(CardFlag.Highlighted);

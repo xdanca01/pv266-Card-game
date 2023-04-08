@@ -156,20 +156,23 @@ public class Creator
         gameobject.transform.position = new Vector3(position.x, position.y, gameobject.transform.position.z);
     }
 
-    public LineRenderer Line(string reason, Vector3 from, Vector3 to)
+    public LineRenderer Line(string reason, Vector3 from, Vector3 to, FSColor color)
     {
         GameObject go = FindGameObject(reason);
         LineRenderer line = FindComponent<LineRenderer>(go);
         line.startWidth = 0.1f;
         line.endWidth = 0.1f;
         line.startColor = FSColor.DarkGray.ToColor();
-        line.endColor = FSColor.White.ToColor();
-        
+        line.endColor = color.ToColor();        
         var dir = to - from;
         var normal = new Vector3(-dir.y, dir.x, dir.z).normalized;
-        line.positionCount = 5;
-        line.SetPositions(new Vector3[]{from, from + dir / 4 + normal / 2.5f, 
-            from + dir / 2 + normal / 2, from + 3 * dir/4 + normal / 2.5f, to});
+        var quarter1 = (-dir.normalized + normal + normal / 4).normalized / 2;
+        var quarter2 = (-dir.normalized - normal - normal / 4).normalized / 2;
+        var points = new Vector3[]{from, from + dir / 4 + normal / 2.5f,
+            from + dir / 2 + normal / 2, from + 3 * dir/4 + normal / 2.5f,
+            to, to + quarter1, to, to + quarter2};
+        line.positionCount = points.Length;
+        line.SetPositions(points);
         line.useWorldSpace = true;
         line.material = new Material(Shader.Find("Sprites/Default"));
         line.sortingOrder = 1;
