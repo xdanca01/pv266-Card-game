@@ -20,8 +20,11 @@ public class AbilitySlot : ItemSlot<Ability, AbilitySlot>, IPointerEnterHandler,
     {
         if (this.icon != null)
         {
-            CardSlot.AddFlag(CardFlag.Entered);
-            icon.TextColor = FSColor.White;
+            icon.TextColor = FSColor.White;          
+            if (CardSlot.Contains(eventData.pointerCurrentRaycast.worldPosition))
+            {
+                CardSlot.AddFlag(CardFlag.Entered);
+            }
         }
     }
 }

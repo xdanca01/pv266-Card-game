@@ -45,6 +45,10 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (!flag.HasFlag(CardFlag.Entered))
+        {
+            return;
+        }
         if (action == default)
         {
             action = new Battlefield.Move(battlefield, this);
@@ -154,4 +158,11 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         return this.upgrade;
     }
 
+    public bool Contains(Vector2 worldPosition)
+    {
+        return worldPosition.x >= this.Empty.transform.position.x - Creator.cardWidthWithBorder/2f
+            && worldPosition.x <= this.Empty.transform.position.x + Creator.cardWidthWithBorder/2f
+            && worldPosition.y >= this.Empty.transform.position.y - Creator.cardHeightWithBorder/2f
+            && worldPosition.y <= this.Empty.transform.position.y + Creator.cardHeightWithBorder/2f;
+    }
 }
