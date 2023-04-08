@@ -164,11 +164,15 @@ public class Creator
         line.endWidth = 0.1f;
         line.startColor = FSColor.DarkGray.ToColor();
         line.endColor = FSColor.White.ToColor();
-        line.SetPositions(new Vector3[]{ from, to});
+        
+        var dir = to - from;
+        var normal = new Vector3(-dir.y, dir.x, dir.z).normalized;
+        line.positionCount = 5;
+        line.SetPositions(new Vector3[]{from, from + dir / 4 + normal / 2.5f, 
+            from + dir / 2 + normal / 2, from + 3 * dir/4 + normal / 2.5f, to});
         line.useWorldSpace = true;
         line.material = new Material(Shader.Find("Sprites/Default"));
         line.sortingOrder = 1;
-
         return line;
     }
 }

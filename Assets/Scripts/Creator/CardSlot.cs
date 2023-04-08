@@ -52,10 +52,13 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         if (actionInProgress == default)
         {
-            actionInProgress = new Battlefield.Move(battlefield, this);
-            foreach (var target in actionInProgress.PossibleTargets())
+            if (!IsEmpty())
             {
-                target.AddFlag(CardFlag.Highlighted);
+                actionInProgress = new Battlefield.Move(battlefield, this);
+                foreach (var target in actionInProgress.PossibleTargets())
+                {
+                    target.AddFlag(CardFlag.Highlighted);
+                }
             }
         }
         else
@@ -63,7 +66,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             actionInProgress.GetExecutor().actionCommited = actionInProgress;
             actionInProgress.GetExecutor().creator.Line(
                 "Action", actionInProgress.GetExecutor().gameObject.transform.position, 
-                transform.position);            
+                    transform.position);            
             foreach (var target in actionInProgress.PossibleTargets())
             {
                 target.RemoveFlag(CardFlag.Highlighted);
