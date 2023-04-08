@@ -15,10 +15,10 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private Unit unit;
     private Upgrade upgrade;
-    private Creator creator;
-    private Battlefield battlefield;
-    private static Battlefield.CardAction actionInProgress;
-    private Battlefield.CardAction actionCommited;
+    public Creator creator;
+    public Battlefield battlefield;
+    public static Battlefield.CardAction actionInProgress;
+    public Battlefield.CardAction actionCommited;
     private CardFlag flag;
 
     private GameObject Empty => gameObject.transform.GetChild(0).gameObject;
@@ -66,7 +66,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             var executor = actionInProgress.GetExecutor();
             executor.actionCommited = actionInProgress;
             var from = executor.gameObject.transform.position;
-            executor.creator.Line("Action", from, transform.position, FSColor.Blue);
+            executor.creator.Line("Action", from, transform.position, FSColor.White);
             foreach (var target in actionInProgress.PossibleTargets())
             {
                 target.RemoveFlag(CardFlag.Highlighted);

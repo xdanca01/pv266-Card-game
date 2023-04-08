@@ -158,12 +158,9 @@ public class Battlefield : MonoBehaviour
         }
     }
 
-    class AbilityAction : CardAction
+    public class AbilityAction : CardAction
     {
         Ability ability;
-        CardSlot executor;
-        CardSlot target;
-        Battlefield battlefield;
 
         public AbilityAction(Battlefield battlefield, CardSlot executor, Ability ability) : base(battlefield, executor)
         {
