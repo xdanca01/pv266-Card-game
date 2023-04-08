@@ -52,7 +52,8 @@ public class Ability : MonoBehaviour, IAbility, Interactable
         ability.low = low;
         ability.high = high;
         ability.Type = type;
-        ability.Icon = new Icon(Card, title, "", "", spriteName, type.ToFSColor());
+        ability.Icon = Icon.New(Card, Card.gameobject, "", "", spriteName, type.ToFSColor());
+        ability.Icon.gameObject.SetActive(false);
         ability.UpdateDescription();
         return ability;
     }

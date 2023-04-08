@@ -1,31 +1,105 @@
-﻿using Unity.VisualScripting;
+﻿using System;
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.EventSystems;
+using Image = UnityEngine.UI.Image;
 
-public class CardSlot : MonoBehaviour, IPointerEnterHandler
+[Flags]
+public enum CardFlag
 {
-    private GameObject unit;
-    private GameObject upgrade;
+    Default = 1,
+    Entered = 2,
+    Highlighted = 4,
+}
+
+public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+{
+    private Unit unit;
+    private Upgrade upgrade;
     private Creator creator;
+    private Battlefield battlefield;
+    private static Battlefield.CardAction action; // static is important, since we can assign only one action at any time
+    private CardFlag flag;
 
     private GameObject Empty => gameObject.transform.GetChild(0).gameObject;
 
-    public static CardSlot New(string reason, GameObject parent, Vector2 position)
+    public static CardSlot New(string reason, GameObject parent, Vector2 position, Battlefield battlefield)
     {
         var creator = new Creator(reason, parent).Background();
-        var cardSlot = creator.gameobject.GetOrAddComponent<CardSlot>();
+        var cardSlot = creator.gameobject.AddComponent<CardSlot>();
         cardSlot.creator = creator;
         cardSlot.gameObject.transform.position = position;
-        var box2D = creator.gameobject.AddComponent<BoxCollider2D>();
-        box2D.size = new Vector2(Creator.cardWidth + 0.5f, Creator.cardHeight + 0.5f);
-        box2D.isTrigger = true;
+        cardSlot.battlefield = battlefield;
+        cardSlot.flag = CardFlag.Default;
         return cardSlot;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Enter:" + gameObject.name);
+        AddFlag(CardFlag.Entered);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        RemoveFlag(CardFlag.Entered);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (action == default)
+        {
+            action = new Battlefield.Move(battlefield, this);
+            foreach (var target in action.PossibleTargets())
+            {
+                target.AddFlag(CardFlag.Highlighted);
+            }
+        }
+        else
+        {            
+            foreach (var target in action.PossibleTargets())
+            {
+                target.RemoveFlag(CardFlag.Highlighted);
+            }
+            action = default;
+        }
+    }
+
+    public bool IsEmpty()
+    {
+        return this.unit == null;
+    }
+
+    private void SetColor(FSColor color)
+    {
+        GameObject background = this.unit != null ? this.unit.transform.Find("Background").gameObject : Empty;
+        background.GetComponent<Image>().color = color.ToColor(0.5f);
+    }
+
+    public void AddFlag(CardFlag flag)
+    {
+        this.flag |= flag;
+        Redraw();
+    }
+
+    public void RemoveFlag(CardFlag flag)
+    {
+        this.flag &= ~flag;
+        Redraw();
+    }
+
+    public void Redraw()
+    {
+        if (flag.HasFlag(CardFlag.Entered))
+        {
+            SetColor(FSColor.Green);
+        }
+        else if (flag.HasFlag(CardFlag.Highlighted))
+        {
+            SetColor(FSColor.Blue);
+        }
+        else
+        {
+            SetColor(FSColor.Black);
+        }
     }
 
     // if icon = null then slot will become empty
@@ -33,7 +107,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler
     {
         if (this.unit != null)
         {
-            DestroyImmediate(this.unit);
+            DestroyImmediate(this.unit.Card.gameobject);
         }
         if (unit == null)
         {
@@ -43,7 +117,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler
         else
         {
             Empty.SetActive(false);
-            this.unit = unit.Card.gameobject;
+            this.unit = unit;
             this.unit.transform.SetParent(gameObject.transform);
             this.unit.transform.position = this.gameObject.transform.position;
         }
@@ -53,7 +127,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler
     {
         if (this.upgrade != null)
         {
-            DestroyImmediate(this.upgrade);
+            DestroyImmediate(this.upgrade.Card.gameobject);
         }
         if (upgrade == null)
         {
@@ -63,9 +137,20 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler
         else
         {
             Empty.SetActive(false);
-            this.upgrade = upgrade.Card.gameobject;
+            this.upgrade = upgrade;
             this.upgrade.transform.SetParent(gameObject.transform);
             this.upgrade.transform.position = this.gameObject.transform.position;
         }
     }
+
+    public Unit GetUnit()
+    {
+        return this.unit;
+    }
+
+    public Upgrade GetUpgrade()
+    {
+        return this.upgrade;
+    }
+
 }

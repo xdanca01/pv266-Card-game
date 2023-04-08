@@ -4,26 +4,26 @@ using UnityEditor;
 using System.Linq;
 
 
-public class SlotDrawer : MonoBehaviour
+public abstract class SlotDrawer<I, S, D> : MonoBehaviour where I: Interactable where S: ItemSlot<I, S> where D: SlotDrawer<I, S, D>
 {
-    private List<ItemSlot> list;
+    private List<S> list;
     private Creator creator;
-
-    public static SlotDrawer New(Creator creator, string reason, uint count, bool horizontal, Vector2 position)
+    public static D New(Creator creator, string reason, uint count, bool horizontal, Vector2 position)
     {
         var parent = creator.FindGameObject(reason);
-        var slotDrawer = parent.AddComponent<SlotDrawer>();
+        creator.FindComponent<RectTransform>(parent).sizeDelta = new Vector2(Creator.cardWidth, Creator.cardHeight);
+        var slotDrawer = parent.AddComponent<D>();
         slotDrawer.creator = creator;
-        slotDrawer.list = new List<ItemSlot>();
+        slotDrawer.list = new List<S>();
         for (int i = 0; i < count; i++)
         {
-            slotDrawer.list.Add(ItemSlot.New(creator, reason + " " + i, parent, horizontal,
+            slotDrawer.list.Add(ItemSlot<I, S>.New(creator, reason + " " + i, parent, horizontal,
                 horizontal ? new Vector2(position.x + 2 * i, position.y) : new Vector2(position.x, position.y + 2 * i)));
         }
         return slotDrawer;
     }
 
-    public void Set(uint nth, Interactable interactible)
+    public void Set(uint nth, I interactible)
     {
         if (nth >= list.Count)
         {
@@ -32,18 +32,18 @@ public class SlotDrawer : MonoBehaviour
         list[(int)nth].Set(interactible);
     }
 
-    public T Get<T>(uint nth) where T : Interactable
+    public I Get(uint nth)
     {
         if (nth >= list.Count)
         {
             throw new System.Exception("Slot drawers does not have " + nth + " slots but only " + list.Count);
         }
-        return (T)list[(int)nth].Get();
+        return list[(int)nth].Get();
     }
 
-    public List<T> GetAll<T>() where T: Interactable
+    public List<I> GetAll()
     {
-        return list.Select(i => (T) i.Get()).ToList();
+        return list.Select(i => i.Get()).ToList();
     }
 }
     
