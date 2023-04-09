@@ -6,6 +6,7 @@ TagManager:
   tags:
   - MapController
   - Island
+  - Deck
   layers:
   - Default
   - TransparentFX

@@ -7,8 +7,9 @@ using Unity.VisualScripting;
 
 public class AI : MonoBehaviour
 {
-    private ReadOnlyCollection<ReadOnlyCollection<IUnit>> Heroes;
-    private ReadOnlyCollection<ReadOnlyCollection<IUnit>> Monsters;
+    private List<List<Unit>> Heroes = new();
+    private List<List<Unit>> Monsters = new();
+    private Battlefield b;
     private List<IUnit> targeted = new();
     /// <summary>
     /// Calculates moves for each Monster.
@@ -16,10 +17,31 @@ public class AI : MonoBehaviour
     /// <returns>
     ///     Returns Dictionary<Me, <Target, Ability>>
     /// </returns>
-    public Dictionary<Unit, Tuple<Unit, Ability>> chooseTargets(IBattlefield bf)
+    public Dictionary<Unit, Tuple<Unit, Ability>> chooseTargets(Battlefield bf)
     {
-        //Monsters = bf.Monsters;
-        //Heroes = bf.Heroes;
+        b = bf;
+        Unit u;
+        for (int row = 0; row < bf.EnemySlots.GetLength(0); ++row)
+        {
+            for (int col = 0; col < bf.EnemySlots.GetLength(1); ++col)
+            {
+                if(col == 0)
+                {
+                    Monsters.Add(new List<Unit>());
+                    Heroes.Add(new List<Unit>());
+                }
+                u = bf.EnemySlots[row,col].GetUnit();
+                if(u != null)
+                {
+                    Monsters[row].Add(u);
+                }
+                u = bf.AllySlots[row, col].GetUnit();
+                if (u != null)
+                {
+                    Heroes[row].Add(u);
+                }
+            }
+        }
         Dictionary<Unit, Tuple<Unit, Ability>> actions = new Dictionary<Unit, Tuple<Unit, Ability>>();
         
         //calculate priority
@@ -28,7 +50,7 @@ public class AI : MonoBehaviour
         //Todo change from Interface to object
         foreach(var row in Heroes)
         {
-            foreach(Unit unit in row)
+            foreach(var unit in row)
             {
                 prio = getPriority(row, unit);
                 priority.Add(unit, prio);
@@ -92,7 +114,7 @@ public class AI : MonoBehaviour
                 best = unit.Key;
             }
         }
-        ReadOnlyCollection<IUnit> row = getRowWithUnit(best);
+        List<Unit> row = getRowWithUnit(best);
         List<Unit> units = getUnitsInFront(row, best);
         best = units[units.Count - 1];
         //Target already computed before
@@ -105,7 +127,7 @@ public class AI : MonoBehaviour
     }
 
     //Including me (hero)
-    private List<Unit> getUnitsInFront(ReadOnlyCollection<IUnit> heroes, IUnit hero)
+    private List<Unit> getUnitsInFront(List<Unit> heroes, Unit hero)
     {
         List<Unit> inFront = new();
         int col = heroes.IndexOf(hero);
@@ -129,7 +151,7 @@ public class AI : MonoBehaviour
         return attackScore;
     }
 
-    private ReadOnlyCollection<IUnit> getRowWithUnit(IUnit unit)
+    private List<Unit> getRowWithUnit(Unit unit)
     {
         foreach(var row in Heroes)
         {
@@ -141,7 +163,7 @@ public class AI : MonoBehaviour
         return null;
     }
 
-    private float getPriority(ReadOnlyCollection<IUnit> row, Unit unit)
+    private float getPriority(List<Unit> row, Unit unit)
     {
         float priority = 10.0f;
         //HP
@@ -159,7 +181,7 @@ public class AI : MonoBehaviour
         return priority;
     }
 
-    private void moveActions(IBattlefield bf)
+    private void moveActions(Battlefield bf)
     {
 
     }

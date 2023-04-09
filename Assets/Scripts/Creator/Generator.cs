@@ -149,6 +149,35 @@ public class Generator : MonoBehaviour
         battlefield = Battlefield.New(basedTitle, units, upgrades, bats, rowsCount, columnsCount);
     }
 
+    public Battlefield CreateBattlefield(string mapName = "Dono")
+    {
+        var (upgrades, abilities, units) = CreateUnits();
+        var table = File.ReadLines("Assets/Data/Map.csv");
+        var columnNames = table.First().Split(",");
+        string basedTitle = mapName;
+        var rowsCount = 0u;
+        var columnsCount = 0u;
+        foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
+        {
+            var columns = line.Split(",");
+            var title = GetColumn("Title", columns, columnNames);
+            if (title == basedTitle)
+            {
+                rowsCount = uint.Parse(GetColumn("Rows", columns, columnNames));
+                columnsCount = uint.Parse(GetColumn("Columns", columns, columnNames));
+                break;
+            }
+        }
+        if (rowsCount == 0u && columnsCount == 0u)
+        {
+            throw new System.Exception("Battlefield not found: " + basedTitle);
+        }
+        var bats = new GameObject("Battlefields");
+        bats.transform.parent = transform;
+        battlefield = Battlefield.New(basedTitle, units, upgrades, bats, rowsCount, columnsCount);
+        return battlefield;
+    }
+
     private void Update()
     {
         if (EditorApplication.isPlaying && !generated)
