@@ -109,7 +109,6 @@ public class Battlefield : MonoBehaviour
         {
             this.battlefield = battlefield;
             this.executor = executor;
-            battlefield.actions[this.executor] = this;
             this.color = color;
         }
 
@@ -127,6 +126,7 @@ public class Battlefield : MonoBehaviour
                 return false;
             }
             this.target = target;
+            battlefield.actions[this.executor] = this;
             return true;
         }
 
