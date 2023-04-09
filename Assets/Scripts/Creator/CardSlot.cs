@@ -8,17 +8,18 @@ public enum CardFlag
 {
     Default = 1,
     Entered = 2,
-    Highlighted = 4,
+    Moving = 4,
+    Abiliting = 8,
 }
 
 public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     private Unit unit;
     private Upgrade upgrade;
-    public Creator creator;
-    public Battlefield battlefield;
-    public static Battlefield.CardAction actionInProgress;
-    public Battlefield.CardAction actionCommited;
+    private Creator creator;
+    private Battlefield battlefield;
+    private static Battlefield.CardAction actionInProgress;
+    private Battlefield.CardAction actionCommited;
     private CardFlag flag;
 
     private GameObject Empty => gameObject.transform.GetChild(0).gameObject;
@@ -46,6 +47,11 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        CardSlotClick();
+    }
+
+    public void CardSlotClick()
+    {
         if (!flag.HasFlag(CardFlag.Entered))
         {
             return;
@@ -57,7 +63,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 actionInProgress = new Battlefield.Move(battlefield, this);
                 foreach (var target in actionInProgress.PossibleTargets())
                 {
-                    target.AddFlag(CardFlag.Highlighted);
+                    target.AddFlag(CardFlag.Moving);
                 }
             }
         }
@@ -69,9 +75,25 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             executor.creator.Line("Action", from, transform.position, actionInProgress.color);
             foreach (var target in actionInProgress.PossibleTargets())
             {
-                target.RemoveFlag(CardFlag.Highlighted);
+                target.RemoveFlag(CardFlag.Moving);
             }
             actionInProgress = default;
+        }
+    }
+
+    public void AbilitySlotClick(Ability ability)
+    {
+        if (actionInProgress != default)
+        {
+            foreach (var target in actionInProgress.PossibleTargets())
+            {
+                target.RemoveFlag(CardFlag.Moving);
+            }
+        }
+        actionInProgress = new Battlefield.AbilityAction(battlefield, this, ability);
+        foreach (var target in actionInProgress.PossibleTargets())
+        {
+            target.AddFlag(CardFlag.Moving);
         }
     }
 
@@ -104,7 +126,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             SetColor(FSColor.Green);
         }
-        else if (flag.HasFlag(CardFlag.Highlighted))
+        else if (flag.HasFlag(CardFlag.Moving))
         {
             SetColor(FSColor.Blue);
         }

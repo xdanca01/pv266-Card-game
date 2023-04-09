@@ -6,23 +6,10 @@ using UnityEngine.EventSystems;
 public class AbilitySlot : ItemSlot<Ability, AbilitySlot>, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public CardSlot CardSlot { private get; set; }
-    private FSColor actionColor;
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (CardSlot.actionInProgress != default)
-        {
-            foreach (var target in CardSlot.actionInProgress.PossibleTargets())
-            {
-                target.RemoveFlag(CardFlag.Highlighted);
-            }
-        }
-        CardSlot.actionInProgress = new Battlefield.AbilityAction(CardSlot.battlefield, CardSlot, interactible);
-        actionColor = interactible.Type.ToFSColor();
-        foreach (var target in CardSlot.actionInProgress.PossibleTargets())
-        {
-            target.AddFlag(CardFlag.Highlighted);
-        }
+        CardSlot.AbilitySlotClick(interactible);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
