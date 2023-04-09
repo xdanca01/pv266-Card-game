@@ -19,6 +19,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private Battlefield battlefield;
     private static Battlefield.CardAction actionInProgress;
     private CardFlag flag;
+    private LineRenderer actionLine;
 
     private GameObject Empty => gameObject.transform.GetChild(0).gameObject;
 
@@ -70,6 +71,15 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
+    public void RemoveActionLine()
+    {
+        if (actionLine != default)
+        {
+            Destroy(actionLine.gameObject);
+            actionLine = null;
+        }
+    }
+
     public void CardSlotClick()
     {
         if (!flag.HasFlag(CardFlag.Entered) || (actionInProgress == default && IsEmpty()))
@@ -85,7 +95,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (actionInProgress.Assign(this))
         {
             var executor = actionInProgress.GetExecutor();
-            executor.creator.Line("Action",
+            executor.actionLine = executor.creator.Line("Action",
                 executor.gameObject.transform.position,
                 transform.position,
                 actionInProgress.color);
@@ -198,5 +208,15 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             && worldPosition.x <= this.Empty.transform.position.x + Creator.cardWidthWithBorder/2f
             && worldPosition.y >= this.Empty.transform.position.y - Creator.cardHeightWithBorder/2f
             && worldPosition.y <= this.Empty.transform.position.y + Creator.cardHeightWithBorder/2f;
+    }
+
+    public void SetPosition(Vector2 position)
+    {
+        this.gameObject.transform.position = position;
+    }
+
+    public Vector2 GetPosition()
+    {
+        return this.gameObject.transform.position;
     }
 }

@@ -154,9 +154,17 @@ public class Battlefield : MonoBehaviour
 
         public override void Execute()
         {
-            var executorUnit = executor.GetUnit();
-            executor.SetUnit(target.GetUnit());
-            target.SetUnit(executorUnit);
+            var exPos = battlefield.FindPosition(executor);
+            var tgPos = battlefield.FindPosition(target);
+            if (exPos.Ally != tgPos.Ally)
+            {
+                throw new System.Exception("Cannot move to opponent's battlefield!");
+            }
+            (battlefield.Slots(exPos.Ally)[exPos.Row, exPos.Column], battlefield.Slots(tgPos.Ally)[tgPos.Row, tgPos.Column])
+                = (battlefield.Slots(tgPos.Ally)[tgPos.Row, tgPos.Column], battlefield.Slots(exPos.Ally)[exPos.Row, exPos.Column]);
+            var executorTransfromPosition = executor.GetPosition();
+            executor.SetPosition(target.GetPosition());
+            target.SetPosition(executorTransfromPosition);
         }
     }
 
@@ -171,6 +179,10 @@ public class Battlefield : MonoBehaviour
 
         public override void Execute()
         {
+            if (this.ability.Percentage <= Random.Range(1,101))
+            {
+                return;
+            }
             var value = Random.Range((int)this.ability.Low, (int)this.ability.High + 1);
             var attack = this.ability.Type == AbilityType.LightAttack || this.ability.Type == AbilityType.HeavyAttack;
             var executorUnit = executor.GetUnit();
@@ -212,5 +224,16 @@ public class Battlefield : MonoBehaviour
                 _ => throw new System.Exception("Unknown AbilityType"),
             };
         }
+    }
+
+    [EditorCools.Button]
+    void RunActions()
+    {
+        foreach (var (slot, action) in actions)
+        {
+            slot.RemoveActionLine();
+            action.Execute();
+        }
+        actions.Clear();
     }
 }
