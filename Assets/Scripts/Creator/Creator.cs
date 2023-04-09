@@ -160,17 +160,18 @@ public class Creator
     {
         GameObject go = FindGameObject(reason);
         LineRenderer line = FindComponent<LineRenderer>(go);
+        var toPos = (from != to) ? to : new Vector3(to.x, to.y + 0.5f, to.z);
         line.startWidth = 0.1f;
         line.endWidth = 0.1f;
         line.startColor = FSColor.DarkGray.ToColor();
-        line.endColor = color.ToColor();        
-        var dir = to - from;
+        line.endColor = color.ToColor();
+        var dir = toPos - from;
         var normal = new Vector3(-dir.y, dir.x, dir.z).normalized;
-        var quarter1 = (-dir.normalized + normal + normal / 4).normalized / 2;
-        var quarter2 = (-dir.normalized - normal - normal / 4).normalized / 2;
+        var quarter1 = ((from != to) ? (-dir.normalized + normal + normal / 4) : new Vector3(-1, 1)).normalized / 2;
+        var quarter2 = ((from != to) ? (-dir.normalized - normal - normal / 4) : new Vector3(-1, -1)).normalized / 2;
         var points = new Vector3[]{from, from + dir / 4 + normal / 2.5f,
             from + dir / 2 + normal / 2, from + 3 * dir/4 + normal / 2.5f,
-            to, to + quarter1, to, to + quarter2};
+            toPos, toPos + quarter1, toPos, toPos + quarter2};
         line.positionCount = points.Length;
         line.SetPositions(points);
         line.useWorldSpace = true;
