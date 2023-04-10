@@ -16,6 +16,8 @@ public class Battlefield : MonoBehaviour
     public CardSlot[,] AllySlots { get; private set; }
     public CardSlot[,] EnemySlots { get; private set; }
 
+    private Dictionary<CardSlot, CardAction> actions;
+
     private record CardPosition {
         public bool Ally { get; init; }
         public uint Row { get; init; }
@@ -49,6 +51,7 @@ public class Battlefield : MonoBehaviour
         gameobject.transform.parent = parent.transform;
         battlefield.AllySlots = new CardSlot[rowsCount, columnsCount];
         battlefield.EnemySlots = new CardSlot[rowsCount, columnsCount];
+        battlefield.actions = new();
         Vector2 GetPosition(uint row, uint column, bool friendly) => new(
             (column + (float)(friendly ? 0 : columnsCount + 0.5f) + 1) * Generator.ColumnSize,
             -(row + 2) * Generator.RowSize);
@@ -113,25 +116,19 @@ public class Battlefield : MonoBehaviour
         throw new System.Exception("FindPosition found nothing");
     }
 
-    public interface CardAction
+
+    public abstract class CardAction
     {
-        CardSlot GetExecutor();
+        protected CardSlot executor;
+        protected CardSlot target;
+        protected Battlefield battlefield;
+        public FSColor color { get; private set; }
 
-        void Execute();
-        bool Assign(CardSlot target);
-        IReadOnlyList<CardSlot> PossibleTargets();
-    }
-
-    public class Move : CardAction
-    {
-        CardSlot executor;
-        CardSlot target;
-        Battlefield battlefield;
-
-        public Move(Battlefield battlefield, CardSlot executor)
+        public CardAction(Battlefield battlefield, CardSlot executor, FSColor color)
         {
             this.battlefield = battlefield;
             this.executor = executor;
+            this.color = color;
         }
 
         public CardSlot GetExecutor()
@@ -139,20 +136,7 @@ public class Battlefield : MonoBehaviour
             return this.executor;
         }
 
-        public IReadOnlyList<CardSlot> PossibleTargets()
-        {
-            var executorPosition = battlefield.FindPosition(this.executor);
-            var slots = battlefield.Slots(executorPosition.Ally);
-            List<CardSlot> list = new();
-            foreach (var cardSlot in slots) 
-            {
-                if (cardSlot != this.executor)
-                {
-                    list.Add(cardSlot);
-                }                
-            }
-            return list;
-        }
+        public abstract IReadOnlyList<CardSlot> PossibleTargets();
 
         public bool Assign(CardSlot target)
         {
@@ -161,24 +145,114 @@ public class Battlefield : MonoBehaviour
                 return false;
             }
             this.target = target;
+            battlefield.actions[this.executor] = this;
             return true;
         }
 
-        public void Execute()
+        public abstract void Execute();
+    }
+
+    public class Move : CardAction
+    {
+        public Move(Battlefield battlefield, CardSlot executor) : base(battlefield, executor, FSColor.Blue) { }
+
+        public override IReadOnlyList<CardSlot> PossibleTargets()
         {
-            var executorUnit = executor.GetUnit();
-            executor.SetUnit(target.GetUnit());
-            target.SetUnit(executorUnit);
+            var executorPosition = battlefield.FindPosition(this.executor);
+            var slots = battlefield.Slots(executorPosition.Ally);
+            List<CardSlot> list = new();
+            foreach (var cardSlot in slots)
+            {
+                if (cardSlot != this.executor)
+                {
+                    list.Add(cardSlot);
+                }
+            }
+            return list;
+        }
+
+        public override void Execute()
+        {
+            var exPos = battlefield.FindPosition(executor);
+            var tgPos = battlefield.FindPosition(target);
+            if (exPos.Ally != tgPos.Ally)
+            {
+                throw new System.Exception("Cannot move to opponent's battlefield!");
+            }
+            (battlefield.Slots(exPos.Ally)[exPos.Row, exPos.Column], battlefield.Slots(tgPos.Ally)[tgPos.Row, tgPos.Column])
+                = (battlefield.Slots(tgPos.Ally)[tgPos.Row, tgPos.Column], battlefield.Slots(exPos.Ally)[exPos.Row, exPos.Column]);
+            var executorTransfromPosition = executor.GetPosition();
+            executor.SetPosition(target.GetPosition());
+            target.SetPosition(executorTransfromPosition);
         }
     }
 
-    //class AbilityAction : CardAction
-    //{
-    //    Ability ability;
-    //    CardSlot target;
-    //}
+    public class AbilityAction : CardAction
+    {
+        Ability ability;
 
+        public AbilityAction(Battlefield battlefield, CardSlot executor, Ability ability) : base(battlefield, executor, ability.Type.ToFSColor())
+        {
+            this.ability = ability;
+        }
 
-    Dictionary<CardSlot, CardAction> actions;
+        public override void Execute()
+        {
+            if (this.ability.Percentage <= Random.Range(1,101))
+            {
+                return;
+            }
+            var value = Random.Range((int)this.ability.Low, (int)this.ability.High + 1);
+            var attack = this.ability.Type == AbilityType.LightAttack || this.ability.Type == AbilityType.HeavyAttack;
+            var executorUnit = executor.GetUnit();
+            var targetUnit = target.GetUnit();
+            // Attack with positive value = affect target
+            if (attack && value > 0)
+            {
+                targetUnit.HP = (uint)System.Math.Max(targetUnit.HP - value, 0);
+            }
+            // Attack with negative value = affect self negatively
+            else if (attack && value < 0)
+            {
+                executorUnit.HP = (uint)System.Math.Max(executorUnit.HP + value, 0);
+            }
+            // Heal with positive value = affect target
+            else if (!attack && value > 0)
+            {
+                targetUnit.HP = (uint)System.Math.Min(targetUnit.HP + value, targetUnit.MAX_HP);
+            }
+            // Heal with negative value = affect target negatively
+            else if (!attack && value < 0)
+            {
+                targetUnit.HP = (uint)System.Math.Max(targetUnit.HP + value, 0);
+            }
+        }
 
+        public override IReadOnlyList<CardSlot> PossibleTargets()
+        {
+            return this.ability.Type switch
+            {
+                AbilityType.LightAttack or AbilityType.HeavyAttack => battlefield
+                    .Slots(!battlefield.FindPosition(this.executor).Ally).Cast<CardSlot>()
+                    .Where(slot => !slot.IsEmpty())
+                    .ToArray(),
+                AbilityType.Heal => battlefield
+                    .Slots(battlefield.FindPosition(this.executor).Ally).Cast<CardSlot>()
+                    .Where(slot => !slot.IsEmpty())
+                    .ToList(),
+                _ => throw new System.Exception("Unknown AbilityType"),
+            };
+        }
+    }
+
+    [EditorCools.Button]
+    void RunActions()
+    {
+        foreach (var (slot, action) in actions)
+        {
+            slot.RemoveActionLine();
+            action.Execute();
+        }
+        actions.Clear();
+    }
 }

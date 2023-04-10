@@ -8,7 +8,7 @@ public enum CardFlag
 {
     Default = 1,
     Entered = 2,
-    Highlighted = 4,
+    Highlight = 4,
 }
 
 public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
@@ -18,8 +18,8 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private Creator creator;
     private Battlefield battlefield;
     private static Battlefield.CardAction actionInProgress;
-    private Battlefield.CardAction actionCommited;
     private CardFlag flag;
+    private LineRenderer actionLine;
 
     private GameObject Empty => gameObject.transform.GetChild(0).gameObject;
 
@@ -46,30 +46,69 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!flag.HasFlag(CardFlag.Entered))
+        CardSlotClick();
+    }
+
+    private void RemoveHighlights()
+    {
+        if (actionInProgress != default)
+        {
+            foreach (var target in actionInProgress.PossibleTargets())
+            {
+                target.RemoveFlag(CardFlag.Highlight);
+            }
+        }
+    }
+
+    private void AddHighlights()
+    {
+        if (actionInProgress != default)
+        {
+            foreach (var target in actionInProgress.PossibleTargets())
+            {
+                target.AddFlag(CardFlag.Highlight);
+            }
+        }
+    }
+
+    public void RemoveActionLine()
+    {
+        if (actionLine != default)
+        {
+            Destroy(actionLine.gameObject);
+            actionLine = null;
+        }
+    }
+
+    public void CardSlotClick()
+    {
+        if (!flag.HasFlag(CardFlag.Entered) || (actionInProgress == default && IsEmpty()))
         {
             return;
         }
         if (actionInProgress == default)
         {
             actionInProgress = new Battlefield.Move(battlefield, this);
-            foreach (var target in actionInProgress.PossibleTargets())
-            {
-                target.AddFlag(CardFlag.Highlighted);
-            }
+            AddHighlights();
+            return;
         }
-        else
+        if (actionInProgress.Assign(this))
         {
-            actionInProgress.GetExecutor().actionCommited = actionInProgress;
-            actionInProgress.GetExecutor().creator.Line(
-                "Action", actionInProgress.GetExecutor().gameObject.transform.position, 
-                transform.position);            
-            foreach (var target in actionInProgress.PossibleTargets())
-            {
-                target.RemoveFlag(CardFlag.Highlighted);
-            }
-            actionInProgress = default;
+            var executor = actionInProgress.GetExecutor();
+            executor.actionLine = executor.creator.Line("Action",
+                executor.gameObject.transform.position,
+                transform.position,
+                actionInProgress.color);
         }
+        RemoveHighlights();
+        actionInProgress = default;
+    }
+
+    public void AbilitySlotClick(Ability ability)
+    {
+        RemoveHighlights();
+        actionInProgress = new Battlefield.AbilityAction(battlefield, this, ability);
+        AddHighlights();
     }
 
     public bool IsEmpty()
@@ -101,7 +140,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             SetColor(FSColor.Green);
         }
-        else if (flag.HasFlag(CardFlag.Highlighted))
+        else if (flag.HasFlag(CardFlag.Highlight))
         {
             SetColor(FSColor.Blue);
         }
@@ -169,5 +208,15 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             && worldPosition.x <= this.Empty.transform.position.x + Creator.cardWidthWithBorder/2f
             && worldPosition.y >= this.Empty.transform.position.y - Creator.cardHeightWithBorder/2f
             && worldPosition.y <= this.Empty.transform.position.y + Creator.cardHeightWithBorder/2f;
+    }
+
+    public void SetPosition(Vector2 position)
+    {
+        this.gameObject.transform.position = position;
+    }
+
+    public Vector2 GetPosition()
+    {
+        return this.gameObject.transform.position;
     }
 }

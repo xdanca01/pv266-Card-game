@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class AbilitySlot : ItemSlot<Ability, AbilitySlot>, IPointerEnterHandler, IPointerExitHandler
+public class AbilitySlot : ItemSlot<Ability, AbilitySlot>, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public CardSlot CardSlot { private get; set; }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        CardSlot.AbilitySlotClick(interactible);
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
