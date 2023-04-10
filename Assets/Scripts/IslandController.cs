@@ -33,7 +33,11 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     [SerializeField] private TextMeshProUGUI _islandNameText;
 
+    [SerializeField] private PopupInfoControll _popupInfo;
+
     private GameObject _goButton;
+
+    private Battlefield _battlefield;
     
     private LineRenderer[] _nextIsladsLineRenderer;
 
@@ -53,6 +57,7 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
     private void OnEnable()
     {
         MapController.OnGenerateIslands += GenerateIsland;
+        //_battlefield = new Generator().CreateBattlefield(IslandName);
     }
 
     private void OnDisable()
@@ -205,5 +210,15 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             next.showButton();
         }
+    }
+
+    public void UpdatePopupInfo()
+    {
+        //TODO get battlefield from somewhere
+        int row = _battlefield.EnemySlots.GetLength(0);
+        int col = _battlefield.EnemySlots.GetLength(1);
+        string difficulty = _battlefield.GetDifficulty();
+        int enemies = _battlefield.CountEnemies();
+        _popupInfo.UpdateInfo(row, col, difficulty, "?", enemies);
     }
 }

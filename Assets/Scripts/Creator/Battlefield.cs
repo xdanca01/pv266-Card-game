@@ -24,6 +24,25 @@ public class Battlefield : MonoBehaviour
         public uint Column { get; init; }
     }
 
+    //TODO calculate difficulty for the battlefield
+    public string GetDifficulty()
+    {
+        return "Hard";
+    }
+
+    public int CountEnemies()
+    {
+        int cnt = 0;
+        foreach(var slot in EnemySlots)
+        {
+            if(slot.IsEmpty() == false)
+            {
+                ++cnt;
+            }
+        }
+        return cnt;
+    }
+
     public static Battlefield New(string title, Dictionary<string, Unit> units,
         Dictionary<string, Upgrade> upgrades, GameObject parent, uint rowsCount, uint columnsCount)
     {
