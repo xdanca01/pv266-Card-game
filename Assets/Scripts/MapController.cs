@@ -10,6 +10,7 @@ public class MapController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _loopText;
     [SerializeField] private bool _randomSeed;
     [SerializeField] private int _seed;
+    [SerializeField] private Camera battlefieldCamera;
     public static event Action<int> OnGenerateIslands;
     int loop = 1;
 
@@ -39,6 +40,9 @@ public class MapController : MonoBehaviour
         {
             ChangeLoop();
         }
+        GameObject Generator = GameObject.FindGameObjectWithTag("Generator");
+        Generator.GetComponent<Generator>().CreateBattlefield(CurrentIsland.IslandName);
+        battlefieldCamera.gameObject.SetActive(true);
     }
 
     private void ChangeLoop()

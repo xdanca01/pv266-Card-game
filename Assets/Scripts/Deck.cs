@@ -6,12 +6,19 @@ using UnityEngine.UI;
 public class Deck : MonoBehaviour
 {
     [SerializeField] public GameObject UpgradesGrid;
+    [SerializeField] public GameObject PreviewGrid;
     [SerializeField] public GameObject HeroesGrid;
+
     [SerializeField] public GameObject UpgradePrefab;
     [SerializeField] public GameObject HeroPrefab;
+
     [SerializeField] public GameObject DisableButton;
     [SerializeField] public GameObject EnableButton;
     [SerializeField] public Color DisabledColor;
+
+    public Dictionary<string, Upgrade> upgrades;
+
+    [SerializeField] public Generator generator;
     int LastAvailableID = 1;
     public class UpgradeData
     {
@@ -28,6 +35,15 @@ public class Deck : MonoBehaviour
 
     List<Unit> deckOfHeroes = new();
     List<UpgradeData> deckOfUpgrades = new();
+
+    private void OnEnable()
+    {
+        foreach(var upgrade in upgrades)
+        {
+            UpgradeData data = new UpgradeData(upgrade.Value, LastAvailableID++, true);
+            deckOfUpgrades.Add(data);
+        };
+    }
 
     public List<Unit> getHeroes()
     {
@@ -98,9 +114,10 @@ public class Deck : MonoBehaviour
         //Test TODO remove this for cycle
         //deckOfUpgrades.Clear();
         deckOfHeroes.Clear();
+        //deckOfUpgrades.Clear();
         for (int i = 0; i < 3; ++i)
         {
-            deckOfUpgrades.Add(new UpgradeData(new Upgrade(), LastAvailableID++));
+            //deckOfUpgrades.Add(new UpgradeData(new Upgrade(), LastAvailableID++));
             deckOfHeroes.Add(new Unit());
         }
         DisableButton.SetActive(false);
@@ -121,6 +138,8 @@ public class Deck : MonoBehaviour
             {
                 GameObject u = Instantiate(UpgradePrefab, UpgradesGrid.transform);
                 u.GetComponent<Image>().color = DisabledColor;
+                UpgradeButton data = u.GetComponent<UpgradeButton>();
+                data.SetPrefabData(upgrade.data.name);
                 Button button = u.GetComponent<Button>();
                 button.onClick.AddListener(delegate() { PreviewUpgrade(upgrade); });
             }
@@ -133,6 +152,8 @@ public class Deck : MonoBehaviour
         {
             GameObject u = Instantiate(UpgradePrefab, UpgradesGrid.transform);
             Button button = u.GetComponent<Button>();
+            UpgradeButton data = u.GetComponent<UpgradeButton>();
+            data.SetPrefabData(upgrade.data.name);
             button.onClick.AddListener(delegate() { PreviewUpgrade(upgrade); });
         }
     }
@@ -171,6 +192,13 @@ public class Deck : MonoBehaviour
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(delegate () { changeState(upgrade, true); });
         }
+        GameObject upgradeObject = generator.GetUpgrade(upgrade.data.name);
+        foreach(Transform child in PreviewGrid.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        GameObject obj = Instantiate(upgradeObject, PreviewGrid.transform);
+        obj.transform.localScale = new Vector3(30.0f, 30.0f, 30.0f);
         button.onClick.AddListener(delegate () { GenerateUpgrades(); });
         Debug.Log("Upgrade: " + upgrade);
     }

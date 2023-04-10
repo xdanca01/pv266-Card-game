@@ -12,6 +12,7 @@ public class Generator : MonoBehaviour
     public static readonly int RowSize = 10;
     Battlefield battlefield;
     bool generated = false;
+    [SerializeField] public GameObject Deck;
 
     public static string GetColumn(string columnName, string[] columns, string[] columnNames)
     {
@@ -81,6 +82,11 @@ public class Generator : MonoBehaviour
             var upgrade = Upgrade.New(parent, title, description, iconTitle, iconDescription, icon, color);
             upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount + 1), RowSize * (i / columnsCount + 1)));
             upgrades.Add(title.ToLower(), upgrade);
+        }
+        //TODO remove after test is done
+        if (Deck != null)
+        {
+            Deck.GetComponent<Deck>().upgrades = upgrades;
         }
         return upgrades;
     }
@@ -185,5 +191,13 @@ public class Generator : MonoBehaviour
             CreateBattlefield();
             generated = true;
         }
+    }
+
+    public GameObject GetUpgrade(string name)
+    {
+        GameObject upgrade;
+        Transform upgrades = transform.Find("Upgrades");
+        upgrade = upgrades.Find(name).gameObject;
+        return upgrade;
     }
 }
