@@ -49,7 +49,7 @@ public class MapController : MonoBehaviour
         var height = rows * Generator.RowSize;
         var width = (cols + 0.5f) * Generator.ColumnSize / battlefieldCamera.aspect;
         var borderSize = 0.5f;
-        battlefieldCamera.gameObject.SetActive(true);
+        battlefieldCamera.enabled = true;        
         battlefieldCamera.orthographicSize = Mathf.Max(width, height)/2 + borderSize;
         battlefieldCamera.transform.position = new Vector3(midX, midY, battlefieldCamera.transform.position.z);
     }
