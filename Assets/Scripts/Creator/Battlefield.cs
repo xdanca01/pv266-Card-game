@@ -179,11 +179,15 @@ public class Battlefield : MonoBehaviour
             {
                 throw new System.Exception("Cannot move to opponent's battlefield!");
             }
-            (battlefield.Slots(exPos.Ally)[exPos.Row, exPos.Column], battlefield.Slots(tgPos.Ally)[tgPos.Row, tgPos.Column])
-                = (battlefield.Slots(tgPos.Ally)[tgPos.Row, tgPos.Column], battlefield.Slots(exPos.Ally)[exPos.Row, exPos.Column]);
-            var executorTransfromPosition = executor.GetPosition();
+            var swapSlot = battlefield.Slots(exPos.Ally)[exPos.Row, exPos.Column];
+            battlefield.Slots(exPos.Ally)[exPos.Row, exPos.Column] = battlefield.Slots(tgPos.Ally)[tgPos.Row, tgPos.Column];
+            battlefield.Slots(tgPos.Ally)[tgPos.Row, tgPos.Column] = swapSlot;
+            var swapPosition = executor.GetPosition();
             executor.SetPosition(target.GetPosition());
-            target.SetPosition(executorTransfromPosition);
+            target.SetPosition(swapPosition);
+            var swapUpgrade = executor.GetUpgrade();
+            executor.SetUpgrade(target.GetUpgrade());
+            target.SetUpgrade(swapUpgrade);
         }
     }
 
