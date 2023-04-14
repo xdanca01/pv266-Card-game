@@ -40,9 +40,18 @@ public class MapController : MonoBehaviour
         {
             ChangeLoop();
         }
-        GameObject Generator = GameObject.FindGameObjectWithTag("Generator");
-        Generator.GetComponent<Generator>().CreateBattlefield(CurrentIsland.IslandName);
+        GameObject generator = GameObject.FindGameObjectWithTag("Generator");
+        var battlefield = generator.GetComponent<Generator>().CreateBattlefield(CurrentIsland.IslandName);
+        var rows = Math.Max(battlefield.AllySlots.GetLength(0), battlefield.EnemySlots.GetLength(0));
+        var cols = battlefield.AllySlots.GetLength(1) + battlefield.EnemySlots.GetLength(1);
+        var midX = (cols/2+0.75f) * Generator.ColumnSize;
+        var midY = (-rows/2-2f) * Generator.RowSize;
+        var height = rows * Generator.RowSize;
+        var width = (cols + 0.5f) * Generator.ColumnSize / battlefieldCamera.aspect;
+        var borderSize = 0.5f;
         battlefieldCamera.gameObject.SetActive(true);
+        battlefieldCamera.orthographicSize = Mathf.Max(width, height)/2 + borderSize;
+        battlefieldCamera.transform.position = new Vector3(midX, midY, battlefieldCamera.transform.position.z);
     }
 
     private void ChangeLoop()
