@@ -10,8 +10,7 @@ public class Generator : MonoBehaviour
 {
     public static readonly int ColumnSize = 7;
     public static readonly int RowSize = 10;
-    Battlefield battlefield;
-    bool generated = false;
+    public Battlefield battlefield;
     [SerializeField] public GameObject Deck;
 
     public static string GetColumn(string columnName, string[] columns, string[] columnNames)
@@ -163,10 +162,9 @@ public class Generator : MonoBehaviour
 
     private void Update()
     {
-        if (EditorApplication.isPlaying && !generated)
+        if (EditorApplication.isPlaying && battlefield == null)
         {
             CreateBattlefield();
-            generated = true;
         }
     }
 

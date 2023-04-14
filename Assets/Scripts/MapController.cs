@@ -54,8 +54,9 @@ public class MapController : MonoBehaviour
         battlefieldCamera.transform.position = new Vector3(midX, midY, battlefieldCamera.transform.position.z);
     }
 
-    private void ChangeLoop()
+    public void ChangeLoop()
     {
+        GameObject.FindGameObjectWithTag("Generator").GetComponent<Generator>().battlefield.NextRound();
         ++loop;
         _loopText.SetText("TURN " + loop.ToString());
     }

@@ -246,7 +246,7 @@ public class Battlefield : MonoBehaviour
     }
 
     [EditorCools.Button]
-    void RunActions()
+    public void NextRound()
     {
         foreach (var (slot, action) in actions)
         {
