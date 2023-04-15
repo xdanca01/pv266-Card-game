@@ -61,7 +61,7 @@ public class Icon : MonoBehaviour
         icon.UpdateImage().transform.position = gameobject.transform.position; 
         icon.title = title;
         icon.description = description;
-        icon.UpdateText();      
+        icon.UpdateText();
         icon.TextColor = FSColor.White;
         gameobject.transform.position = parent.transform.position;
         icon.FreshCopy = (GameObject parent) => Icon.New(icon.creator, parent, icon.Title, icon.Description, icon.spriteName, icon.color);

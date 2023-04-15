@@ -24,9 +24,9 @@ public abstract class ItemSlot<I, S> : MonoBehaviour where I: Interactable where
     // if icon = null then slot will become empty
     public void Set(I interactible)
     {
-        if (this.icon != null)
+        if (icon != null)
         {
-            DestroyImmediate(this.icon);
+            DestroyImmediate(icon.gameObject);
         }
         if (interactible == null)
         {
