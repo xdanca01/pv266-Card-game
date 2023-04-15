@@ -26,7 +26,7 @@ public abstract class ItemSlot<I, S> : MonoBehaviour where I: Interactable where
     {
         if (icon != null)
         {
-            DestroyImmediate(icon.gameObject);
+            Destroy(icon.gameObject);
         }
         if (interactible == null)
         {

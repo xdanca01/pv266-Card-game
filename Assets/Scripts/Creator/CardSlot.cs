@@ -6,9 +6,9 @@ using Image = UnityEngine.UI.Image;
 [Flags]
 public enum CardFlag
 {
-    Default = 1,
-    Entered = 2,
-    Highlight = 4,
+    None = 0,    
+    Entered = 1,
+    Highlight = 2,
 }
 
 public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
@@ -30,7 +30,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         cardSlot.creator = creator;
         cardSlot.gameObject.transform.position = position;
         cardSlot.battlefield = battlefield;
-        cardSlot.flag = CardFlag.Default;
+        cardSlot.flag = CardFlag.None;
         return cardSlot;
     }
 
@@ -150,20 +150,44 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
+    public void ClearUnitIfDead()
+    {
+        if (this.unit != null && this.unit.HP <= 0)
+        {
+            Destroy(this.unit.gameObject);
+            this.unit = null;
+            if (this.upgrade != null)
+            {
+                this.upgrade.gameObject.SetActive(true);
+            }
+            else
+            {
+                this.empty.gameObject.SetActive(true);
+            }
+        }
+    }
+
+
     // if icon = null then slot will become empty
     public void SetUnit(Unit unit)
     {
-        RemoveEffectFromUnit();
+        RemoveEffectFromUnit();        
         if (unit == null)
         {
             empty.gameObject.SetActive(upgrade == null);
-            upgrade?.gameObject.SetActive(true);
-            this.unit = null;
+            if (this.upgrade != null)
+            {
+                upgrade.gameObject.SetActive(true);
+            }
+            this.unit = null;          
         }
         else
         {
             empty.gameObject.SetActive(false);
-            upgrade?.gameObject.SetActive(false);
+            if (this.upgrade != null)
+            {
+                upgrade.gameObject.SetActive(false);
+            }
             this.unit = unit;
             this.unit.abilities.SetCardSlot(this);
             this.unit.transform.SetParent(gameObject.transform);

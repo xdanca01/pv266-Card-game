@@ -121,9 +121,6 @@ public class Battlefield : MonoBehaviour
         throw new System.Exception("FindPosition found nothing");
     }
 
-
-
-
     [EditorCools.Button]
     public void NextRound()
     {
@@ -133,5 +130,13 @@ public class Battlefield : MonoBehaviour
             action.Execute();
         }
         actions.Clear();
+        foreach (var ally in AllySlots)
+        {
+            ally.ClearUnitIfDead();
+        }
+        foreach (var enemy in EnemySlots)
+        {
+            enemy.ClearUnitIfDead();
+        }
     }
 }
