@@ -167,8 +167,8 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-
     // if icon = null then slot will become empty
+    // will never kill and clear the unit it has, call clear unit if such behaviour is desired
     public void SetUnit(Unit unit)
     {
         RemoveEffectFromUnit();        
