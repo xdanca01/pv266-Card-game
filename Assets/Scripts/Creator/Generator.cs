@@ -122,6 +122,10 @@ public class Generator : MonoBehaviour
             unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), - RowSize * (i / columnsCount + 2)));
             units.Add(title, unit);
         }
+        if (Deck != null)
+        {
+            Deck.GetComponent<Deck>().heroes = units;
+        }
         return (upgrades, abilities, units);
     }
 
@@ -174,5 +178,12 @@ public class Generator : MonoBehaviour
         Transform upgrades = transform.Find("Upgrades");
         upgrade = upgrades.Find(name).gameObject;
         return upgrade;
+    }
+    public GameObject GetHero(string name)
+    {
+        GameObject hero;
+        Transform heroes = transform.Find("Units");
+        hero = heroes.Find(name).gameObject;
+        return hero;
     }
 }

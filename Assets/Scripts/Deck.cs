@@ -17,6 +17,7 @@ public class Deck : MonoBehaviour
     [SerializeField] public Color DisabledColor;
 
     public Dictionary<string, Upgrade> upgrades;
+    public Dictionary<string, Unit> heroes;
 
     [SerializeField] public Generator generator;
     int LastAvailableID = 1;
@@ -32,8 +33,22 @@ public class Deck : MonoBehaviour
             ID = id;
         }
     }
+    public class HeroData
+    {
+        public bool active = true;
+        public Unit data;
+        public int ID;
+        public string name;
+        public HeroData(Unit unitData, int id, string name, bool state = true)
+        {
+            this.active = state;
+            this.data = unitData;
+            this.name = name;
+            ID = id;
+        }
+    }
 
-    List<Unit> deckOfHeroes = new();
+    List<HeroData> deckOfHeroes = new();
     List<UpgradeData> deckOfUpgrades = new();
 
     private void OnEnable()
@@ -43,21 +58,34 @@ public class Deck : MonoBehaviour
             UpgradeData data = new UpgradeData(upgrade.Value, LastAvailableID++, true);
             deckOfUpgrades.Add(data);
         };
+        foreach(var hero in heroes)
+        {
+            HeroData data = new HeroData(hero.Value, LastAvailableID++, hero.Key, true);
+            deckOfHeroes.Add(data);
+        }
     }
 
-    public List<Unit> getHeroes()
+    public List<HeroData> getHeroes()
     {
         return deckOfHeroes;
     }
 
-    public void addHero(Unit hero)
+    public void addHero(Unit hero, string name)
     {
-        deckOfHeroes.Add(hero);
+        HeroData H = new(hero, LastAvailableID++, name, true);
+        deckOfHeroes.Add(H);
     }
 
-    public void removeHero(Unit hero)
+    public void removeHero(HeroData hero)
     {
-        deckOfHeroes.Remove(hero);
+        foreach (var u in deckOfHeroes)
+        {
+            if (u.ID == hero.ID)
+            {
+                deckOfHeroes.Remove(hero);
+                return;
+            }
+        }
     }
 
     public List<Upgrade> getUpgrades()
@@ -113,15 +141,15 @@ public class Deck : MonoBehaviour
     {
         //Test TODO remove this for cycle
         //deckOfUpgrades.Clear();
-        deckOfHeroes.Clear();
+        //deckOfHeroes.Clear();
         //deckOfUpgrades.Clear();
         for (int i = 0; i < 3; ++i)
         {
             //deckOfUpgrades.Add(new UpgradeData(new Upgrade(), LastAvailableID++));
-            deckOfHeroes.Add(new Unit());
+            //deckOfHeroes.Add(new Unit());
         }
         DisableButton.SetActive(false);
-        GenerateUpgrades();
+        //GenerateUpgrades();
         GenerateHeroes();
     }
 
@@ -167,8 +195,10 @@ public class Deck : MonoBehaviour
         List<UpgradeData> Active = new();
         foreach (var hero in deckOfHeroes)
         {
-            GameObject u = Instantiate(UpgradePrefab, HeroesGrid.transform);
+            GameObject u = Instantiate(HeroPrefab, HeroesGrid.transform);
             Button button = u.GetComponent<Button>();
+            HeroButton data = u.GetComponent<HeroButton>();
+            data.SetPrefabData(hero.name, hero.data.MAX_HP.ToString());
             button.onClick.AddListener(delegate () { PreviewHero(hero); });
         }
     }
@@ -203,9 +233,17 @@ public class Deck : MonoBehaviour
         Debug.Log("Upgrade: " + upgrade);
     }
 
-    public void PreviewHero(Unit hero)
+    public void PreviewHero(HeroData hero)
     {
         DisableButton.SetActive(false);
-        Debug.Log("Upgrade: " + hero);
+        EnableButton.SetActive(false);
+        GameObject heroObject = generator.GetHero(hero.name);
+        foreach (Transform child in PreviewGrid.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        GameObject obj = Instantiate(heroObject, PreviewGrid.transform);
+        obj.transform.localScale = new Vector3(30.0f, 30.0f, 30.0f);
+        Debug.Log("Hero: " + hero);
     }
 }
