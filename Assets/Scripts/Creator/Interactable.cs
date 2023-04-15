@@ -6,4 +6,5 @@ public interface Interactable
 {
     public Icon Icon { get; }
     public Creator Card { get; }
+    public Background Background { get; }
 }

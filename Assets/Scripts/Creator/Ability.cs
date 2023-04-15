@@ -5,6 +5,7 @@ public class Ability : MonoBehaviour, IAbility, Interactable
 {
     public Creator Card { get; private set; }
     public Icon Icon { get; private set; }
+    public Background Background { get; private set; }
 
     private uint percentage;
     public uint Percentage { get => percentage; set {
@@ -29,6 +30,7 @@ public class Ability : MonoBehaviour, IAbility, Interactable
 
     public AbilityType Type { get; private set; }
 
+
     private void UpdateDescription()
     {
         var percentage = Percentage + "%";
@@ -43,11 +45,11 @@ public class Ability : MonoBehaviour, IAbility, Interactable
     public static Ability New(GameObject parent, string title, AbilityType type, uint percentage, uint low, uint high, string spriteName)
     {
         var Card = new Creator(title, parent)
-            .Background()
             .MiddleTitle()
             .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Icons", spriteName, type.ToFSColor());
-        var ability = Card.gameobject.GetOrAddComponent<Ability>();
+        var ability = Card.gameobject.GetOrAddComponent<Ability>();      
         ability.Card = Card;
+        ability.Background = Background.New(Card);
         ability.percentage = percentage;
         ability.low = low;
         ability.high = high;

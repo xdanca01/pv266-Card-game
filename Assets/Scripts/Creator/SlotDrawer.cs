@@ -9,17 +9,20 @@ public abstract class SlotDrawer<I, S, D> : MonoBehaviour where I: Interactable 
     protected List<S> list;
     private Creator creator;
 
-    public static D New(Creator creator, string reason, uint count, bool horizontal, Vector2 position)
+    protected static D New(Creator creator, string reason, uint horizontal, uint vertical, Vector2 position)
     {
         var parent = creator.FindGameObject(reason);
         creator.FindComponent<RectTransform>(parent).sizeDelta = new Vector2(Creator.cardWidth, Creator.cardHeight);
         var slotDrawer = parent.AddComponent<D>();
         slotDrawer.creator = creator;
         slotDrawer.list = new List<S>();
-        for (int i = 0; i < count; i++)
+        for (int row = 0; row < vertical; row++)
         {
-            slotDrawer.list.Add(ItemSlot<I, S>.New(creator, reason + " " + i, parent, horizontal,
-                horizontal ? new Vector2(position.x + 2 * i, position.y) : new Vector2(position.x, position.y + 2 * i)));
+            for (int col = 0; col < horizontal; col++)
+            {
+                slotDrawer.list.Add(ItemSlot<I, S>.New(creator, reason + " " + row + " " + col, parent, horizontal > vertical, 
+                    new Vector2(position.x + Creator.hexagonWidth * col, position.y + Creator.hexagonHeight * row)));
+            }
         }
         return slotDrawer;
     }

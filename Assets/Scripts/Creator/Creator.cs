@@ -13,6 +13,9 @@ public class Creator
     public static readonly float cardHeight = 9f;
     public static readonly float cardWidthWithBorder = cardWidth + 0.4f;
     public static readonly float cardHeightWithBorder = cardHeight + 0.4f;
+    public static readonly float hexagonWidth = 2f;
+    public static readonly float hexagonHeight = 2f;
+
     public void SetRect(GameObject gameobject, Rect rect)
     {
         var transform = gameobject.GetComponent<RectTransform>();
@@ -82,7 +85,7 @@ public class Creator
                         : "Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/HexagonFlat-TopWithBorder.png");
         image.color = color.ToColor();
         image.preserveAspect = true; 
-        hexagon.GetComponent<RectTransform>().localScale = new Vector3(2f, 2f, 1f);        
+        hexagon.GetComponent<RectTransform>().localScale = new Vector3(hexagonWidth, hexagonHeight, 1f);
         return hexagon;
     }
 
@@ -97,17 +100,7 @@ public class Creator
         FindComponent<GraphicRaycaster>(gameobject);
     }
 
-    public Creator Background()
-    {
-        var background = FindGameObject("Background");
-        var image = FindComponent<Image>(background);
-        image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/9-Sliced.png");
-        image.type = Image.Type.Sliced;
-        image.pixelsPerUnitMultiplier = 100;
-        FindComponent<RectTransform>(background).sizeDelta = new Vector2(cardWidthWithBorder, cardHeightWithBorder);
-        image.color = new Color(0f, 0f, 0f, 0.5f);
-        return this;
-    }
+
 
     public Creator LeftTitle()
     {

@@ -20,13 +20,13 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private static Battlefield.CardAction actionInProgress;
     private CardFlag flag;
     private LineRenderer actionLine;
-
-    private GameObject Empty => gameObject.transform.GetChild(0).gameObject;
+    private Background empty;
 
     public static CardSlot New(string reason, GameObject parent, Vector2 position, Battlefield battlefield)
     {
-        var creator = new Creator(reason, parent).Background();
+        var creator = new Creator(reason, parent);
         var cardSlot = creator.gameobject.AddComponent<CardSlot>();
+        cardSlot.empty = Background.New(creator);
         cardSlot.creator = creator;
         cardSlot.gameObject.transform.position = position;
         cardSlot.battlefield = battlefield;
@@ -118,8 +118,8 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private void SetColor(FSColor color)
     {
-        GameObject background = this.unit != null ? this.unit.transform.Find("Background").gameObject : Empty;
-        background.GetComponent<Image>().color = color.ToColor(0.5f);
+        Background background = this.unit != null ? this.unit.Background : this.upgrade != null ? this.upgrade.Background : empty;
+        background.SetColor(color);
     }
 
     public void AddFlag(CardFlag flag)
@@ -138,7 +138,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (flag.HasFlag(CardFlag.Entered))
         {
-            SetColor(FSColor.Green);
+            SetColor(FSColor.Green);            
         }
         else if (flag.HasFlag(CardFlag.Highlight))
         {
@@ -153,43 +153,41 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     // if icon = null then slot will become empty
     public void SetUnit(Unit unit)
     {
-        if (this.unit != null)
-        {
-            DestroyImmediate(this.unit.Card.gameobject);
-        }
+        RemoveEffectFromUnit();
         if (unit == null)
         {
-            Empty.SetActive(upgrade == null);
+            empty.gameObject.SetActive(upgrade == null);
+            upgrade?.gameObject.SetActive(true);
             this.unit = null;
         }
         else
         {
-            Empty.SetActive(false);
+            empty.gameObject.SetActive(false);
+            upgrade?.gameObject.SetActive(false);
             this.unit = unit;
             this.unit.abilities.SetCardSlot(this);
             this.unit.transform.SetParent(gameObject.transform);
             this.unit.transform.position = this.gameObject.transform.position;
         }
+        ApplyEffectOnUnit();
     }
 
     public void SetUpgrade(Upgrade upgrade)
     {
-        if (this.upgrade != null)
-        {
-            DestroyImmediate(this.upgrade.Card.gameobject);
-        }
+        RemoveEffectFromUnit();
         if (upgrade == null)
         {
-            Empty.SetActive(unit == null);
-            this.upgrade = null;
+            empty.gameObject.SetActive(unit == null);
+            this.upgrade = null;            
         }
         else
         {
-            Empty.SetActive(false);
+            empty.gameObject.SetActive(false);
             this.upgrade = upgrade;
             this.upgrade.transform.SetParent(gameObject.transform);
             this.upgrade.transform.position = this.gameObject.transform.position;
         }
+        ApplyEffectOnUnit();
     }
 
     public Unit GetUnit()
@@ -204,19 +202,24 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public bool Contains(Vector2 worldPosition)
     {
-        return worldPosition.x >= this.Empty.transform.position.x - Creator.cardWidthWithBorder/2f
-            && worldPosition.x <= this.Empty.transform.position.x + Creator.cardWidthWithBorder/2f
-            && worldPosition.y >= this.Empty.transform.position.y - Creator.cardHeightWithBorder/2f
-            && worldPosition.y <= this.Empty.transform.position.y + Creator.cardHeightWithBorder/2f;
+        return worldPosition.x >= this.empty.transform.position.x - Creator.cardWidthWithBorder/2f
+            && worldPosition.x <= this.empty.transform.position.x + Creator.cardWidthWithBorder/2f
+            && worldPosition.y >= this.empty.transform.position.y - Creator.cardHeightWithBorder/2f
+            && worldPosition.y <= this.empty.transform.position.y + Creator.cardHeightWithBorder/2f;
     }
 
-    public void SetPosition(Vector2 position)
+    private void ApplyEffectOnUnit()
     {
-        this.gameObject.transform.position = position;
+        if (this.upgrade != null && this.unit != null)
+        {
+            this.unit.ApplyEffect(this.upgrade);
+        }
     }
-
-    public Vector2 GetPosition()
+    private void RemoveEffectFromUnit()
     {
-        return this.gameObject.transform.position;
+        if (this.upgrade != null && this.unit != null)
+        {
+            this.unit.RemoveEffect(this.upgrade);
+        }
     }
 }

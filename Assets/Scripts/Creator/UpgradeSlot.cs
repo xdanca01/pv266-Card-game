@@ -44,6 +44,7 @@ public class UpgradeSlot : ItemSlot<Upgrade, UpgradeSlot>, IPointerMoveHandler, 
                 cardDefaultPosition = interactible.Card.gameobject.transform.position;
             }
             interactible.Card.SetPosition(position);
+            interactible.Background.SetAlpha(1.0f);
         }
     }
 
@@ -53,6 +54,7 @@ public class UpgradeSlot : ItemSlot<Upgrade, UpgradeSlot>, IPointerMoveHandler, 
         {
             interactible.Card.SetPosition(cardDefaultPosition);
             cardDefaultPosition = Vector2.zero;
+            interactible.Background.SetAlpha(0.5f);
         }
     }
 

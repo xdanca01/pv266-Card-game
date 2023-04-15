@@ -10,7 +10,7 @@ public class Generator : MonoBehaviour
 {
     public static readonly int ColumnSize = 7;
     public static readonly int RowSize = 10;
-    public Battlefield battlefield;
+    public Battlefield battlefield { get; private set; }
     [SerializeField] public GameObject Deck;
 
     public static string GetColumn(string columnName, string[] columns, string[] columnNames)
