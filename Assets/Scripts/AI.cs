@@ -7,53 +7,46 @@ using Unity.VisualScripting;
 
 public class AI : MonoBehaviour
 {
-    private List<List<Unit>> Heroes = new();
-    private List<List<Unit>> Monsters = new();
     private Battlefield b;
-    private List<IUnit> targeted = new();
+    private List<CardSlot> targeted = new();
+    public static AI instance { get; private set; }
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+
     /// <summary>
     /// Calculates moves for each Monster.
     /// </summary>
     /// <returns>
     ///     Returns Dictionary<Me, <Target, Ability>>
     /// </returns>
-    public Dictionary<Unit, Tuple<Unit, Ability>> chooseTargets(Battlefield bf)
+    public Dictionary<CardSlot, CardAction> chooseTargets(Battlefield bf)
     {
         b = bf;
-        Unit u;
-        for (int row = 0; row < bf.EnemySlots.GetLength(0); ++row)
-        {
-            for (int col = 0; col < bf.EnemySlots.GetLength(1); ++col)
-            {
-                if(col == 0)
-                {
-                    Monsters.Add(new List<Unit>());
-                    Heroes.Add(new List<Unit>());
-                }
-                u = bf.EnemySlots[row,col].GetUnit();
-                if(u != null)
-                {
-                    Monsters[row].Add(u);
-                }
-                u = bf.AllySlots[row, col].GetUnit();
-                if (u != null)
-                {
-                    Heroes[row].Add(u);
-                }
-            }
-        }
-        Dictionary<Unit, Tuple<Unit, Ability>> actions = new Dictionary<Unit, Tuple<Unit, Ability>>();
-        
+        Dictionary<CardSlot, CardAction> actions = new Dictionary<CardSlot, CardAction>();
         //calculate priority
-        Dictionary<Unit, float> priority = new();
+        Dictionary<CardSlot, float> priority = new();
         float prio = 10.0f;
         //Todo change from Interface to object
-        foreach(var row in Heroes)
+        for(int row = 0; row < bf.AllySlots.GetLength(0); ++row)
         {
-            foreach(var unit in row)
+            for (int col = 0; col < bf.AllySlots.GetLength(1); ++col)
             {
-                prio = getPriority(row, unit);
-                priority.Add(unit, prio);
+                if (bf.AllySlots[row, col].IsEmpty())
+                {
+                    continue;
+                }
+                prio = getPriority(bf.AllySlots[row, col]);
+                priority.Add(bf.AllySlots[row, col], prio);
             }
         }
 
@@ -62,23 +55,31 @@ public class AI : MonoBehaviour
         //Target chance between 60% and 100% (average for each attack)
         float wantedChance = UnityEngine.Random.Range(0.6f, 1.0f);
         float damage = 0.0f;
-        Unit target = getTargetWithPriority(priority);
-        foreach (var row in Monsters)
+        CardSlot target = getTargetWithPriority(priority);
+        for (int row = 0; row < bf.EnemySlots.GetLength(0); ++row)
         {
-            foreach(Unit monster in row)
+            for (int col = 0; col < bf.EnemySlots.GetLength(1); ++col)
             {
                 Ability bestAttack = null;
-                foreach(Ability attack in monster.Abilities)
+                if (bf.EnemySlots[row, col].IsEmpty())
                 {
+                    continue;
+                }
+                foreach (Ability attack in bf.EnemySlots[row, col].GetUnit().Abilities)
+                {
+                    if(attack == null)
+                    {
+                        continue;
+                    }
                     float perc = (float)attack.Percentage / 100.0f;
-                    if ((attack.Type != AbilityType.Heal && chance + perc >= wantedChance) || 
+                    if ((attack.Type != AbilityType.Heal && chance + perc >= wantedChance) ||
                         (attack.Type != AbilityType.Heal && bestAttack == null))
                     {
                         bestAttack = attack;
                     }
                 }
                 //If the damage is higher without this attack, add percentage
-                if(damage >= target.HP)
+                if (damage >= target.GetUnit().HP)
                 {
                     float attackDamage = (bestAttack.Low + bestAttack.High) / 2.0f;
                     float damageRatio = attackDamage / damage;
@@ -90,10 +91,11 @@ public class AI : MonoBehaviour
                     //average chance for each attack
                     chance += (chance * actions.Count + (float)bestAttack.Percentage / 100.0f) / ((float)actions.Count + 1.0f);
                 }
-                Tuple<Unit, Ability> t = new Tuple<Unit, Ability>(target, bestAttack);
-                actions.Add(monster, t);
+                CardAction t = new AbilityAction(bf, bf.EnemySlots[row, col], bestAttack);
+                t.Assign(target);
+                actions.Add(bf.EnemySlots[row, col], t);
             }
-            if(damage > target.HP && chance >= wantedChance)
+            if (damage > target.GetUnit().HP && chance >= wantedChance)
             {
                 //TODO change target to another one in other row if it exists
                 priority.Remove(target);
@@ -103,9 +105,9 @@ public class AI : MonoBehaviour
         return actions;
     }
 
-    private Unit getTargetWithPriority(Dictionary<Unit, float> list)
+    private CardSlot getTargetWithPriority(Dictionary<CardSlot, float> list)
     {
-        Unit best = null;
+        CardSlot best = null;
         float priority = 0.0f;
         foreach(var unit in list)
         {
@@ -114,8 +116,7 @@ public class AI : MonoBehaviour
                 best = unit.Key;
             }
         }
-        List<Unit> row = getRowWithUnit(best);
-        List<Unit> units = getUnitsInFront(row, best);
+        List<CardSlot> units = getUnitsInFront(best);
         best = units[units.Count - 1];
         //Target already computed before
         if(targeted.Contains(best) == true)
@@ -127,13 +128,20 @@ public class AI : MonoBehaviour
     }
 
     //Including me (hero)
-    private List<Unit> getUnitsInFront(List<Unit> heroes, Unit hero)
+    private List<CardSlot> getUnitsInFront(CardSlot hero)
     {
-        List<Unit> inFront = new();
-        int col = heroes.IndexOf(hero);
-        foreach(Unit h in heroes)
+        List<CardSlot> inFront = new();
+        int col, row;
+        var indexes = IndexesOf(hero, b.AllySlots);
+        row = indexes.Item1;
+        col = indexes.Item2;
+        foreach(CardSlot slot in b.AllySlots)
         {
-            if (heroes.IndexOf(h) >= col) inFront.Add(h);
+            Tuple<int, int> indexes2 = IndexesOf(slot, b.AllySlots);
+            if(row == indexes.Item1 && col <= indexes2.Item2 && !b.AllySlots[indexes2.Item1, indexes2.Item2].IsEmpty())
+            {
+                inFront.Add(slot);
+            }
         }
         return inFront;
     }
@@ -151,34 +159,37 @@ public class AI : MonoBehaviour
         return attackScore;
     }
 
-    private List<Unit> getRowWithUnit(Unit unit)
-    {
-        foreach(var row in Heroes)
-        {
-            if(row.Contains(unit) == true)
-            {
-                return row;
-            }
-        }
-        return null;
-    }
-
-    private float getPriority(List<Unit> row, Unit unit)
+    private float getPriority(CardSlot unit)
     {
         float priority = 10.0f;
         //HP
-        priority -= (float)unit.HP / 10.0f;
+        priority -= (float)unit.GetUnit().HP / 10.0f;
         //Average attack
-        priority += getPriorityAttack(unit);
+        priority += getPriorityAttack(unit.GetUnit());
         //heroes in front of me
-        foreach (var frontHero in getUnitsInFront(row, unit))
+        foreach (var frontHero in getUnitsInFront(unit))
         {
-            if(frontHero != unit)
+            if (frontHero != unit)
             {
-                priority -= frontHero.HP / 20.0f;
+                priority -= frontHero.GetUnit().HP / 20.0f;
             }
         }
         return priority;
+    }
+
+    private Tuple<int, int> IndexesOf(CardSlot hero, CardSlot[,] slots)
+    {
+        for(int row = 0; row < slots.GetLength(0); ++row)
+        {
+            for (int col = 0; col < slots.GetLength(1); ++col)
+            {
+                if(hero == slots[row, col])
+                {
+                    return new Tuple<int, int>(row, col);
+                }
+            }
+        }
+        return new Tuple<int, int>(-1, -1);
     }
 
     private void moveActions(Battlefield bf)

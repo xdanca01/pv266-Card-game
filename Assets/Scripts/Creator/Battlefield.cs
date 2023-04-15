@@ -122,11 +122,22 @@ public class Battlefield : MonoBehaviour
     }
 
 
-
+    private void addAiActions()
+    {
+        var moves = AI.instance.chooseTargets(this);
+        foreach(var move in moves)
+        {
+            if (!actions.ContainsKey(move.Key))
+            {
+                actions.Add(move.Key, move.Value);
+            }
+        }
+    }
 
     [EditorCools.Button]
     public void NextRound()
     {
+        addAiActions();
         foreach (var (slot, action) in actions)
         {
             slot.RemoveActionLine();
