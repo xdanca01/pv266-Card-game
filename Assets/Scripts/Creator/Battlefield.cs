@@ -144,5 +144,13 @@ public class Battlefield : MonoBehaviour
             action.Execute();
         }
         actions.Clear();
+        foreach (var ally in AllySlots)
+        {
+            ally.ClearUnitIfDead();
+        }
+        foreach (var enemy in EnemySlots)
+        {
+            enemy.ClearUnitIfDead();
+        }
     }
 }

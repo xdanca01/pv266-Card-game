@@ -60,6 +60,7 @@ public class Creator
         textGO.name = purpose;
         var TMPro = FindComponent<TextMeshProUGUI>(textGO);
         TMPro.text = text;
+        TMPro.fontSize = 1;
         TMPro.enableAutoSizing = true;
         TMPro.fontSizeMax = 100;
         TMPro.fontSizeMin = 0;

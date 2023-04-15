@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 using System.ComponentModel;
+using UnityEngine.UIElements;
 
 public abstract class CardAction
 {
@@ -68,6 +69,7 @@ public class Move : CardAction
             throw new System.Exception("Cannot move to opponent's battlefield!");
         }
         var swapUnit = executor.GetUnit();
+
         executor.SetUnit(target.GetUnit());
         target.SetUnit(swapUnit);
     }
@@ -114,17 +116,40 @@ public class AbilityAction : CardAction
         }
     }
 
+    // attackable units are the first in each row
+    private bool IsAttackable(CardSlot slot)
+    {
+        var position = battlefield.FindPosition(slot);
+        var start = position.Ally ? (position.Column + 1) : 0;
+        var end = position.Ally ? (uint) battlefield.Slots(position.Ally).GetLength(0) : position.Column;
+        for (var i = start; i < end; i++)
+        {
+            if (!battlefield.Slots(position.Ally)[position.Row, i].IsEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // healable units are those which are behind
+    private bool IsHealable(CardSlot slot, Battlefield.CardPosition from)
+    {
+        return from.Ally ? battlefield.FindPosition(slot).Column <= from.Column : battlefield.FindPosition(slot).Column >= from.Column;
+    }
+
     public override IReadOnlyList<CardSlot> PossibleTargets()
     {
+        var position = battlefield.FindPosition(this.executor);
         return this.ability.Type switch
         {
             AbilityType.LightAttack or AbilityType.HeavyAttack => battlefield
-                .Slots(!battlefield.FindPosition(this.executor).Ally).Cast<CardSlot>()
-                .Where(slot => !slot.IsEmpty())
+                .Slots(!position.Ally).Cast<CardSlot>()
+                .Where(slot => !slot.IsEmpty() && IsAttackable(slot))
                 .ToArray(),
             AbilityType.Heal => battlefield
-                .Slots(battlefield.FindPosition(this.executor).Ally).Cast<CardSlot>()
-                .Where(slot => !slot.IsEmpty())
+                .Slots(position.Ally).Cast<CardSlot>()
+                .Where(slot => !slot.IsEmpty() && IsHealable(slot, position))
                 .ToList(),
             _ => throw new System.Exception("Unknown AbilityType"),
         };
