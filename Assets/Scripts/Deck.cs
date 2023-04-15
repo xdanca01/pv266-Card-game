@@ -149,7 +149,7 @@ public class Deck : MonoBehaviour
             //deckOfHeroes.Add(new Unit());
         }
         DisableButton.SetActive(false);
-        //GenerateUpgrades();
+        GenerateUpgrades();
         GenerateHeroes();
     }
 

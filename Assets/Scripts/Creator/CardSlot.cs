@@ -17,7 +17,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private Upgrade upgrade;
     private Creator creator;
     private Battlefield battlefield;
-    private static Battlefield.CardAction actionInProgress;
+    private static CardAction actionInProgress;
     private CardFlag flag;
     private LineRenderer actionLine;
     private Background empty;
@@ -88,7 +88,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         if (actionInProgress == default)
         {
-            actionInProgress = new Battlefield.Move(battlefield, this);
+            actionInProgress = new Move(battlefield, this);
             AddHighlights();
             return;
         }
@@ -107,7 +107,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void AbilitySlotClick(Ability ability)
     {
         RemoveHighlights();
-        actionInProgress = new Battlefield.AbilityAction(battlefield, this, ability);
+        actionInProgress = new AbilityAction(battlefield, this, ability);
         AddHighlights();
     }
 
