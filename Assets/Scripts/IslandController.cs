@@ -8,10 +8,18 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
+public enum IslandType
+{
+    Trader,
+    Fight,
+    Boss
+}
+
 public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler ,IPointerClickHandler
 {
     public bool ActiveIsland { get; set; }
     public bool IslandCanBeNext { get; set; }
+    [SerializeField] public IslandType typeOfIsland;
     [SerializeField] public String IslandName;
     [SerializeField] private bool _generateRandomVisual;
     [SerializeField] private Sprite _islandShape;
