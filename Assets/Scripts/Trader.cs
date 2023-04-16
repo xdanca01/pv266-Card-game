@@ -128,7 +128,8 @@ public class Trader : MonoBehaviour
         }
         GameObject upgradeObject = generator.GetUpgrade(upgrade.data.name);
         GameObject obj = Instantiate(upgradeObject, PreviewGrid.transform);
-        obj.transform.localScale = new Vector3(30.0f, 30.0f, 30.0f);
+        obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        obj.transform.position = PreviewGrid.transform.position;
         if (sell == true)
         {
             SellButton.SetActive(true);
@@ -149,7 +150,8 @@ public class Trader : MonoBehaviour
         }
         GameObject heroObject = generator.GetHero(hero.name);
         GameObject obj = Instantiate(heroObject, PreviewGrid.transform);
-        obj.transform.localScale = new Vector3(30.0f, 30.0f, 30.0f);
+        obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        obj.transform.position = PreviewGrid.transform.position;
         if (sell == true)
         {
             SellButton.SetActive(true);

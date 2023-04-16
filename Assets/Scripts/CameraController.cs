@@ -28,6 +28,14 @@ public class CameraController : MonoBehaviour
         Islands.enabled = true;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            CameraIslands();
+        }
+    }
+
     public void CameraIslands()
     {
         Battlefield.enabled = false;
