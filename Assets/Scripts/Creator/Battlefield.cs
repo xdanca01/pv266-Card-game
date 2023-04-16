@@ -134,13 +134,21 @@ public class Battlefield : MonoBehaviour
         }
     }
 
+    // MoveAction must be last in order of execution
+
+    private IEnumerable<CardAction> GetActionsInOrderOfExecution()
+    {
+        return actions.Values.Where(a => a.GetType() != typeof(Move))
+            .Concat(actions.Values.Where(a => a.GetType() == typeof(Move)));
+    }
+
     [EditorCools.Button]
     public void NextRound()
     {
         addAiActions();
-        foreach (var (slot, action) in actions)
+        foreach (var action in GetActionsInOrderOfExecution())
         {
-            slot.RemoveActionLine();
+            action.GetExecutor().RemoveActionLine();
             action.Execute();
         }
         actions.Clear();

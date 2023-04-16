@@ -3,9 +3,6 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-using System.ComponentModel;
-using UnityEngine.UIElements;
-
 public abstract class CardAction
 {
     protected CardSlot executor;
