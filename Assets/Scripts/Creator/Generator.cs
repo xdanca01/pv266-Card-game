@@ -10,6 +10,9 @@ public class Generator : MonoBehaviour
 {
     public static readonly int ColumnSize = 7;
     public static readonly int RowSize = 10;
+    private Dictionary<string, Upgrade> upgradesGenerated;
+    private Dictionary<string, Ability> abilitiesGenerated;
+    private Dictionary<string, Unit> unitsGenerated;
     public Battlefield battlefield { get; private set; }
     [SerializeField] public GameObject Deck;
 
@@ -138,6 +141,9 @@ public class Generator : MonoBehaviour
     public Battlefield CreateBattlefield(string mapName)
     {
         var (upgrades, abilities, units) = CreateUnits();
+        upgradesGenerated = upgrades;
+        abilitiesGenerated = abilities;
+        unitsGenerated = units;
         var table = File.ReadLines("Assets/Data/Map.csv");
         var columnNames = table.First().Split(",");
         string basedTitle = mapName;
@@ -161,6 +167,35 @@ public class Generator : MonoBehaviour
         var bats = new GameObject("Battlefields");
         bats.transform.parent = transform;
         battlefield = Battlefield.New(basedTitle, units, upgrades, bats, rowsCount, columnsCount);
+        return battlefield;
+    }
+
+    public Battlefield CreateOnlyBattlefield(string mapName)
+    {
+        var table = File.ReadLines("Assets/Data/Map.csv");
+        var columnNames = table.First().Split(",");
+        string basedTitle = mapName;
+        var rowsCount = 0u;
+        var columnsCount = 0u;
+        foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
+        {
+            var columns = line.Split(",");
+            var title = GetColumn("Title", columns, columnNames);
+            if (title == basedTitle)
+            {
+                rowsCount = uint.Parse(GetColumn("Rows", columns, columnNames));
+                columnsCount = uint.Parse(GetColumn("Columns", columns, columnNames));
+                break;
+            }
+        }
+        if (rowsCount == 0u && columnsCount == 0u)
+        {
+            throw new System.Exception("Battlefield not found: " + basedTitle);
+        }
+        GameObject.Destroy(transform.Find("Battlefields").gameObject);
+        var bats = new GameObject("Battlefields");
+        bats.transform.parent = transform;
+        battlefield = Battlefield.New(basedTitle, unitsGenerated, upgradesGenerated, bats, rowsCount, columnsCount);
         return battlefield;
     }
 

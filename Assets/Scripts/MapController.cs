@@ -48,7 +48,7 @@ public class MapController : MonoBehaviour
         else
         {
             GameObject generator = GameObject.FindGameObjectWithTag("Generator");
-            var battlefield = generator.GetComponent<Generator>().CreateBattlefield(CurrentIsland.IslandName);
+            var battlefield = generator.GetComponent<Generator>().CreateOnlyBattlefield(CurrentIsland.IslandName);
             var rows = Math.Max(battlefield.AllySlots.GetLength(0), battlefield.EnemySlots.GetLength(0));
             var cols = battlefield.AllySlots.GetLength(1) + battlefield.EnemySlots.GetLength(1);
             var midX = (cols / 2 + 0.75f) * Generator.ColumnSize;
