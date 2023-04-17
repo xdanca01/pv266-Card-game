@@ -51,13 +51,14 @@ public class MapController : MonoBehaviour
             var battlefield = generator.GetComponent<Generator>().CreateOnlyBattlefield(CurrentIsland.IslandName);
             var rows = Math.Max(battlefield.AllySlots.GetLength(0), battlefield.EnemySlots.GetLength(0));
             var cols = battlefield.AllySlots.GetLength(1) + battlefield.EnemySlots.GetLength(1);
-            var midX = (cols / 2 + 0.75f) * Generator.ColumnSize;
-            var midY = (-rows / 2 - 2f) * Generator.RowSize;
+            var midX = (cols / 2.0f + 0.75f) * Generator.ColumnSize;
+            var midY = (-rows / 2.0f - 1.5f) * Generator.RowSize;
             var height = rows * Generator.RowSize;
             var width = (cols + 0.5f) * Generator.ColumnSize / battlefieldCamera.aspect;
-            var borderSize = 0.5f;
+            var border = 1.2f; // 20% on the sides
             battlefieldCamera.enabled = true;
-            battlefieldCamera.orthographicSize = Mathf.Max(width, height) / 2 + borderSize;
+            Camera.main.enabled = false;
+            battlefieldCamera.orthographicSize = border*(Mathf.Max(width, height) / 2.0f);
             battlefieldCamera.transform.position = new Vector3(midX, midY, battlefieldCamera.transform.position.z);
         }   
     }
