@@ -52,7 +52,10 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        this.effects.Show();
+        if (!this.effects.IsCompletelyEmpty())
+        {
+            this.effects.Show();
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
