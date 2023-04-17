@@ -42,7 +42,7 @@ public class EffectsDrawer : SlotDrawer<Upgrade, UpgradeSlot, EffectsDrawer>
         }
         return true;
     }
-
+        
     public void Add(Upgrade effect)
     {
         for (uint i = 0; i < 4; i++)

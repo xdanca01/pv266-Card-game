@@ -21,16 +21,18 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private CardFlag flag;
     private LineRenderer actionLine;
     private Background empty;
+    private bool isControlledByPlayer;
 
-    public static CardSlot New(string reason, GameObject parent, Vector2 position, Battlefield battlefield)
+    public static CardSlot New(string reason, GameObject parent, Vector2 position, Battlefield battlefield, bool isControlledByPlayer)
     {
         var creator = new Creator(reason, parent);
         var cardSlot = creator.gameobject.AddComponent<CardSlot>();
         cardSlot.empty = Background.New(creator);
         cardSlot.creator = creator;
         cardSlot.gameObject.transform.position = position;
-        cardSlot.battlefield = battlefield;
+        cardSlot.battlefield = battlefield;        
         cardSlot.flag = CardFlag.None;
+        cardSlot.isControlledByPlayer = isControlledByPlayer;
         return cardSlot;
     }
 
@@ -46,7 +48,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        CardSlotClick();
+       CardSlotClick();
     }
 
     private void RemoveHighlights()
@@ -82,12 +84,12 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void CardSlotClick()
     {
-        if (!flag.HasFlag(CardFlag.Entered) || (actionInProgress == default && IsEmpty()))
+        if (!flag.HasFlag(CardFlag.Entered) || (actionInProgress == default && (IsEmpty() || !isControlledByPlayer)))
         {
             return;
         }
         if (actionInProgress == default)
-        {
+        {   
             actionInProgress = new Move(battlefield, this);
             AddHighlights();
             return;
@@ -106,9 +108,12 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void AbilitySlotClick(Ability ability)
     {
-        RemoveHighlights();
-        actionInProgress = new AbilityAction(battlefield, this, ability);
-        AddHighlights();
+        if (isControlledByPlayer)
+        {
+            RemoveHighlights();
+            actionInProgress = new AbilityAction(battlefield, this, ability);
+            AddHighlights();
+        }
     }
 
     public bool IsEmpty()
@@ -245,5 +250,10 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             this.unit.RemoveEffect(this.upgrade);
         }
+    }
+
+    public bool IsControlledByPlayer()
+    {
+        return isControlledByPlayer;
     }
 }

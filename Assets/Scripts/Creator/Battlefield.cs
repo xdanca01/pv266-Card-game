@@ -66,10 +66,10 @@ public class Battlefield : MonoBehaviour
             {
                 battlefield.AllySlots[row, column] = CardSlot.New(
                     "Ally Row " + row + " Column " + column, gameobject,
-                    GetPosition(row, column, true), battlefield);
+                    GetPosition(row, column, true), battlefield, true);
                 battlefield.EnemySlots[row, column] = CardSlot.New(
                     "Enemy Row " + row + " Column " + column, gameobject,
-                    GetPosition(row, column, false), battlefield);
+                    GetPosition(row, column, false), battlefield, false);
             }
         }
         var table = File.ReadLines("Assets/Data/Battlefield.csv");

@@ -14,7 +14,7 @@ public class AbilitySlot : ItemSlot<Ability, AbilitySlot>, IPointerEnterHandler,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (this.icon != null)
+        if (this.icon != null && CardSlot.IsControlledByPlayer())
         {
             CardSlot.RemoveFlag(CardFlag.Entered);
             icon.TextColor = FSColor.Green;
@@ -23,7 +23,7 @@ public class AbilitySlot : ItemSlot<Ability, AbilitySlot>, IPointerEnterHandler,
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (this.icon != null)
+        if (this.icon != null && CardSlot.IsControlledByPlayer())
         {
             icon.TextColor = FSColor.White;          
             if (CardSlot.Contains(eventData.pointerCurrentRaycast.worldPosition))
