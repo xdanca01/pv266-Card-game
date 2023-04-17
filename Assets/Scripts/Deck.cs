@@ -5,6 +5,20 @@ using UnityEngine.UI;
 
 public class Deck : MonoBehaviour
 {
+    public static Deck instance { get; private set; }
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+
     [SerializeField] public GameObject UpgradesGrid;
     [SerializeField] public GameObject PreviewGrid;
     [SerializeField] public GameObject HeroesGrid;
@@ -19,8 +33,10 @@ public class Deck : MonoBehaviour
     public Dictionary<string, Upgrade> upgrades;
     public Dictionary<string, Unit> heroes;
 
+    public int coins = 0;
+
     [SerializeField] public Generator generator;
-    int LastAvailableID = 1;
+    public int LastAvailableID = 1;
     public class UpgradeData
     {
         public bool active = false;
@@ -48,8 +64,8 @@ public class Deck : MonoBehaviour
         }
     }
 
-    List<HeroData> deckOfHeroes = new();
-    List<UpgradeData> deckOfUpgrades = new();
+    public List<HeroData> deckOfHeroes = new();
+    public List<UpgradeData> deckOfUpgrades = new();
 
     private void OnEnable()
     {
@@ -151,6 +167,7 @@ public class Deck : MonoBehaviour
         DisableButton.SetActive(false);
         GenerateUpgrades();
         GenerateHeroes();
+        Trader.instance.Generate();
     }
 
     public void GenerateUpgrades()

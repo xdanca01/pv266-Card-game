@@ -29,7 +29,7 @@ public class MapController : MonoBehaviour
     public void StartBattle(IslandController newIsland)
     {
         //Cant go to this island
-        if(CurrentIsland.IsPreviousFor(newIsland) == false)
+        if (CurrentIsland.IsPreviousFor(newIsland) == false)
         {
             return;
         }
@@ -40,18 +40,26 @@ public class MapController : MonoBehaviour
         {
             ChangeLoop();
         }
-        GameObject generator = GameObject.FindGameObjectWithTag("Generator");
-        var battlefield = generator.GetComponent<Generator>().CreateBattlefield(CurrentIsland.IslandName);
-        var rows = Math.Max(battlefield.AllySlots.GetLength(0), battlefield.EnemySlots.GetLength(0));
-        var cols = battlefield.AllySlots.GetLength(1) + battlefield.EnemySlots.GetLength(1);
-        var midX = (cols/2+0.75f) * Generator.ColumnSize;
-        var midY = (-rows/2-2f) * Generator.RowSize;
-        var height = rows * Generator.RowSize;
-        var width = (cols + 0.5f) * Generator.ColumnSize / battlefieldCamera.aspect;
-        var borderSize = 0.5f;
-        battlefieldCamera.enabled = true;        
-        battlefieldCamera.orthographicSize = Mathf.Max(width, height)/2 + borderSize;
-        battlefieldCamera.transform.position = new Vector3(midX, midY, battlefieldCamera.transform.position.z);
+        if (CurrentIsland.typeOfIsland == IslandType.Trader)
+        {
+            Trader.instance.Generate();
+            CameraController.instance.CameraTrader();
+        }
+        else
+        {
+            GameObject generator = GameObject.FindGameObjectWithTag("Generator");
+            var battlefield = generator.GetComponent<Generator>().CreateOnlyBattlefield(CurrentIsland.IslandName);
+            var rows = Math.Max(battlefield.AllySlots.GetLength(0), battlefield.EnemySlots.GetLength(0));
+            var cols = battlefield.AllySlots.GetLength(1) + battlefield.EnemySlots.GetLength(1);
+            var midX = (cols / 2 + 0.75f) * Generator.ColumnSize;
+            var midY = (-rows / 2 - 2f) * Generator.RowSize;
+            var height = rows * Generator.RowSize;
+            var width = (cols + 0.5f) * Generator.ColumnSize / battlefieldCamera.aspect;
+            var borderSize = 0.5f;
+            battlefieldCamera.enabled = true;
+            battlefieldCamera.orthographicSize = Mathf.Max(width, height) / 2 + borderSize;
+            battlefieldCamera.transform.position = new Vector3(midX, midY, battlefieldCamera.transform.position.z);
+        }   
     }
 
     public void ChangeLoop()
