@@ -36,6 +36,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+<<<<<<< Updated upstream
         AddFlag(CardFlag.Entered);
     }
 
@@ -109,6 +110,9 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         RemoveHighlights();
         actionInProgress = new AbilityAction(battlefield, this, ability);
         AddHighlights();
+=======
+        battlefield.CardSlotMovedInto(this);
+>>>>>>> Stashed changes
     }
 
     public bool IsEmpty()
