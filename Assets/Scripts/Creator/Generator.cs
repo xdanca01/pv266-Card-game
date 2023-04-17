@@ -146,13 +146,8 @@ public class Generator : MonoBehaviour
         unitsGenerated = units;
         var table = File.ReadLines("Assets/Data/Map.csv");
         var columnNames = table.First().Split(",");
-<<<<<<< Updated upstream
         string basedTitle = mapName;
         var rowsCount = 0u;
-=======
-        string basedTitle = "Nsoroma";
-        var rowsCount = 0u; 
->>>>>>> Stashed changes
         var columnsCount = 0u;
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {

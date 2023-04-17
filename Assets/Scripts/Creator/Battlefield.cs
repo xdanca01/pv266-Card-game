@@ -98,14 +98,10 @@ public class Battlefield : MonoBehaviour
         return battlefield;
     }
 
-<<<<<<< Updated upstream
     public CardSlot[,] Slots(bool ally) => ally ? AllySlots : EnemySlots;
     private CardSlot Get(CardPosition position) => Slots(position.Ally)[position.Row, position.Column];
 
     public CardPosition FindPosition(CardSlot of)
-=======
-    public void CardSlotMovedInto(CardSlot slot)
->>>>>>> Stashed changes
     {
         for (uint side = 0; side < 2; side++)
         {
@@ -164,11 +160,5 @@ public class Battlefield : MonoBehaviour
         {
             enemy.ClearUnitIfDead();
         }
-<<<<<<< Updated upstream
     }
-=======
-        slot.SetColor(FSColor.Green);
-        cardSlotToMoveTo = slot;
-    }   
->>>>>>> Stashed changes
 }
