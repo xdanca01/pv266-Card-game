@@ -30,8 +30,10 @@ public class Deck : MonoBehaviour
     [SerializeField] public GameObject EnableButton;
     [SerializeField] public Color DisabledColor;
 
-    public Dictionary<string, Upgrade> upgrades;
-    public Dictionary<string, Unit> heroes;
+    private bool _generated = false;
+
+    public Dictionary<string, Upgrade> upgrades = new();
+    public Dictionary<string, Unit> heroes = new();
 
     public int coins = 0;
 
@@ -67,14 +69,25 @@ public class Deck : MonoBehaviour
     public List<HeroData> deckOfHeroes = new();
     public List<UpgradeData> deckOfUpgrades = new();
 
-    private void OnEnable()
+    private void Update()
     {
-        foreach(var upgrade in upgrades)
+        if(upgrades.Keys.Count > 0 && heroes.Keys.Count > 0 && _generated == false)
+        {
+            _generated = true;
+            LoadData();
+        }
+    }
+
+    private void LoadData()
+    {
+        deckOfUpgrades = new();
+        foreach (var upgrade in upgrades)
         {
             UpgradeData data = new UpgradeData(upgrade.Value, LastAvailableID++, true);
             deckOfUpgrades.Add(data);
         };
-        foreach(var hero in heroes)
+        deckOfHeroes = new();
+        foreach (var hero in heroes)
         {
             HeroData data = new HeroData(hero.Value, LastAvailableID++, hero.Key, true);
             deckOfHeroes.Add(data);
@@ -99,6 +112,24 @@ public class Deck : MonoBehaviour
             if (u.ID == hero.ID)
             {
                 deckOfHeroes.Remove(hero);
+                return;
+            }
+        }
+    }
+
+    public void addUpgrade(UpgradeData upgrade)
+    {
+        UpgradeData U = new(upgrade.data, LastAvailableID++, true);
+        deckOfUpgrades.Add(U);
+    }
+
+    public void removeUpgrade(UpgradeData upgrade)
+    {
+        foreach (var u in deckOfUpgrades)
+        {
+            if (u.ID == upgrade.ID)
+            {
+                deckOfUpgrades.Remove(upgrade);
                 return;
             }
         }
@@ -167,7 +198,6 @@ public class Deck : MonoBehaviour
         DisableButton.SetActive(false);
         GenerateUpgrades();
         GenerateHeroes();
-        Trader.instance.Generate();
     }
 
     public void GenerateUpgrades()
@@ -260,6 +290,7 @@ public class Deck : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
         GameObject obj = Instantiate(heroObject, PreviewGrid.transform);
+        obj.GetComponent<GraphicRaycaster>().enabled = false;
         obj.transform.localScale = new Vector3(30.0f, 30.0f, 30.0f);
         Debug.Log("Hero: " + hero);
     }

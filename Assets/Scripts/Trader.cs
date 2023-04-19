@@ -33,6 +33,18 @@ public class Trader : MonoBehaviour
     public void Generate()
     {
         CreateItemsInShop();
+        UpdateCoins();
+        GenerateShop();
+        GenerateInventory();
+    }
+
+    private void Refresh()
+    {
+        foreach (Transform child in PreviewGrid.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        UpdateCoins();
         GenerateShop();
         GenerateInventory();
     }
@@ -140,6 +152,14 @@ public class Trader : MonoBehaviour
             SellButton.SetActive(false);
             BuyButton.SetActive(true);
         }
+
+        Button tmp = BuyButton.GetComponent<Button>();
+        tmp.onClick.RemoveAllListeners();
+        tmp.onClick.AddListener(delegate () { BuyUpgrade(upgrade); });
+
+        tmp = SellButton.GetComponent<Button>();
+        tmp.onClick.RemoveAllListeners();
+        tmp.onClick.AddListener(delegate () { SellUpgrade(upgrade); });
     }
 
     private void PreviewHero(Deck.HeroData hero, bool sell)
@@ -152,6 +172,7 @@ public class Trader : MonoBehaviour
         GameObject obj = Instantiate(heroObject, PreviewGrid.transform);
         obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         obj.transform.position = PreviewGrid.transform.position;
+        obj.GetComponent<GraphicRaycaster>().enabled = false;
         if (sell == true)
         {
             SellButton.SetActive(true);
@@ -162,5 +183,72 @@ public class Trader : MonoBehaviour
             SellButton.SetActive(false);
             BuyButton.SetActive(true);
         }
+
+        Button tmp = BuyButton.GetComponent<Button>();
+        tmp.onClick.RemoveAllListeners();
+        tmp.onClick.AddListener(delegate () { BuyHero(hero); });
+
+        tmp = SellButton.GetComponent<Button>();
+        tmp.onClick.RemoveAllListeners();
+        tmp.onClick.AddListener(delegate () { SellHero(hero); });
+    }
+
+    public void BuyHero(Deck.HeroData hero)
+    {
+        if(Deck.instance.coins < 30)
+        {
+            return;
+        }
+        Deck.instance.coins -= 30;
+        Deck.instance.addHero(hero.data, hero.name);
+
+        foreach (var h in deckOfHeroes)
+        {
+            if (h.ID == hero.ID)
+            {
+                deckOfHeroes.Remove(hero);
+                break;
+            }
+        }
+        Refresh();
+    }
+
+    public void BuyUpgrade(Deck.UpgradeData upgrade)
+    {
+        if (Deck.instance.coins < 10)
+        {
+            return;
+        }
+        Deck.instance.coins -= 10;
+        Deck.instance.addUpgrade(upgrade);
+
+        foreach (var u in deckOfUpgrades)
+        {
+            if (u.ID == upgrade.ID)
+            {
+                deckOfUpgrades.Remove(upgrade);
+                break;
+            }
+        }
+        Refresh();
+    }
+
+    public void SellHero(Deck.HeroData hero)
+    {
+        Deck.instance.removeHero(hero);
+        Deck.instance.coins += 15;
+        Refresh();
+    }
+
+    public void SellUpgrade(Deck.UpgradeData upgrade)
+    {
+        Deck.instance.removeUpgrade(upgrade);
+        Deck.instance.coins += 5;
+        Refresh();
+    }
+
+    private void UpdateCoins()
+    {
+        Coins.text = "Your coins " + Deck.instance.coins;
     }
 }

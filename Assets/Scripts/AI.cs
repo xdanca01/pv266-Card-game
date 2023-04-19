@@ -36,6 +36,10 @@ public class AI : MonoBehaviour
         //calculate priority
         Dictionary<CardSlot, float> priority = new();
         float prio = 10.0f;
+        if(bf.AllySlots.Length <= 0)
+        {
+            return actions;
+        }
         //Todo change from Interface to object
         for(int row = 0; row < bf.AllySlots.GetLength(0); ++row)
         {

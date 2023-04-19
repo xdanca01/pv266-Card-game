@@ -96,7 +96,7 @@ public class Creator
         gameobject.name = name;
         gameobject.transform.parent = parent.transform;
         var canvas = FindComponent<Canvas>(gameobject);
-        canvas.worldCamera = Camera.main;
+        canvas.worldCamera = CameraController.instance.Battlefield.GetComponent<Camera>();
         SetRect(gameobject, new Rect(0, 0, cardWidth, cardHeight));
         FindComponent<GraphicRaycaster>(gameobject);
     }

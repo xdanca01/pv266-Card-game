@@ -14,7 +14,6 @@ public class Generator : MonoBehaviour
     private Dictionary<string, Ability> abilitiesGenerated;
     private Dictionary<string, Unit> unitsGenerated;
     public Battlefield battlefield { get; private set; }
-    [SerializeField] public GameObject Deck;
 
     public static string GetColumn(string columnName, string[] columns, string[] columnNames)
     {
@@ -85,11 +84,7 @@ public class Generator : MonoBehaviour
             upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount + 1), RowSize * (i / columnsCount + 1)));
             upgrades.Add(title.ToLower(), upgrade);
         }
-        //TODO remove after test is done
-        if (Deck != null)
-        {
-            Deck.GetComponent<Deck>().upgrades = upgrades;
-        }
+        Deck.instance.upgrades = upgrades;
         return upgrades;
     }
 
@@ -125,10 +120,7 @@ public class Generator : MonoBehaviour
             unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), - RowSize * (i / columnsCount + 2)));
             units.Add(title, unit);
         }
-        if (Deck != null)
-        {
-            Deck.GetComponent<Deck>().heroes = units;
-        }
+        Deck.instance.heroes = units;
         return (upgrades, abilities, units);
     }
 
