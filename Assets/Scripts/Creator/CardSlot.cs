@@ -11,6 +11,13 @@ public enum CardFlag
     Highlight = 2,
 }
 
+public enum CardSlotType
+{
+    Ally,
+    Enemy,
+    Placement
+}
+
 public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     private Unit unit;
@@ -21,9 +28,9 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private CardFlag flag;
     private LineRenderer actionLine;
     private Background empty;
-    private bool isControlledByPlayer;
+    private CardSlotType type;
 
-    public static CardSlot New(string reason, GameObject parent, Vector2 position, Battlefield battlefield, bool isControlledByPlayer)
+    public static CardSlot New(string reason, GameObject parent, Vector2 position, Battlefield battlefield, CardSlotType type)
     {
         var creator = new Creator(reason, parent);
         var cardSlot = creator.gameobject.AddComponent<CardSlot>();
@@ -32,7 +39,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         cardSlot.gameObject.transform.position = position;
         cardSlot.battlefield = battlefield;        
         cardSlot.flag = CardFlag.None;
-        cardSlot.isControlledByPlayer = isControlledByPlayer;
+        cardSlot.type = type;
         return cardSlot;
     }
 
@@ -84,7 +91,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void CardSlotClick()
     {
-        if (!flag.HasFlag(CardFlag.Entered) || (actionInProgress == default && (IsEmpty() || !isControlledByPlayer)))
+        if (!flag.HasFlag(CardFlag.Entered) || (actionInProgress == default && (IsEmpty() || type == CardSlotType.Enemy)))  
         {
             return;
         }
@@ -108,7 +115,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void AbilitySlotClick(Ability ability)
     {
-        if (isControlledByPlayer)
+        if (IsControlledByPlayer())
         {
             RemoveHighlights();
             actionInProgress = new AbilityAction(battlefield, this, ability);
@@ -254,6 +261,11 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public bool IsControlledByPlayer()
     {
-        return isControlledByPlayer;
+        return type == CardSlotType.Ally;
+    }
+
+    internal void SetPosition(Vector2 position)
+    {
+        this.gameObject.transform.position = position;
     }
 }

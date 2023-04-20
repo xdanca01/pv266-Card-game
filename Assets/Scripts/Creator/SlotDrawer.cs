@@ -47,6 +47,6 @@ public abstract class SlotDrawer<I, S, D> : MonoBehaviour where I: Interactable 
 
     public List<I> GetAll()
     {
-        return list.Select(i => i.Get()).ToList();
+        return list.Where(i=>i.Get() != null).Select(i => i.Get()).ToList();
     }
 }

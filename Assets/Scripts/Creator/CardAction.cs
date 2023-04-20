@@ -66,7 +66,6 @@ public class Move : CardAction
             throw new System.Exception("Cannot move to opponent's battlefield!");
         }
         var swapUnit = executor.GetUnit();
-
         executor.SetUnit(target.GetUnit());
         target.SetUnit(swapUnit);
     }

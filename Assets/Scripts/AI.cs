@@ -36,7 +36,16 @@ public class AI : MonoBehaviour
         //calculate priority
         Dictionary<CardSlot, float> priority = new();
         float prio = 10.0f;
-        if(bf.AllySlots.Length <= 0)
+        bool empty = true;
+        foreach (var ally in bf.AllySlots)
+        {
+            if (!ally.IsEmpty())
+            {
+                empty = false;
+                break;
+            }
+        }
+        if (empty)
         {
             return actions;
         }

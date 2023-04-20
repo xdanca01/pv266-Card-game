@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 using System.ComponentModel;
+using System;
 
 namespace System.Runtime.CompilerServices
 {
@@ -15,6 +16,8 @@ public class Battlefield : MonoBehaviour
 {
     public CardSlot[,] AllySlots { get; private set; }
     public CardSlot[,] EnemySlots { get; private set; }
+
+    public List<CardSlot> PlacementSlots { get; private set; }
 
     private Dictionary<CardSlot, CardAction> actions;
 
@@ -66,10 +69,10 @@ public class Battlefield : MonoBehaviour
             {
                 battlefield.AllySlots[row, column] = CardSlot.New(
                     "Ally Row " + row + " Column " + column, gameobject,
-                    GetPosition(row, column, true), battlefield, true);
+                    GetPosition(row, column, true), battlefield, CardSlotType.Ally);
                 battlefield.EnemySlots[row, column] = CardSlot.New(
                     "Enemy Row " + row + " Column " + column, gameobject,
-                    GetPosition(row, column, false), battlefield, false);
+                    GetPosition(row, column, false), battlefield, CardSlotType.Enemy);
             }
         }
         var table = File.ReadLines("Assets/Data/Battlefield.csv");
@@ -95,6 +98,15 @@ public class Battlefield : MonoBehaviour
                 }
             }
         }
+        battlefield.PlacementSlots = new();
+        foreach (var (hero,i) in Deck.instance.deckOfHeroes.Select((val, i) => (val, i)))
+        {
+            CardSlot slot = CardSlot.New("Placement Slot " + i, gameobject, 
+                new Vector2(i * (Generator.ColumnSize), -(rowsCount + 2) * Generator.RowSize), 
+                battlefield, CardSlotType.Placement);
+            slot.SetUnit(hero.data.FreshCopy(gameobject));
+            battlefield.PlacementSlots.Add(slot);
+        }
         return battlefield;
     }
 
@@ -116,6 +128,13 @@ public class Battlefield : MonoBehaviour
                         return new CardPosition{ Ally=ally, Row=row, Column=column};
                     }
                 }
+            }
+        }
+        for (int i = 0; i < PlacementSlots.Count; i++)
+        {
+            if (PlacementSlots[i] == of)
+            {
+                return new CardPosition { Ally = true, Row = uint.MaxValue, Column = 0 };
             }
         }
         throw new System.Exception("FindPosition found nothing");
@@ -142,6 +161,22 @@ public class Battlefield : MonoBehaviour
             .Concat(actions.Values.Where(a => a.GetType() == typeof(Move)));
     }
 
+    private void ReenumeratePlacementSlots()
+    {
+        for (int i = PlacementSlots.Count-1; i >= 0; i--)
+        {
+            if (PlacementSlots[i].IsEmpty())
+            {
+                Destroy(PlacementSlots[i].gameObject);
+                PlacementSlots.RemoveAt(i);
+            }
+        }
+        foreach (var (slot, i) in PlacementSlots.Select((slot, i) => (slot, i)))
+        {
+            slot.SetPosition(new Vector2(i * (Generator.ColumnSize), -(AllySlots.GetLength(0) + 2) * Generator.RowSize));
+        }
+    }
+
     [EditorCools.Button]
     public void NextRound()
     {
@@ -152,6 +187,7 @@ public class Battlefield : MonoBehaviour
             action.Execute();
         }
         actions.Clear();
+        ReenumeratePlacementSlots();
         foreach (var ally in AllySlots)
         {
             ally.ClearUnitIfDead();
