@@ -91,6 +91,10 @@ public class AI : MonoBehaviour
                         bestAttack = attack;
                     }
                 }
+                if (bestAttack == null)
+                {
+                    continue;
+                }
                 //If the damage is higher without this attack, add percentage
                 if (damage >= target.GetUnit().HP)
                 {

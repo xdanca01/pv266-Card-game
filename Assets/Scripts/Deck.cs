@@ -90,9 +90,10 @@ public class Deck : MonoBehaviour
             }
         };
         deckOfHeroes = new();
+        List<string> heroNames = new() { "Warrior", "Mage", "Shaman" };
         foreach (var hero in heroes)
         {
-            if(possibleHero(hero.Value) == true)
+            if(possibleHero(hero.Value) == true && heroNames.Contains(hero.Key))
             {
                 HeroData data = new HeroData(hero.Value, LastAvailableID++, hero.Key, true);
                 deckOfHeroes.Add(data);
