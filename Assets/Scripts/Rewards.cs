@@ -52,9 +52,10 @@ public class Rewards : MonoBehaviour
     }
     private void GiveHero()
     {
-        int index = UnityEngine.Random.Range(0, Deck.instance.heroes.Count);
+        Dictionary<string, Unit> heroes = filterHeroes(Deck.instance.heroes);
+        int index = UnityEngine.Random.Range(0, heroes.Count);
         int cnt = 0;
-        foreach(var h in Deck.instance.heroes)
+        foreach(var h in heroes)
         {
             if(cnt == index)
             {
@@ -65,22 +66,50 @@ public class Rewards : MonoBehaviour
         }
     }
 
-private void GiveAbility(int min, int max)
+    private Dictionary<string, Upgrade> filterUpgrades(Dictionary<string, Upgrade> list)
+    {
+        Dictionary<string, Upgrade> l = new();
+        foreach (var h in list)
+        {
+            if (Deck.instance.possibleUpgrade(h.Value))
+            {
+                l.Add(h.Key, h.Value);
+            }
+        }
+        return l;
+    }
+
+    private Dictionary<string, Unit> filterHeroes(Dictionary<string, Unit> list)
+    {
+        Dictionary<string, Unit> l = new();
+        foreach (var h in list)
+        {
+            if (Deck.instance.possibleHero(h.Value))
+            {
+                l.Add(h.Key, h.Value);
+            }
+        }
+        return l;
+    }
+
+    private void GiveAbility(int min, int max)
     {
         //TODO
+        GiveUpgrade(min, max);
     }
     private void GiveUpgrade(int min, int max)
     {
+        Dictionary<string, Upgrade> upgrades = filterUpgrades(Deck.instance.upgrades);
         int numberOfUpgrades = UnityEngine.Random.Range(min, max+1);
         for (int i = 0; i < numberOfUpgrades; ++i)
         {
-            int index = UnityEngine.Random.Range(0, Deck.instance.heroes.Count);
+            int index = UnityEngine.Random.Range(0, upgrades.Count);
             int cnt = 0;
-            foreach (var h in Deck.instance.heroes)
+            foreach (var h in upgrades)
             {
                 if (cnt == index)
                 {
-                    Deck.instance.addHero(h.Value, h.Key);
+                    Deck.instance.addUpgrade(h.Value);
                     break;
                 }
                 ++cnt;

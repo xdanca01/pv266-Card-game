@@ -53,12 +53,14 @@ public class Trader : MonoBehaviour
     {
         deckOfHeroes = new();
         deckOfUpgrades = new();
+        Dictionary<string, Unit> heroes = filterHeroes(Deck.instance.heroes);
+        Dictionary<string, Upgrade> upgrades = filterUpgrades(Deck.instance.upgrades);
         for (int i = 0; i < 5; ++i)
         {
             //Generate heroes
-            int index = UnityEngine.Random.Range(0, Deck.instance.heroes.Count);
+            int index = UnityEngine.Random.Range(0, heroes.Count);
             int cnt = 0;
-            foreach (var h in Deck.instance.heroes)
+            foreach (var h in heroes)
             {
                 if (cnt == index)
                 {
@@ -68,9 +70,9 @@ public class Trader : MonoBehaviour
                 ++cnt;
             }
             //Generate upgrades
-            index = UnityEngine.Random.Range(0, Deck.instance.upgrades.Count);
+            index = UnityEngine.Random.Range(0, upgrades.Count);
             cnt = 0;
-            foreach (var u in Deck.instance.upgrades)
+            foreach (var u in upgrades)
             {
                 if (cnt == index)
                 {
@@ -80,6 +82,32 @@ public class Trader : MonoBehaviour
                 ++cnt;
             }
         }
+    }
+
+    private Dictionary<string, Unit> filterHeroes(Dictionary<string, Unit> list)
+    {
+        Dictionary<string, Unit> l = new();
+        foreach(var h in list)
+        {
+            if (Deck.instance.possibleHero(h.Value))
+            {
+                l.Add(h.Key, h.Value);
+            }
+        }
+        return l;
+    }
+
+    private Dictionary<string, Upgrade> filterUpgrades(Dictionary<string, Upgrade> list)
+    {
+        Dictionary<string, Upgrade> l = new();
+        foreach (var h in list)
+        {
+            if (Deck.instance.possibleUpgrade(h.Value))
+            {
+                l.Add(h.Key, h.Value);
+            }
+        }
+        return l;
     }
 
     private void GenerateShop()
@@ -250,5 +278,21 @@ public class Trader : MonoBehaviour
     private void UpdateCoins()
     {
         Coins.text = "Your coins " + Deck.instance.coins;
+    }
+
+    public void EnableTrader()
+    {
+        foreach(Transform child in this.transform)
+        {
+            child.gameObject.SetActive(true);
+        }
+    }
+
+    public void DisableTrader()
+    {
+        foreach (Transform child in this.transform)
+        {
+            child.gameObject.SetActive(false);
+        }
     }
 }

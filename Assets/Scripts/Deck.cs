@@ -83,14 +83,20 @@ public class Deck : MonoBehaviour
         deckOfUpgrades = new();
         foreach (var upgrade in upgrades)
         {
-            UpgradeData data = new UpgradeData(upgrade.Value, LastAvailableID++, true);
-            deckOfUpgrades.Add(data);
+            if (possibleUpgrade(upgrade.Value) == true)
+            {
+                UpgradeData data = new UpgradeData(upgrade.Value, LastAvailableID++, true);
+                deckOfUpgrades.Add(data);
+            }
         };
         deckOfHeroes = new();
         foreach (var hero in heroes)
         {
-            HeroData data = new HeroData(hero.Value, LastAvailableID++, hero.Key, true);
-            deckOfHeroes.Add(data);
+            if(possibleHero(hero.Value) == true)
+            {
+                HeroData data = new HeroData(hero.Value, LastAvailableID++, hero.Key, true);
+                deckOfHeroes.Add(data);
+            }
         }
     }
 
@@ -120,6 +126,12 @@ public class Deck : MonoBehaviour
     public void addUpgrade(UpgradeData upgrade)
     {
         UpgradeData U = new(upgrade.data, LastAvailableID++, true);
+        deckOfUpgrades.Add(U);
+    }
+
+    public void addUpgrade(Upgrade upgrade)
+    {
+        UpgradeData U = new(upgrade, LastAvailableID++, true);
         deckOfUpgrades.Add(U);
     }
 
@@ -293,5 +305,25 @@ public class Deck : MonoBehaviour
         obj.GetComponent<GraphicRaycaster>().enabled = false;
         obj.transform.localScale = new Vector3(30.0f, 30.0f, 30.0f);
         Debug.Log("Hero: " + hero);
+    }
+    
+    public bool possibleHero(Unit hero)
+    {
+        List<string> names = new List<string> { "Warrior", "Archer", "Mage", "Barbarian", "Rogue", "Shaman" };
+        if(names.Contains(hero.name))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool possibleUpgrade(Upgrade upgrade)
+    {
+        List<string> names = new List<string> { "Double Attack", "Healing spring", "Poison" };
+        if (names.Contains(upgrade.name))
+        {
+            return true;
+        }
+        return false;
     }
 }

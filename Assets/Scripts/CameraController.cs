@@ -21,14 +21,14 @@ public class CameraController : MonoBehaviour
     }
 
     [SerializeField] public GameObject Islands;
-    [SerializeField] public GameObject Trader;
+    [SerializeField] public GameObject TraderCam;
     [SerializeField] public GameObject Battlefield;
     [SerializeField] public GameObject BattleUI;
     [SerializeField] public GameObject IslandsUI;
     void Start()
     {
         Battlefield.SetActive(false);
-        Trader.SetActive(false);
+        TraderCam.SetActive(false);
         Islands.SetActive(true);
         IslandsUI.SetActive(true);
         BattleUI.SetActive(false);
@@ -40,12 +40,17 @@ public class CameraController : MonoBehaviour
         {
             CameraIslands();
         }
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            Rewards.instance.GiveReward(Difficulty.Extreme);
+        }
     }
 
     public void CameraIslands()
     {
+        Trader.instance.DisableTrader();
         Battlefield.SetActive(false);
-        Trader.SetActive(false);
+        TraderCam.SetActive(false);
         Islands.SetActive(true);
         IslandsUI.SetActive(true);
         BattleUI.SetActive(false);
@@ -53,16 +58,18 @@ public class CameraController : MonoBehaviour
 
     public void CameraTrader()
     {
+        Trader.instance.EnableTrader();
         Battlefield.SetActive(false);
-        Trader.SetActive(true);
+        TraderCam.SetActive(true);
         Islands.SetActive(false);
         IslandsUI.SetActive(false);
         BattleUI.SetActive(false);
     }
     public void CameraBattlefield()
     {
+        Trader.instance.DisableTrader();
         Battlefield.SetActive(true);
-        Trader.SetActive(false);
+        TraderCam.SetActive(false);
         Islands.SetActive(false);
         IslandsUI.SetActive(false);
         BattleUI.SetActive(true);
