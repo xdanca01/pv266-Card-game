@@ -45,6 +45,10 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
         unit.FreshCopy = (GameObject parent) => Unit.New(parent, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
         return unit;
     }
+    public bool HasEffect(EffectType effect)
+    {
+        return this.effects.GetAll().Concat(this.upgrades.GetAll()).Any(e => e.Effect.Type == effect);
+    }
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (!this.effects.IsCompletelyEmpty())

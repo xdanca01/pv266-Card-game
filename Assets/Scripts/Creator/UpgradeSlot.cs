@@ -36,6 +36,8 @@ public class UpgradeSlot : ItemSlot<Upgrade, UpgradeSlot>, IPointerMoveHandler, 
 
     public void OnPointerMove(PointerEventData eventData)
     {
+        // TODO
+        /*
         if (interactible != default)
         {
             Vector2 position = VisiblePosition(eventData.pointerCurrentRaycast.worldPosition);
@@ -45,17 +47,18 @@ public class UpgradeSlot : ItemSlot<Upgrade, UpgradeSlot>, IPointerMoveHandler, 
             }
             interactible.Card.SetPosition(position);
             interactible.Background.SetAlpha(1.0f);
-        }
+        }*/
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (interactible != default)
+        // TODO
+        /*if (interactible != default)
         {
             interactible.Card.SetPosition(cardDefaultPosition);
             cardDefaultPosition = Vector2.zero;
             interactible.Background.SetAlpha(0.5f);
-        }
+        }*/
     }
 
 }

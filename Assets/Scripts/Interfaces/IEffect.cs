@@ -6,6 +6,7 @@ using Debug = UnityEngine.Debug;
 
 public interface IEffect
 {
+    EffectType Type { get; }
     // applied only once, after it is applied
     void Once(IUnit self) { }
     // applied at the start of each round
@@ -50,10 +51,12 @@ public static class Effects
 {
     private class NoEffect : IEffect
     {
-
+        public EffectType Type => EffectType.NoEffect;
     }
     private class DoubleAttack : IEffect
     {
+        public EffectType Type => EffectType.DoubleAttack;
+
         public void RoundStart(IUnit self)
         {
             foreach (IAbility ability in self.Abilities)
@@ -78,6 +81,8 @@ public static class Effects
 
     private class HealingSpring : IEffect
     {
+        public EffectType Type => EffectType.HealingSpring;
+
         public void RoundStart(IUnit self)
         {
             self.HP = Math.Min(self.HP + 5, self.MAX_HP);
@@ -86,6 +91,8 @@ public static class Effects
 
     private class Poisoned : IEffect
     {
+        public EffectType Type => EffectType.Poisoned;
+
         public void RoundStart(IUnit self)
         {
             self.HP = (uint)Math.Max((int)self.HP - 3, 0);
@@ -94,6 +101,8 @@ public static class Effects
 
     private class Poison : IEffect
     {
+        public EffectType Type => EffectType.Poison;
+
         public void AbilitySuccess(IUnit self, IUnit target)
         {
             target.ApplyEffect(Deck.instance.upgrades["poisoned"]); // TODO
@@ -102,7 +111,7 @@ public static class Effects
 
     private class Immuvable : IEffect
     {
-
+        public EffectType Type => EffectType.Immuvable;
     }
 
     public static IEffect GetEffect(this EffectType effect) => effect switch
