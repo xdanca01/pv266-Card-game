@@ -46,6 +46,11 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
         return unit;
     }
 
+    public void AddUpgrade(Upgrade upgrade)
+    {
+        this.upgrades.Add(upgrade);
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (!this.effects.IsCompletelyEmpty())

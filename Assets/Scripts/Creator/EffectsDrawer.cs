@@ -42,29 +42,4 @@ public class EffectsDrawer : SlotDrawer<Upgrade, UpgradeSlot, EffectsDrawer>
         }
         return true;
     }
-        
-    public void Add(Upgrade effect)
-    {
-        for (uint i = 0; i < 4; i++)
-        {
-            if (this.Get(i) == null)
-            {
-                this.Set(i, effect);
-                return;
-            }
-        }
-        Debug.LogError("At this time all units can have at most four effects applied to them at the same time. It is assumed that this behaviour will change in the future to enable any number of effects");
-    }
-
-    internal void Remove(Upgrade effect)
-    {
-        for (uint i = 0; i < 4; i++)
-        {
-            if (this.Get(i) == effect)
-            {
-                this.Set(i, null);
-                return;
-            }
-        }
-    }
 }

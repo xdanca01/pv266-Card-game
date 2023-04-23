@@ -49,4 +49,29 @@ public abstract class SlotDrawer<I, S, D> : MonoBehaviour where I: Interactable 
     {
         return list.Where(i=>i.Get() != null).Select(i => i.Get()).ToList();
     }
+
+    public void Add(I interactible)
+    {
+        for (uint i = 0; i < list.Count; i++)
+        {
+            if (this.Get(i) == null)
+            {
+                this.Set(i, interactible);
+                return;
+            }
+        }
+        Debug.LogError("Too many adds");
+    }
+
+    public void Remove(I interactible)
+    {
+        for (uint i = 0; i < list.Count; i++)
+        {
+            if (Get(i).Equals(interactible))
+            {
+                this.Set(i, default);
+                return;
+            }
+        }
+    }
 }

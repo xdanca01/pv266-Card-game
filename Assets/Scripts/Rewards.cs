@@ -11,7 +11,6 @@ public enum Difficulty
 }
 public class Rewards : MonoBehaviour
 {
-    
     public static Rewards instance { get; private set; }
 
     private void Awake()

@@ -91,13 +91,23 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void CardSlotClick()
     {
-        if (!flag.HasFlag(CardFlag.Entered) || (actionInProgress == default && (IsEmpty() || type == CardSlotType.Enemy)))  
+        if (!flag.HasFlag(CardFlag.Entered) || (actionInProgress == default && type == CardSlotType.Enemy))  
         {
+            return;
+        }
+        if (actionInProgress == default && IsEmpty())
+        {
+            // is an upgrade in a placement slot
+            if (upgrade != null && battlefield.FindPosition(this).Row == uint.MaxValue)
+            {
+                actionInProgress = new UpgradeAction(battlefield, this);
+                AddHighlights();
+            }
             return;
         }
         if (actionInProgress == default)
         {   
-            actionInProgress = new Move(battlefield, this);
+            actionInProgress = new MoveAction(battlefield, this);
             AddHighlights();
             return;
         }

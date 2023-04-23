@@ -109,6 +109,15 @@ public class Battlefield : MonoBehaviour
                 slot.SetUnit(hero.data.FreshCopy(gameobject));
                 battlefield.PlacementSlots.Add(slot);
             }
+            var numberOfHeroes = Deck.instance.deckOfHeroes.Count;
+            foreach (var (upgrade, i) in Deck.instance.deckOfUpgrades.Select((val, i) => (val,i)))
+            {
+                CardSlot slot = CardSlot.New("Placement Slot " + i, gameobject,
+                    new Vector2((numberOfHeroes + i) * (Generator.ColumnSize), -(rowsCount + 2) * Generator.RowSize),
+                    battlefield, CardSlotType.Placement);
+                slot.SetUpgrade(upgrade.data.FreshCopy(gameobject));
+                battlefield.PlacementSlots.Add(slot);
+            }
         }
         return battlefield;
     }
@@ -160,8 +169,8 @@ public class Battlefield : MonoBehaviour
 
     private IEnumerable<CardAction> GetActionsInOrderOfExecution()
     {
-        return actions.Values.Where(a => a.GetType() != typeof(Move))
-            .Concat(actions.Values.Where(a => a.GetType() == typeof(Move)));
+        return actions.Values.Where(a => a.GetType() != typeof(MoveAction))
+            .Concat(actions.Values.Where(a => a.GetType() == typeof(MoveAction)));
     }
 
     private void ReenumeratePlacementSlots()

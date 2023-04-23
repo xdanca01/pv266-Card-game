@@ -38,9 +38,34 @@ public abstract class CardAction
     public abstract void Execute();
 }
 
-public class Move : CardAction
+public class UpgradeAction : CardAction
 {
-    public Move(Battlefield battlefield, CardSlot executor) : base(battlefield, executor, FSColor.Blue) { }
+    private Upgrade upgrade;
+    public UpgradeAction(Battlefield battlefield, CardSlot executor) : base(battlefield, executor, executor.GetUpgrade().Color) 
+    {
+        this.upgrade = executor.GetUpgrade();
+    }
+    public override IReadOnlyList<CardSlot> PossibleTargets()
+    {
+        List<CardSlot> slots = new();
+        foreach (var slot in battlefield.Slots(true))
+        {
+            if (!slot.IsEmpty())
+            {
+                slots.Add(slot);
+            }
+        }
+        return slots;
+    }
+    public override void Execute()
+    {
+        target.GetUnit().AddUpgrade(upgrade);        
+    }
+}
+
+public class MoveAction : CardAction
+{
+    public MoveAction(Battlefield battlefield, CardSlot executor) : base(battlefield, executor, FSColor.Blue) { }
 
     public override IReadOnlyList<CardSlot> PossibleTargets()
     {
