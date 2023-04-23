@@ -1,8 +1,7 @@
+using System;
 using System.Collections.ObjectModel;
 
-// Unit is a single card on a battlefied
-//  * Hero = player's unit
-//  * Monster = enemy's unit
+// Unit is an occupied card on a battlefied
 public interface IUnit
 {   
     // get & set current unit hp

@@ -25,21 +25,8 @@ public class EffectsDrawer : SlotDrawer<Upgrade, UpgradeSlot, EffectsDrawer>
     {
         gameObject.SetActive(true);
     }
-
     public void Hide()
     {
         gameObject.SetActive(false);
-    }
-
-    public bool IsCompletelyEmpty()
-    {
-        for (uint i = 0; i < 4; i++)
-        {
-            if (this.Get(i) != null)
-            {
-                return false;
-            }
-        }
-        return true;
     }
 }

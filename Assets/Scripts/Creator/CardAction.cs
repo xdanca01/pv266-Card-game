@@ -59,7 +59,8 @@ public class UpgradeAction : CardAction
     }
     public override void Execute()
     {
-        target.GetUnit().AddUpgrade(upgrade);        
+        target.GetUnit().AddUpgrade(upgrade);
+        executor.SetUpgrade(null);
     }
 }
 

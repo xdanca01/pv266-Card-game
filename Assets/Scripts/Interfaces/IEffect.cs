@@ -36,56 +36,83 @@ public interface IEffect
     void Move(IUnit self) { }
 }
 
-public class NoEffect : IEffect
+public enum EffectType
 {
-
+    NoEffect,
+    DoubleAttack,
+    HealingSpring,
+    Poisoned,
+    Poison,
+    Immuvable
 }
 
-public class DoubleAttack : IEffect
+public static class Effects
 {
-    public void RoundStart(IUnit self)
+    private class NoEffect : IEffect
     {
-        foreach (IAbility ability in self.Abilities)
+
+    }
+    private class DoubleAttack : IEffect
+    {
+        public void RoundStart(IUnit self)
         {
-            ability.High *= 2;
-            ability.Low *= 2;
+            foreach (IAbility ability in self.Abilities)
+            {
+                ability.High *= 2;
+                ability.Low *= 2;
+            }
+        }
+        public void RoundEnd(IUnit self)
+        {
+            foreach (IAbility ability in self.Abilities)
+            {
+                ability.High /= 2;
+                ability.Low /= 2;
+            }
+        }
+        public void Once(IUnit self)
+        {
+            RoundStart(self);
         }
     }
-    public void RoundEnd(IUnit self)
+
+    private class HealingSpring : IEffect
     {
-        foreach (IAbility ability in self.Abilities)
+        public void RoundStart(IUnit self)
         {
-            ability.High /= 2;
-            ability.Low /= 2;
+            self.HP = Math.Min(self.HP + 5, self.MAX_HP);
         }
     }
-    public void Once(IUnit self)
-    {
-        RoundStart(self);
-    }
-}
 
-public class HealingSpring : IEffect
-{
-    public void RoundStart(IUnit self)
+    private class Poisoned : IEffect
     {
-        self.HP = Math.Min(self.HP + 5, self.MAX_HP);
-        
+        public void RoundStart(IUnit self)
+        {
+            self.HP = (uint)Math.Max((int)self.HP - 3, 0);
+        }
     }
-}
 
-public class Poisoned : IEffect
-{
-    public void RoundStart(IUnit self)
+    private class Poison : IEffect
     {
-        self.HP -= Math.Max(self.HP - 5, 0);
+        public void AbilitySuccess(IUnit self, IUnit target)
+        {
+            target.ApplyEffect(Deck.instance.upgrades["poisoned"]); // TODO
+        }
     }
-}
 
-public class Poison : IEffect
-{
-    public void AbilitySuccess(IUnit self, IUnit target)
+    private class Immuvable : IEffect
     {
-        target.ApplyEffect(Deck.instance.upgrades["Poison"]); // TODO
+
     }
+
+    public static IEffect GetEffect(this EffectType effect) => effect switch
+    {
+        EffectType.NoEffect => new NoEffect(),
+        EffectType.DoubleAttack => new DoubleAttack(),
+        EffectType.HealingSpring => new HealingSpring(),
+        EffectType.Poisoned => new Poisoned(),
+        EffectType.Poison => new Poison(),
+        EffectType.Immuvable => new Immuvable(),
+        _ => throw new NotImplementedException(),
+    };
 }

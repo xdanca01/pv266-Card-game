@@ -74,4 +74,15 @@ public abstract class SlotDrawer<I, S, D> : MonoBehaviour where I: Interactable 
             }
         }
     }
+    public bool IsCompletelyEmpty()
+    {
+        for (uint i = 0; i < list.Count; i++)
+        {
+            if (this.Get(i) != null)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }

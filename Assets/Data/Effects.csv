@@ -1,18 +1,19 @@
-Title,Condition,Description,Icon Title,Icon Description,Icon,Color
-Poison,AttackSuccess,Creature you hit is Poisoned. It takes 3 damage each round.,Hit,Poisoned,erlenmeyer,Green
-Healing Spring,RoundStart,You receive 5 hp each round,Healing,5 HP,water-fountain,Red
-Poisoned,RoundStart,Take 3 damage on the begining of each turn.,Poisoned,3 DMG,bird-mask,Violet
-Double Attack,RoundStart,You deal twice as much damage to enemies,Double,Attack,crossed-swords,Orange
-Revive,Death,You get 1 more chance to show what you got. Revive with half HP.,Angel wings,Revive,angel-wings,White
-Stone Skin,RoundStart,You stood in magical mud; it looks like some kind of protection for you. The damage dealt to you is halved.,Stone skin,Stone skin,golem-head,Black
-Ice Floor,RoundStart,You stand on ice ground. Your chance to hit attack is halved.,Ice,Ice,frozen-block,Blue
-Lava Floor,RoundStart,You get 3 damage each round.,Lava,Lava,lava,White
-Eye for Weakness,AttackSuccess,You deal 4 more damage if your attacks success.,Eye,Eye,burning-eye,White
-Swing Attack,AttackSuccess,Deal full damage to target and half damage to other enemies in same column.,Swing,Swing,axe-swing,White
-Ghost,GotDamage,After you get damage the next round you will be non targetable.,Ghost,Ghost,ghost-ally,White
-Dissarm,AttackSuccess,You have 50% chance to dissarm enemy after successfull attack.,Dissarm,Dissarm,drop-weapon,White
-Lucky Hit,RoundStart,You have 50% chance to increase ability success by 20%,Lucky hit,Lucky hit,dice-fire,White
-Human Shield,GotDamage,You will get damage instead of ally in same column. The damage is reduced by 50%.,Human shield,Human shield,leapfrog,White
-Headshot,AttackSuccess,You will always deal maximum damage on attack success.,Headshot,Headshot,headshot,White
-Stun,AttackSuccess,You have 50% chance to stun target.,Stun,Stun,stoned-skull,White
-Charge,AttackSuccess,You can attack over 1 object/person.,Charge,Charge,running-ninja,White
+Title,Description,Icon Title,Icon Description,Icon,Color
+Poison,Creature you hit is Poisoned. It takes 3 damage each round.,Hit,Poisoned,erlenmeyer,Green
+Healing Spring,You receive 5 hp each round,Healing,5 HP,water-fountain,Red
+Poisoned,Take 3 damage on the begining of each turn.,Poisoned,3 DMG,bird-mask,Violet
+Double Attack,You deal twice as much damage to enemies,Double,Attack,crossed-swords,Orange
+Revive,You get 1 more chance to show what you got. Revive with half HP.,Angel wings,Revive,angel-wings,White
+Stone Skin,You stood in magical mud; it looks like some kind of protection for you. The damage dealt to you is halved.,Stone skin,Stone skin,golem-head,Black
+Ice Floor,You stand on ice ground. Your chance to hit attack is halved.,Ice,Ice,frozen-block,Blue
+Lava Floor,You get 3 damage each round.,Lava,Lava,lava,White
+Eye for Weakness,You deal 4 more damage if your attacks success.,Eye,Eye,burning-eye,White
+Swing Attack,Deal full damage to target and half damage to other enemies in same column.,Swing,Swing,axe-swing,White
+Ghost,After you get damage the next round you will be non targetable.,Ghost,Ghost,ghost-ally,White
+Dissarm,You have 50% chance to dissarm enemy after successfull attack.,Dissarm,Dissarm,drop-weapon,White
+Lucky Hit,You have 50% chance to increase ability success by 20%,Lucky hit,Lucky hit,dice-fire,White
+Human Shield,You will get damage instead of ally in same column. The damage is reduced by 50%.,Human shield,Human shield,leapfrog,White
+Headshot,You will always deal maximum damage on attack success.,Headshot,Headshot,headshot,White
+Stun,You have 50% chance to stun target.,Stun,Stun,stoned-skull,White
+Charge,You can attack over 1 object/person.,Charge,Charge,running-ninja,White
+Immuvable,Unit can't move.,Immuvable,,stone-tower,Violet

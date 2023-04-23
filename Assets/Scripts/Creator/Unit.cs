@@ -45,12 +45,6 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
         unit.FreshCopy = (GameObject parent) => Unit.New(parent, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
         return unit;
     }
-
-    public void AddUpgrade(Upgrade upgrade)
-    {
-        this.upgrades.Add(upgrade);
-    }
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (!this.effects.IsCompletelyEmpty())
@@ -58,12 +52,15 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
             this.effects.Show();
         }
     }
-
     public void OnPointerExit(PointerEventData eventData)
     {
         this.effects.Hide();
     }
-
+    public void AddUpgrade(Upgrade upgrade)
+    {
+        this.upgrades.Add(upgrade);
+        upgrade.Effect.Once(this);
+    }
     public void ApplyEffect(Upgrade effect)
     {
         this.effects.Add(effect);

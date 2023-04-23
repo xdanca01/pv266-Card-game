@@ -142,11 +142,11 @@ public class Battlefield : MonoBehaviour
                 }
             }
         }
-        for (int i = 0; i < PlacementSlots.Count; i++)
+        for (uint i = 0; i < PlacementSlots.Count; i++)
         {
-            if (PlacementSlots[i] == of)
+            if (PlacementSlots[(int)i] == of)
             {
-                return new CardPosition { Ally = true, Row = uint.MaxValue, Column = 0 };
+                return new CardPosition { Ally = true, Row = uint.MaxValue, Column = i };
             }
         }
         throw new System.Exception("FindPosition found nothing");
@@ -177,7 +177,7 @@ public class Battlefield : MonoBehaviour
     {
         for (int i = PlacementSlots.Count-1; i >= 0; i--)
         {
-            if (PlacementSlots[i].IsEmpty())
+            if (PlacementSlots[i].IsEmpty() && PlacementSlots[i].GetUpgrade() == null)
             {
                 Destroy(PlacementSlots[i].gameObject);
                 PlacementSlots.RemoveAt(i);
@@ -207,10 +207,8 @@ public class Battlefield : MonoBehaviour
         }
     }
 
-    [EditorCools.Button]
-    public void NextRound()
+    private bool HasAnyUnitWithAbility()
     {
-        ForEachUnit(u => u.RoundStart());
         bool allies = false;
         foreach (var ally in AllySlots)
         {
@@ -220,13 +218,46 @@ public class Battlefield : MonoBehaviour
                 break;
             }
         }
-        if (allies)
+        return allies;
+    }
+
+    private bool ConcludeBattleIfEnded()
+    {
+        bool enemies = false;
+        foreach (var enemy in EnemySlots)
         {
-            addAiActions();
+            if (!enemy.IsEmpty())
+            {
+                enemies = true;
+                break;
+            }
         }
-        else if (!PlacementSlots.Any())
+        if (!enemies)
+        {
+            Debug.Log("Good Job :)");
+            CameraController.instance.CameraIslands();
+            Rewards.instance.GiveSomeReward();
+            return true;
+        }
+        if (!HasAnyUnitWithAbility() && !PlacementSlots.Any())
         {
             Debug.Log("You Died :(");
+            return true;
+        }
+        return false;
+    }
+
+    [EditorCools.Button]
+    public void NextRound()
+    {
+        ForEachUnit(u => u.RoundStart());
+        if (ConcludeBattleIfEnded())
+        {
+            return;
+        }
+        if (HasAnyUnitWithAbility())
+        {
+            addAiActions();
         }
         foreach (var action in GetActionsInOrderOfExecution())
         {
@@ -244,20 +275,6 @@ public class Battlefield : MonoBehaviour
             enemy.ClearUnitIfDead();
         }
         ForEachUnit(u => u.RoundEnd());
-        bool enemies = false;
-        foreach (var enemy in EnemySlots)
-        {
-            if (!enemy.IsEmpty())
-            {
-                enemies = true;
-                break;
-            }
-        }
-        if (!enemies)
-        {
-            Debug.Log("Good Job :)");
-            CameraController.instance.CameraIslands();
-            Rewards.instance.GiveReward(Difficulty.Extreme);
-        }
+        ConcludeBattleIfEnded();
     }
 }

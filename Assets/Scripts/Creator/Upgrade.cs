@@ -24,29 +24,24 @@ public class Upgrade : MonoBehaviour, IUpgrade, Interactable
         upgrade.Background = Background.New(Card);
         upgrade.Icon = Icon.New(Card, Card.gameobject, iconTitle, iconDescription, icon, color);
         upgrade.Color = color;
-        upgrade.Effect = null;        
-        foreach (var effect in new IEffect[] { new DoubleAttack(), new HealingSpring(), new Poisoned(), new Poison() })
+        upgrade.Effect = null;
+        StringBuilder builder = new StringBuilder();
+        foreach (char c in title)
         {
-            StringBuilder builder = new StringBuilder();
-            foreach (char c in effect.GetType().ToString())
+            if (c != ' ')
             {
-                if (c == char.ToUpper(c))
-                {
-                    builder.Append(' ');
-                }
                 builder.Append(c);
             }
-            if (title.Trim().ToLower().Equals(builder.ToString().Trim().ToLower()))
-            {
-                upgrade.Effect = effect;
-                break;
-            }
         }
-        if (upgrade.Effect == null)
+        if (Enum.TryParse(builder.ToString(), out EffectType effect))
+        {
+            upgrade.Effect = effect.GetEffect();
+        }
+        else
         {
             Debug.LogWarning("Assigning NoEffect to " + title);
-            upgrade.Effect = new NoEffect();
-        }
+            upgrade.Effect = EffectType.NoEffect.GetEffect();
+        }        
         upgrade.FreshCopy = (GameObject parent) => New(parent, title, description, iconTitle, iconDescription, icon, color);
         upgrade.Icon.gameObject.SetActive(false);
         return upgrade;

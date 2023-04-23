@@ -49,6 +49,11 @@ public class Rewards : MonoBehaviour
                 break;
         }
     }
+    public void GiveSomeReward()
+    {
+        var difficulties = new Difficulty[] { Difficulty.Easy, Difficulty.Normal, Difficulty.Hard, Difficulty.Extreme };
+        GiveReward(difficulties[Random.Range(0, difficulties.Length)]);
+    }
     private void GiveHero()
     {
         Dictionary<string, Unit> heroes = filterHeroes(Deck.instance.heroes);
