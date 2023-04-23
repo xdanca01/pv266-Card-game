@@ -96,12 +96,10 @@ public class Creator
         gameobject.name = name;
         gameobject.transform.parent = parent.transform;
         var canvas = FindComponent<Canvas>(gameobject);
-        canvas.worldCamera = CameraController.instance.Battlefield.GetComponent<Camera>();
+        canvas.worldCamera = (Application.isPlaying) ? CameraController.instance.Battlefield.GetComponent<Camera>() : Camera.main;
         SetRect(gameobject, new Rect(0, 0, cardWidth, cardHeight));
         FindComponent<GraphicRaycaster>(gameobject);
     }
-
-
 
     public Creator LeftTitle()
     {

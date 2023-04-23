@@ -55,8 +55,4 @@ public interface IAbility
 
     // Does it heal units or damages them?
     AbilityType Type { get; }
-
-    // Remove all applied effects
-    // It is recomended that ability saves its default values in Start method
-    void RemoveEffects();
 }

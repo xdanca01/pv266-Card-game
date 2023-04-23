@@ -39,9 +39,7 @@ public class Ability : MonoBehaviour, IAbility, Interactable
         Icon.Title = percentage;
         Icon.Description = range;
     }
-
-    public void RemoveEffects() => throw new System.NotImplementedException();
-        
+      
     public static Ability New(GameObject parent, string title, AbilityType type, uint percentage, uint low, uint high, string spriteName)
     {
         var Card = new Creator(title, parent)

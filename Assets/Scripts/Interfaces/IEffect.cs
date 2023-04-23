@@ -1,38 +1,91 @@
-// when effect should be applied
-public enum EffectApplication
-{
-    RoundStart, // at the start of each round
-    RoundEnd, // at the end of each round
+using System;
+using System.Diagnostics;
+using System.Text;
+using UnityEngine;
+using Debug = UnityEngine.Debug;
 
-    AbilitySuccess, // after successfully using some ability 
-    AttackSuccess, // after successfully using some attack 
-    FastSuccess, // after successfully using fast attack
-    SlowSuccess, // after successfully using slow attack
-    HealSuccess, // after successfully using heal
-
-    AbilityFail, // after failing using any ability 
-    AttackFail, // after failing using any attack 
-    FastFail, // after failing using fast attack
-    SlowFail, // after failing using slow attack
-    HealFail, // after failing using heal
-}
-
-// Affect a unit once per turn on particular trigger event
-// For example, it can be battlefield effect, or on an recieved effect from upgrade
-// Examples:
-//  * 2x Damage - at the start of the turn filter ally's abilities for all attacks and double their low and high
-//  * Poisoned  - at the start of the turn deal 3 dmg to host
-//  * Poison    - after successful attack add target Poisioned
-//  * Heavy Blow - after successful attack search for opponents in the same row and damage them manually
 public interface IEffect
 {
-    // when should effect be applied
-    EffectApplication Condition { get; }
+    // applied only once, after it is applied
+    void Once(IUnit self) { }
+    // applied at the start of each round
+    void RoundStart(IUnit self) { }
+    // applied at the end of each round
+    void RoundEnd(IUnit self) { }
+    // applied after successfully using some ability 
+    void AbilitySuccess(IUnit self, IUnit target) { }
+    // applied after successfully using some attack 
+    void AttackSuccess(IUnit self, IUnit target) { }
+    // applied after successfully using fast attack
+    void LightAttackSuccess(IUnit self, IUnit target) { }
+    // applied after successfully using slow attack
+    void HeavyAttackSuccess(IUnit self, IUnit target) { }
+    // applied after successfully using heal
+    void HealSuccess(IUnit self, IUnit target) { }
+    // applied after failing using any ability 
+    void AbilityFail(IUnit self, IUnit target) { }
+    // applied after failing using any attack 
+    void AttackFail(IUnit self, IUnit target) { }
+    // applied after failing using fast attack
+    void LightAttackFail(IUnit self, IUnit target) { }
+    // applied after failing using slow attack
+    void HeavyAttackFail(IUnit self, IUnit target) { }
+    // applied after failing using heal
+    void HealFail(IUnit self, IUnit target) { }
+    // applied after sucessful move
+    void Move(IUnit self) { }
+}
 
-    // Apply effect on unit that has it (unit on is on special spot in battlefield, unit that has an upgrade, etc)
-    // Assume the unit has cleared all effects on its abilities from previous turn
-    // How should it work? Unit creates a fresh copy using MakeFreshCopy()
-    //                     Copied unit applies all effects that happen during the round
-    //                     On the end of the round unit sets its HP based on the copy and then deletes it
-    void Affect(IUnit host);
+public class NoEffect : IEffect
+{
+
+}
+
+public class DoubleAttack : IEffect
+{
+    public void RoundStart(IUnit self)
+    {
+        foreach (IAbility ability in self.Abilities)
+        {
+            ability.High *= 2;
+            ability.Low *= 2;
+        }
+    }
+    public void RoundEnd(IUnit self)
+    {
+        foreach (IAbility ability in self.Abilities)
+        {
+            ability.High /= 2;
+            ability.Low /= 2;
+        }
+    }
+    public void Once(IUnit self)
+    {
+        RoundStart(self);
+    }
+}
+
+public class HealingSpring : IEffect
+{
+    public void RoundStart(IUnit self)
+    {
+        self.HP = Math.Min(self.HP + 5, self.MAX_HP);
+        
+    }
+}
+
+public class Poisoned : IEffect
+{
+    public void RoundStart(IUnit self)
+    {
+        self.HP -= Math.Max(self.HP - 5, 0);
+    }
+}
+
+public class Poison : IEffect
+{
+    public void AbilitySuccess(IUnit self, IUnit target)
+    {
+        target.ApplyEffect(Deck.instance.upgrades["Poison"]); // TODO
+    }
 }

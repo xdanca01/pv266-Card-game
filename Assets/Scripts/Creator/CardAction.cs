@@ -65,31 +65,50 @@ public class Move : CardAction
         {
             throw new System.Exception("Cannot move to opponent's battlefield!");
         }
-        var swapUnit = executor.GetUnit();
-        executor.SetUnit(target.GetUnit());
-        target.SetUnit(swapUnit);
+        var executorUnit = executor.GetUnit();
+        var targetUnit = target.GetUnit();
+        executor.SetUnit(targetUnit);
+        target.SetUnit(executorUnit);
+        executorUnit.Move();
+        if (targetUnit != null)
+        {
+            targetUnit.Move();
+        }
     }
 }
 
 public class AbilityAction : CardAction
 {
-    Ability ability;
+    private Ability ability;
 
     public AbilityAction(Battlefield battlefield, CardSlot executor, Ability ability) : base(battlefield, executor, ability.Type.ToFSColor())
     {
         this.ability = ability;
     }
 
+    public AbilityType Type => ability.Type;
+
     public override void Execute()
     {
+        var executorUnit = executor.GetUnit();
+        var targetUnit = target.GetUnit();
         if (this.ability.Percentage <= Random.Range(1, 101))
         {
-            return;
+            switch (Type)
+            {
+                case AbilityType.LightAttack:
+                    executorUnit.LightAttackFail(targetUnit); 
+                    break;
+                case AbilityType.HeavyAttack: 
+                    executorUnit.HeavyAttackFail(targetUnit); 
+                    break;
+                case AbilityType.Heal: 
+                    executorUnit.HealFail(targetUnit); 
+                    break;
+            }
         }
         var value = Random.Range((int)this.ability.Low, (int)this.ability.High + 1);
         var attack = this.ability.Type == AbilityType.LightAttack || this.ability.Type == AbilityType.HeavyAttack;
-        var executorUnit = executor.GetUnit();
-        var targetUnit = target.GetUnit();
         // Attack with positive value = affect target
         if (attack && value > 0)
         {
@@ -109,6 +128,18 @@ public class AbilityAction : CardAction
         else if (!attack && value < 0)
         {
             targetUnit.HP = (uint)System.Math.Max(targetUnit.HP + value, 0);
+        }
+        switch (Type)
+        {
+            case AbilityType.LightAttack:
+                executorUnit.LightAttackSuccess(targetUnit);
+                break;
+            case AbilityType.HeavyAttack:
+                executorUnit.HeavyAttackSuccess(targetUnit);
+                break;
+            case AbilityType.Heal:
+                executorUnit.HealSuccess(targetUnit);
+                break;
         }
     }
 

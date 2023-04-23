@@ -99,13 +99,16 @@ public class Battlefield : MonoBehaviour
             }
         }
         battlefield.PlacementSlots = new();
-        foreach (var (hero,i) in Deck.instance.deckOfHeroes.Select((val, i) => (val, i)))
+        if (Application.isPlaying)
         {
-            CardSlot slot = CardSlot.New("Placement Slot " + i, gameobject, 
-                new Vector2(i * (Generator.ColumnSize), -(rowsCount + 2) * Generator.RowSize), 
-                battlefield, CardSlotType.Placement);
-            slot.SetUnit(hero.data.FreshCopy(gameobject));
-            battlefield.PlacementSlots.Add(slot);
+            foreach (var (hero, i) in Deck.instance.deckOfHeroes.Select((val, i) => (val, i)))
+            {
+                CardSlot slot = CardSlot.New("Placement Slot " + i, gameobject,
+                    new Vector2(i * (Generator.ColumnSize), -(rowsCount + 2) * Generator.RowSize),
+                    battlefield, CardSlotType.Placement);
+                slot.SetUnit(hero.data.FreshCopy(gameobject));
+                battlefield.PlacementSlots.Add(slot);
+            }
         }
         return battlefield;
     }
@@ -177,10 +180,45 @@ public class Battlefield : MonoBehaviour
         }
     }
 
+    private void ForEachUnit(Action<Unit> action)
+    {
+        foreach (var ally in AllySlots)
+        {
+            if (!ally.IsEmpty())
+            {
+                action(ally.GetUnit());
+            }
+        }
+        foreach (var enemy in EnemySlots)
+        {
+            if (!enemy.IsEmpty())
+            {
+                action(enemy.GetUnit());
+            }
+        }
+    }
+
     [EditorCools.Button]
     public void NextRound()
     {
-        addAiActions();
+        ForEachUnit(u => u.RoundStart());
+        bool allies = false;
+        foreach (var ally in AllySlots)
+        {
+            if (!ally.IsEmpty() && ally.GetUnit().Abilities.Any())
+            {
+                allies = true;
+                break;
+            }
+        }
+        if (allies)
+        {
+            addAiActions();
+        }
+        else if (!PlacementSlots.Any())
+        {
+            Debug.Log("You Died :(");
+        }
         foreach (var action in GetActionsInOrderOfExecution())
         {
             action.GetExecutor().RemoveActionLine();
@@ -195,6 +233,22 @@ public class Battlefield : MonoBehaviour
         foreach (var enemy in EnemySlots)
         {
             enemy.ClearUnitIfDead();
+        }
+        ForEachUnit(u => u.RoundEnd());
+        bool enemies = false;
+        foreach (var enemy in EnemySlots)
+        {
+            if (!enemy.IsEmpty())
+            {
+                enemies = true;
+                break;
+            }
+        }
+        if (!enemies)
+        {
+            Debug.Log("Good Job :)");
+            CameraController.instance.CameraIslands();
+            Rewards.instance.GiveReward(Difficulty.Extreme);
         }
     }
 }

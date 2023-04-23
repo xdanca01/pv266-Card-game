@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -20,7 +21,29 @@ public class Upgrade : MonoBehaviour, IUpgrade, Interactable
         upgrade.Card = Card;
         upgrade.Background = Background.New(Card);
         upgrade.Icon = Icon.New(Card, Card.gameobject, iconTitle, iconDescription, icon, color);
-        upgrade.Effect = new Poison(); // TODO!
+        upgrade.Effect = null;
+        foreach (var effect in new IEffect[] { new DoubleAttack(), new HealingSpring(), new Poisoned(), new Poison() })
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (char c in effect.GetType().ToString())
+            {
+                if (c == char.ToUpper(c))
+                {
+                    builder.Append(' ');
+                }
+                builder.Append(c);
+            }
+            if (title.Trim().ToLower().Equals(builder.ToString().Trim().ToLower()))
+            {
+                upgrade.Effect = effect;
+                break;
+            }
+        }
+        if (upgrade.Effect == null)
+        {
+            Debug.LogWarning("Assigning NoEffect to " + title);
+            upgrade.Effect = new NoEffect();
+        }
         upgrade.FreshCopy = (GameObject parent) => New(parent, title, description, iconTitle, iconDescription, icon, color);
         upgrade.Icon.gameObject.SetActive(false);
         return upgrade;

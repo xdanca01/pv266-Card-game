@@ -10,7 +10,7 @@ public class Generator : MonoBehaviour
 {
     public static readonly int ColumnSize = 7;
     public static readonly int RowSize = 10;
-    private Dictionary<string, Upgrade> upgradesGenerated;
+    public Dictionary<string, Upgrade> upgradesGenerated;
     private Dictionary<string, Ability> abilitiesGenerated;
     private Dictionary<string, Unit> unitsGenerated;
     public Battlefield battlefield { get; private set; }
@@ -56,7 +56,10 @@ public class Generator : MonoBehaviour
             var icon = GetColumn("Icon", columns, columnNames);
             var type = AbilityTypeUtils.Parse(GetColumn("Type", columns, columnNames));
             var ability = Ability.New(parent, title, type, percentage, low, high, icon);
-            ability.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), RowSize * (i / columnsCount + 1)));
+            if (!Application.isPlaying)
+            {
+                ability.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), RowSize * (i / columnsCount + 1)));
+            }
             abilities.Add(title.ToLower(), ability);
         }
         return abilities;
@@ -81,10 +84,16 @@ public class Generator : MonoBehaviour
             var icon = GetColumn("Icon", columns, columnNames);
             var color = FSColorMethods.Parse(GetColumn("Color", columns, columnNames));
             var upgrade = Upgrade.New(parent, title, description, iconTitle, iconDescription, icon, color);
-            upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount + 1), RowSize * (i / columnsCount + 1)));
+            if (!Application.isPlaying)
+            {
+                upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount + 1), RowSize * (i / columnsCount + 1)));
+            }
             upgrades.Add(title.ToLower(), upgrade);
         }
-        Deck.instance.upgrades = upgrades;
+        if (Application.isPlaying)
+        {
+            Deck.instance.upgrades = upgrades;
+        }
         return upgrades;
     }
 
@@ -117,10 +126,16 @@ public class Generator : MonoBehaviour
             var secondUpgradeStr = GetColumn("Second Upgrade", columns, columnNames).ToLower();
             var secondUpgrade = secondUpgradeStr != "" ? upgrades[secondUpgradeStr] : null;
             var unit = Unit.New(parent, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
-            unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), - RowSize * (i / columnsCount + 2)));
+            if (!Application.isPlaying)
+            {
+                unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), -RowSize * (i / columnsCount + 2)));
+            }
             units.Add(title, unit);
         }
-        Deck.instance.heroes = units;
+        if (Application.isPlaying)
+        {
+            Deck.instance.heroes = units;
+        }
         return (upgrades, abilities, units);
     }
 

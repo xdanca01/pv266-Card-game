@@ -12,19 +12,15 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
     public UpgradeDrawer upgrades { get; private set; }
     public EffectsDrawer effects { get; private set; }
     public Background Background { get; private set; }
-    public uint MAX_HP { get; private set; }
+    public uint MAX_HP { get; set; }
     public uint HP { get => badge.Count; set => badge.Count = value; }
 
     public ReadOnlyCollection<IAbility> Abilities => new(abilities.GetAll().Select(i => (IAbility)i).ToList());
 
-    public void RemoveEffects()
-    {
-        abilities.GetAll().ForEach(a => a.RemoveEffects());
-    }
 
     public Func<GameObject, Unit> FreshCopy;
 
-    public static Unit New(GameObject parent, string title, uint hp, 
+    public static Unit New(GameObject parent, string title, uint hp,
         Ability firstAbility, Ability secondAbility, Ability thirdAbility,
         Upgrade firstUpgrade, Upgrade secondUpgrade, string artwork)
     {
@@ -66,9 +62,54 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
     public void ApplyEffect(Upgrade effect)
     {
         this.effects.Add(effect);
+        Apply(e => e.Effect.Once(this));
     }
     public void RemoveEffect(Upgrade effect)
     {
         this.effects.Remove(effect);
     }
+
+    private void Apply(Action<Upgrade> action)
+    {
+        effects.GetAll().ForEach(action);
+        upgrades.GetAll().ForEach(action);
+    }
+
+    public void RoundStart() => Apply(e => e.Effect.RoundStart(this));
+    public void RoundEnd() => Apply(e => e.Effect.RoundEnd(this));
+    public void LightAttackSuccess(IUnit target)
+    {
+        Apply(e => e.Effect.LightAttackSuccess(this, target));
+        Apply(e => e.Effect.AttackSuccess(this, target));
+        Apply(e => e.Effect.AbilitySuccess(this, target));
+    }
+    public void HeavyAttackSuccess(IUnit target)
+    {
+        Apply(e => e.Effect.HeavyAttackSuccess(this, target));
+        Apply(e => e.Effect.AttackSuccess(this, target));
+        Apply(e => e.Effect.AbilitySuccess(this, target));
+    }
+    public void HealSuccess(IUnit target)
+    {
+        Apply(e => e.Effect.HealSuccess(this, target));
+        Apply(e => e.Effect.AbilitySuccess(this, target));
+    }
+    public void LightAttackFail(IUnit target)
+    {
+        Apply(e => e.Effect.LightAttackFail(this, target));
+        Apply(e => e.Effect.AttackFail(this, target));
+        Apply(e => e.Effect.AbilityFail(this, target));
+    }
+    public void HeavyAttackFail(IUnit target)
+    {
+        Apply(e => e.Effect.HeavyAttackFail(this, target));
+        Apply(e => e.Effect.AttackFail(this, target));
+        Apply(e => e.Effect.AbilityFail(this, target));
+    }
+    public void HealFail(IUnit target)
+    {
+        Apply(e => e.Effect.HealFail(this, target));
+        Apply(e => e.Effect.AbilityFail(this, target));
+    }
+    public void Move() => Apply(e => e.Effect.Move(this));
 }

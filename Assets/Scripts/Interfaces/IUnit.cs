@@ -4,13 +4,16 @@ using System.Collections.ObjectModel;
 //  * Hero = player's unit
 //  * Monster = enemy's unit
 public interface IUnit
-{
+{   
     // get & set current unit hp
     uint HP { get; set; }
 
-    // remove all effects that affect unit
-    // It is recomended that IUnit saves its abilities Start method
-    void RemoveEffects();
+    // get & set max unit hp
+    uint MAX_HP { get; set; }
+
+    public void ApplyEffect(Upgrade effect);
+
+    public void RemoveEffect(Upgrade effect);
 
     // all abilities unit currently has
     // we can't extend them, but we can modify them
