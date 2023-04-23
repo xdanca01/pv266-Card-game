@@ -60,6 +60,7 @@ public class Rewards : MonoBehaviour
             if(cnt == index)
             {
                 Deck.instance.addHero(h.Value, h.Key);
+                Debug.Log("A "+ h.Key + " joins the battle!");
                 break;
             }
             ++cnt;
@@ -101,6 +102,7 @@ public class Rewards : MonoBehaviour
     {
         Dictionary<string, Upgrade> upgrades = filterUpgrades(Deck.instance.upgrades);
         int numberOfUpgrades = UnityEngine.Random.Range(min, max+1);
+        Debug.Log("You recieved " + numberOfUpgrades + " new upgrades!");
         for (int i = 0; i < numberOfUpgrades; ++i)
         {
             int index = UnityEngine.Random.Range(0, upgrades.Count);
@@ -120,6 +122,7 @@ public class Rewards : MonoBehaviour
     private void GiveCoins(int min, int max)
     {
         int coins = UnityEngine.Random.Range(min, max);
+        Debug.Log("You recieved " + coins + " coins!");
         Deck.instance.coins += coins;
     }
 

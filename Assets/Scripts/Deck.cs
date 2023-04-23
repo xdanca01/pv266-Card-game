@@ -99,6 +99,7 @@ public class Deck : MonoBehaviour
                 deckOfHeroes.Add(data);
             }
         }
+        List<string> upgradeNames = new() { "Poison", "Headshot" };
     }
 
     public List<HeroData> getHeroes()
