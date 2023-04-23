@@ -1,5 +1,6 @@
 ﻿using TMPro;
 using UnityEditor;
+using UnityEngine;
 
 public enum FSFont
 {
@@ -10,11 +11,11 @@ public enum FSFont
 
 static class FSFontMethods
 {
-    public static TMP_FontAsset ToAsset(this FSFont font) => AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(font switch
+    public static TMP_FontAsset ToAsset(this FSFont font) => Resources.Load<TMP_FontAsset>(font switch
     {
-        FSFont.DeadRevolution => "Assets/Fonts/Dead Revolution/Dead Revolution SDF.asset",
-        FSFont.Dumbledor => "Assets/Fonts/Dumbledor/dum1 SDF.asset",
-        FSFont.Geizer => "Assets/Fonts/Geizer/Geizer SDF.asset",
+        FSFont.DeadRevolution => "Fonts/Dead Revolution/Dead Revolution SDF",
+        FSFont.Dumbledor => "Fonts/Dumbledor/dum1 SDF",
+        FSFont.Geizer => "Fonts/Geizer/Geizer SDF",
         _ => throw new System.Exception("Unknown Font!"),
     });
 }

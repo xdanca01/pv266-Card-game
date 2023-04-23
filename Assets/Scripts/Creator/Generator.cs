@@ -39,7 +39,7 @@ public class Generator : MonoBehaviour
     [EditorCools.Button]
     private Dictionary<string, Ability> CreateAbilities()
     {
-        var table = File.ReadLines("Assets/Data/Abilities.csv");
+        var table = Resources.Load<TextAsset>("Data/Abilities").text.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
         var columnNames = table.First().Split(",");
         var columnsCount = 6;
         var parent = new GameObject("Abilities");
@@ -68,7 +68,7 @@ public class Generator : MonoBehaviour
     [EditorCools.Button]
     private Dictionary<string, Upgrade> CreateUpgrades()
     {
-        var table = File.ReadLines("Assets/Data/Effects.csv");
+        var table = Resources.Load<TextAsset>("Data/Effects").text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         var columnNames = table.First().Split(",");
         var columnsCount = 6;
         var parent = new GameObject("Upgrades");
@@ -101,7 +101,7 @@ public class Generator : MonoBehaviour
     private (Dictionary<string, Upgrade>, Dictionary<string, Ability>, Dictionary<string, Unit>) CreateUnits()
     {
         DeleteAll();
-        var table = File.ReadLines("Assets/Data/Units.csv");
+        var table = Resources.Load<TextAsset>("Data/Units").text.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
         var columnNames = table.First().Split(",");
         var columnsCount = 6;
         var upgrades = CreateUpgrades();
@@ -151,7 +151,7 @@ public class Generator : MonoBehaviour
         upgradesGenerated = upgrades;
         abilitiesGenerated = abilities;
         unitsGenerated = units;
-        var table = File.ReadLines("Assets/Data/Map.csv");
+        var table = Resources.Load<TextAsset>("Data/Map").text.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
         var columnNames = table.First().Split(",");
         string basedTitle = mapName;
         var rowsCount = 0u;
@@ -179,7 +179,7 @@ public class Generator : MonoBehaviour
 
     public Battlefield CreateOnlyBattlefield(string mapName)
     {
-        var table = File.ReadLines("Assets/Data/Map.csv");
+        var table = Resources.Load<TextAsset>("Data/Map").text.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
         var columnNames = table.First().Split(",");
         string basedTitle = mapName;
         var rowsCount = 0u;
@@ -208,7 +208,7 @@ public class Generator : MonoBehaviour
 
     private void Update()
     {
-        if (EditorApplication.isPlaying && battlefield == null)
+        if (Application.isPlaying && battlefield == null)
         {
             CreateBattlefield();
         }

@@ -11,7 +11,7 @@ public class Background : MonoBehaviour
         var gameObject = creator.FindGameObject("Background", parent);
         var background = creator.FindComponent<Background>(gameObject);
         var image = creator.FindComponent<Image>(gameObject);
-        image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/9-Sliced.png");
+        image.sprite = Resources.Load<Sprite>("9-Sliced");
         image.type = Image.Type.Sliced;
         image.pixelsPerUnitMultiplier = 100;
         creator.FindComponent<RectTransform>(gameObject).sizeDelta = new Vector2(rect.width, rect.height);

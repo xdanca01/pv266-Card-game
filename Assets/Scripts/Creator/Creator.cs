@@ -81,9 +81,9 @@ public class Creator
         var hexagon = FindGameObject(reason, parent);
         SetRect(hexagon, new Rect(0f, 0f, 1f, 1f));
         var image = FindComponent<Image>(hexagon);
-        image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(
-            pointedUp ? "Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/HexagonPointed-TopWithBorder.png"
-                        : "Packages/com.unity.2d.sprite/Editor/ObjectMenuCreation/DefaultAssets/Textures/HexagonFlat-TopWithBorder.png");
+        image.sprite = Resources.Load<Sprite>(
+            pointedUp ? "HexagonPointed-TopWithBorder"
+                        : "HexagonFlat-TopWithBorder");
         image.color = color.ToColor();
         image.preserveAspect = true; 
         hexagon.GetComponent<RectTransform>().localScale = new Vector3(hexagonWidth, hexagonHeight, 1f);
@@ -126,7 +126,7 @@ public class Creator
         // inner image
         var image = FindGameObject(reason, mask);
         SetRect(image, new Rect(0, 0, 1, 1));
-        Sprite imageSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/" + spriteFolder + "/" + spriteName + ".png");
+        Sprite imageSprite = Resources.Load<Sprite>(spriteFolder + "/" + spriteName);
         var imageRenderer = FindComponent<Image>(image);
         imageRenderer.sprite = imageSprite;
         imageRenderer.color = color.ToColor(alpha);

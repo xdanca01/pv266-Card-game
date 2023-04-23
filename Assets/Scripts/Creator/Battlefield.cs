@@ -75,7 +75,7 @@ public class Battlefield : MonoBehaviour
                     GetPosition(row, column, false), battlefield, CardSlotType.Enemy);
             }
         }
-        var table = File.ReadLines("Assets/Data/Battlefield.csv");
+        var table = Resources.Load<TextAsset>("Data/Battlefield").text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         var columnNames = table.First().Split(",");
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
