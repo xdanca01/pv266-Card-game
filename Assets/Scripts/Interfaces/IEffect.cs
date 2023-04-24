@@ -44,6 +44,8 @@ public enum EffectType
     HealingSpring,
     Poisoned,
     Poison,
+    LavaFloor,
+    IceFloor,
     Immuvable
 }
 
@@ -79,6 +81,30 @@ public static class Effects
         }
     }
 
+    private class IceFloor : IEffect
+    { 
+        public EffectType Type => EffectType.DoubleAttack;
+
+        public void RoundStart(IUnit self)
+        {
+            foreach (IAbility ability in self.Abilities)
+            {
+                ability.Percentage /= 2;
+            }
+        }
+        public void RoundEnd(IUnit self)
+        {
+            foreach (IAbility ability in self.Abilities)
+            {
+                ability.Percentage *= 2;
+            }
+        }
+        public void Once(IUnit self)
+        {
+            RoundStart(self);
+        }
+    }
+    
     private class HealingSpring : IEffect
     {
         public EffectType Type => EffectType.HealingSpring;
@@ -98,6 +124,16 @@ public static class Effects
             self.HP = (uint)Math.Max((int)self.HP - 3, 0);
         }
     }
+
+    private class LavaFloor : IEffect
+    {
+        public EffectType Type => EffectType.Poisoned;
+
+        public void RoundStart(IUnit self)
+        {
+            self.HP = (uint)Math.Max((int)self.HP - 3, 0);
+        }
+    }   
 
     private class Poison : IEffect
     {
@@ -122,6 +158,8 @@ public static class Effects
         EffectType.Poisoned => new Poisoned(),
         EffectType.Poison => new Poison(),
         EffectType.Immuvable => new Immuvable(),
-        _ => throw new NotImplementedException(),
+        EffectType.LavaFloor => new LavaFloor(),
+        EffectType.IceFloor => new IceFloor(),
+        _ => throw new NotImplementedException(effect.ToString()),
     };
 }

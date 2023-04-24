@@ -132,6 +132,7 @@ public class AbilityAction : CardAction
                     executorUnit.HealFail(targetUnit); 
                     break;
             }
+            return;
         }
         var value = Random.Range((int)this.ability.Low, (int)this.ability.High + 1);
         var attack = this.ability.Type == AbilityType.LightAttack || this.ability.Type == AbilityType.HeavyAttack;
@@ -154,7 +155,7 @@ public class AbilityAction : CardAction
         else if (!attack && value < 0)
         {
             targetUnit.HP = (uint)System.Math.Max(targetUnit.HP + value, 0);
-        }
+        }   
         switch (Type)
         {
             case AbilityType.LightAttack:

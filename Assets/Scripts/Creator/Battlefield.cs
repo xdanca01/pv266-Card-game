@@ -93,7 +93,7 @@ public class Battlefield : MonoBehaviour
                     slots[row - 1, column - 1].SetUnit(unit.FreshCopy(gameobject));
                 }
                 else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
-                {
+                {   
                     slots[row - 1, column - 1].SetUpgrade(effect.FreshCopy(gameobject));
                 }
             }
@@ -104,7 +104,7 @@ public class Battlefield : MonoBehaviour
             foreach (var (hero, i) in Deck.instance.deckOfHeroes.Select((val, i) => (val, i)))
             {
                 CardSlot slot = CardSlot.New("Placement Slot " + i, gameobject,
-                    new Vector2(i * (Generator.ColumnSize), -(rowsCount + 2) * Generator.RowSize),
+                    new Vector2(i * (Generator.ColumnSize), -(rowsCount + 2) * Generator.RowSize),  
                     battlefield, CardSlotType.Placement);
                 slot.SetUnit(hero.data.FreshCopy(gameobject));
                 battlefield.PlacementSlots.Add(slot);

@@ -1,7 +1,8 @@
 Title,Unit or Effect,Side,Row,Column
-Adinkira 'hene,Stone,ALLY,2,4
+Adinkira 'hene,Stone,ALLY,2,3
 Adinkira 'hene,Double Attack,ALLY,2,2
 Adinkira 'hene,Warrior,HOSTILE,2,2
+Adinkira 'hene,Lava Floor,HOSTILE,1,1
 Dono,Octopus,HOSTILE,1,2
 Dono,Tentacle,HOSTILE,1,1
 Dono,Tentacle,HOSTILE,2,1
@@ -13,27 +14,36 @@ Nsoroma,Monkey,HOSTILE,3,1
 Nsoroma,Tree,ALLY,1,3
 Nsoroma,Tree,ALLY,3,2
 Fihankra,Barrel,ALLY,2,4
+Fihankra,Lava Floor,ALLY,1,3
 Fihankra,Barrel,HOSTILE,1,1
 Fihankra,Barrel,HOSTILE,2,1
 Fihankra,Pirate Captain,HOSTILE,1,4
 Fihankra,Pirate Parrot,HOSTILE,1,2
 Fihankra,One Arm Pirate,HOSTILE,2,2
-Dwenini aben,Piranha,HOSTILE,1,1
 Dwenini aben,Piranha,HOSTILE,2,1
-Dwenini aben,Piranha,HOSTILE,1,2
+Dwenini aben,Piranha,HOSTILE,3,1
 Dwenini aben,Piranha,HOSTILE,2,2
-Dwenini aben,Piranha,HOSTILE,1,3
+Dwenini aben,Piranha,HOSTILE,3,2
 Dwenini aben,Piranha,HOSTILE,2,3
-Dwenini aben,Piranha,HOSTILE,1,4
+Dwenini aben,Piranha,HOSTILE,3,3
 Dwenini aben,Piranha,HOSTILE,2,4
+Dwenini aben,Piranha,HOSTILE,3,4
 Dwenini aben,Reef,ALLY,4,3
 Dwenini aben,Reef,ALLY,2,2
+Kuntinkantan,Reef,ALLY,3,3
+Kuntinkantan,Stone,ALLY,1,2
+Kuntinkantan,Shark,HOSTILE,1,4
+Kuntinkantan,Shark,HOSTILE,2,4
 Kuntinkantan,Shark,HOSTILE,3,4
 Kuntinkantan,Shark,HOSTILE,4,4
 Sankofa,Reef,HOSTILE,2,2
 Sankofa,Reef,HOSTILE,3,1
 Sankofa,Reef,ALLY,1,3
 Sankofa,Reef,ALLY,3,3
+Sankofa,Ice Floor,ALLY,1,2
+Sankofa,Ice Floor,ALLY,2,3
+Sankofa,Ice Floor,ALLY,3,2
 Sankofa,Mermaid,HOSTILE,3,3
 Sankofa,Mermaid,HOSTILE,2,3
 Sankofa,Mermaid,HOSTILE,1,3
+Sepow,Octopus,HOSTILE,1,1

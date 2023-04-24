@@ -66,7 +66,7 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
         upgrade.Effect.Once(this);
     }
     public void ApplyEffect(Upgrade effect)
-    {
+    {   
         if (!this.effects.GetAll().Any(e => e.Effect.Type == effect.Effect.Type))
         {
             this.effects.Add(effect);
