@@ -106,9 +106,12 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             return;
         }
         if (actionInProgress == default)
-        {   
-            actionInProgress = new MoveAction(battlefield, this);
-            AddHighlights();
+        {
+            if (!this.unit.HasEffect(EffectType.Immuvable))
+            {
+                actionInProgress = new MoveAction(battlefield, this);
+                AddHighlights();
+            }
             return;
         }
         if (actionInProgress.Assign(this))
