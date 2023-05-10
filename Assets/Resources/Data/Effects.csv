@@ -7,13 +7,13 @@ Revive,You get 1 more chance to show what you got. Revive with half HP.,Angel wi
 Stone Skin,You stood in magical mud; it looks like some kind of protection for you. The damage dealt to you is halved.,Stone skin,Stone skin,golem-head,Black
 Ice Floor,You stand on ice ground. Your chance to hit attack is halved.,Ice,Ice,frozen-block,Blue
 Lava Floor,You get 3 damage each round.,Lava,Lava,lava,Red
-Eye for Weakness,You deal 4 more damage if your attacks success.,Eye,Eye,burning-eye,White
-Swing Attack,Deal full damage to target and half damage to other enemies in same column.,Swing,Swing,axe-swing,White
+Eye for Weakness,You deal 4 more damage if your attacks success.,Eye,Eye,burning-eye,Orange
+Swing Attack,Deal full damage to target and half damage to other enemies in same column.,Swing,Swing,axe-swing,Orange
 Ghost,After you get damage the next round you will be non targetable.,Ghost,Ghost,ghost-ally,White
-Dissarm,You have 50% chance to dissarm enemy after successfull attack.,Dissarm,Dissarm,drop-weapon,White
-Lucky Hit,You have 50% chance to increase ability success by 20%,Lucky hit,Lucky hit,dice-fire,White
-Human Shield,You will get damage instead of ally in same column. The damage is reduced by 50%.,Human shield,Human shield,leapfrog,White
-Headshot,You will always deal maximum damage on attack success.,Headshot,Headshot,headshot,White
+Dissarm,You have 50% chance to dissarm enemy after successfull attack.,Dissarm,Dissarm,drop-weapon,Orange
+Lucky Hit,You have 50% chance to increase ability success by 20%,Lucky hit,Lucky hit,dice-fire,Green
+Human Shield,You will get damage instead of ally in same column. The damage is reduced by 50%.,Human shield,Human shield,leapfrog,Red
+Headshot,You will always deal maximum damage on attack success.,Headshot,Headshot,headshot,Orange
 Stun,You have 50% chance to stun target.,Stun,Stun,stoned-skull,White
 Charge,You can attack over 1 object/person.,Charge,Charge,running-ninja,White
-Immuvable,Unit can't move.,Immuvable,,stone-tower,Violet
+Immovable,Unit can't move.,Immuvable,,stone-tower,Violet

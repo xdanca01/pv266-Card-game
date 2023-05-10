@@ -46,7 +46,7 @@ public enum EffectType
     Poison,
     LavaFloor,
     IceFloor,
-    Immuvable
+    Immovable
 }
 
 public static class Effects
@@ -147,7 +147,7 @@ public static class Effects
 
     private class Immuvable : IEffect
     {
-        public EffectType Type => EffectType.Immuvable;
+        public EffectType Type => EffectType.Immovable;
     }
 
     public static IEffect GetEffect(this EffectType effect) => effect switch
@@ -157,7 +157,7 @@ public static class Effects
         EffectType.HealingSpring => new HealingSpring(),
         EffectType.Poisoned => new Poisoned(),
         EffectType.Poison => new Poison(),
-        EffectType.Immuvable => new Immuvable(),
+        EffectType.Immovable => new Immuvable(),
         EffectType.LavaFloor => new LavaFloor(),
         EffectType.IceFloor => new IceFloor(),
         _ => throw new NotImplementedException(effect.ToString()),
