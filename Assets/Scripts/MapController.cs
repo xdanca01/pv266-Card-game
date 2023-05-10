@@ -25,18 +25,11 @@ public class MapController : MonoBehaviour
         _startIsland = CurrentIsland;
     }
 
-    public void SetBattlefieldCamera(Battlefield battlefield, bool hasPlacementSlots)
+    public void SetBattlefieldCamera()
     {
         var camera = CameraController.instance.BattlefieldCamera;
-        var rows = Math.Max(battlefield.AllySlots.GetLength(0), battlefield.EnemySlots.GetLength(0)) + (hasPlacementSlots ? 1 : 0);
-        var cols = battlefield.AllySlots.GetLength(1) + battlefield.EnemySlots.GetLength(1);
-        var midX = (cols / 2.0f + 0.75f) * Generator.ColumnSize;
-        var midY = (-rows / 2.0f - 1.5f) * Generator.RowSize;
-        var height = rows * Generator.RowSize;
-        var width = (cols + 0.5f) * Generator.ColumnSize / camera.aspect;
-        var border = 1.2f; // 20% on the sides
-        camera.orthographicSize = border * (Mathf.Max(width, height) / 2.0f);
-        camera.transform.position = new Vector3(midX, midY, camera.transform.position.z);
+        camera.orthographicSize = Generator.WorldHeight / 2f;
+        camera.transform.position = new Vector3(Generator.WorldWidth / 2f, Generator.WorldHeight / 2f, camera.transform.position.z);
         CameraController.instance.CameraBattlefield();
     }
 
@@ -62,8 +55,8 @@ public class MapController : MonoBehaviour
         else
         {
             GameObject generator = GameObject.FindGameObjectWithTag("Generator");
-            var battlefield = generator.GetComponent<Generator>().CreateOnlyBattlefield(CurrentIsland.IslandName);
-            SetBattlefieldCamera(battlefield, true);
+            generator.GetComponent<Generator>().CreateOnlyBattlefield(CurrentIsland.IslandName);
+            SetBattlefieldCamera();
         }
     }
 

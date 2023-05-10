@@ -5,6 +5,7 @@ using UnityEngine;
 
 using System.ComponentModel;
 using System;
+using UnityEngine.UI;
 
 namespace System.Runtime.CompilerServices
 {
@@ -56,27 +57,61 @@ public class Battlefield : MonoBehaviour
     {
         var creator = new Creator(title, parent);    
         var battlefield = creator.gameobject.AddComponent<Battlefield>();
+        
         var gameobject = creator.gameobject;
+        var battleLayout = gameobject.AddComponent<VerticalLayoutGroup>();
+        battleLayout.childForceExpandWidth = false; 
+        battleLayout.childForceExpandHeight = false;        
         gameobject.GetComponent<RectTransform>().SetParent(parent.transform);
         battlefield.AllySlots = new CardSlot[rowsCount, columnsCount];
         battlefield.EnemySlots = new CardSlot[rowsCount, columnsCount];
         battlefield.actions = new();
-        Vector2 GetPosition(uint row, uint column, bool friendly) => new(
-            (column + (float)(friendly ? 0 : columnsCount + 0.5f) + 1) * Generator.ColumnSize,
-            -(row + 2) * Generator.RowSize);
-        var allies = creator.FindGameObject("Allies");
-        var enemies = creator.FindGameObject("Enemies");
+        var sides = creator.FindGameObject("Sides");
+        var rectSides = sides.GetComponent<RectTransform>();
+        rectSides.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Generator.WorldWidth);
+        var bottomSize = 1.25f * Generator.RowSize + 2;
+        rectSides.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Generator.WorldHeight - bottomSize);
+        var horizontal = sides.AddComponent<HorizontalLayoutGroup>();       
+        horizontal.childControlHeight = true;
+        horizontal.childControlWidth = true;
+        GameObject CreateSideObject(string name, bool friendly) {
+            var gameobject = creator.FindGameObject(name);
+            gameobject.GetComponent<RectTransform>().SetParent(sides.transform);
+            var gridLayout = gameobject.AddComponent<GridLayoutGroup>();
+            var rect = gridLayout.GetComponent<RectTransform>();
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, (columnsCount + 1f) * Generator.ColumnSize);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (rowsCount + 1) * Generator.RowSize);
+            gridLayout.cellSize = new Vector2(Creator.cardWidthWithBorder, Creator.cardHeightWithBorder);
+            gridLayout.spacing = new Vector2(Generator.ColumnSize - Creator.cardWidthWithBorder, Generator.RowSize - Creator.cardHeightWithBorder);
+            gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            gridLayout.childAlignment = TextAnchor.MiddleCenter;
+            gridLayout.constraintCount = (int) columnsCount;
+            var image = gameobject.AddComponent<Image>();
+            image.color = friendly ? new Color(120f / 255f, 113f / 255f, 53f / 255f) : new Color(120f / 255f, 71 / 255f, 55f / 255f);
+            return gameobject;
+        }        
+        var allies = CreateSideObject("Allies", true);
+        var enemies = CreateSideObject("Enemies", false);
         var placements = creator.FindGameObject("Placements");
+        var plGrid = placements.AddComponent<GridLayoutGroup>();
+        plGrid.cellSize = new Vector2(Creator.cardWidthWithBorder, Creator.cardHeightWithBorder);
+        plGrid.spacing = new Vector2(Generator.ColumnSize - Creator.cardWidthWithBorder, Generator.RowSize - Creator.cardHeightWithBorder);
+        plGrid.padding = new RectOffset(1, 0, 1, 0);
+        var plGridSides = plGrid.GetComponent<RectTransform>();
+        plGridSides.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Generator.WorldWidth);
+        plGridSides.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, bottomSize);
+        var plImage = placements.AddComponent<Image>();
+        plImage.color = new Color(47f / 255f, 54f / 255f, 64f / 255f);
         for (uint row = 0; row < rowsCount; row++)
         {
             for (uint column = 0; column < columnsCount; column++)
             {
                 battlefield.AllySlots[row, column] = CardSlot.New(
                     creator, "Ally Row " + row + " Column " + column, allies,
-                    GetPosition(row, column, true), battlefield, CardSlotType.Ally);
+                    Vector2.zero, battlefield, CardSlotType.Ally);
                 battlefield.EnemySlots[row, column] = CardSlot.New(
                     creator, "Enemy Row " + row + " Column " + column, enemies,
-                    GetPosition(row, column, false), battlefield, CardSlotType.Enemy);
+                    Vector2.zero, battlefield, CardSlotType.Enemy);
             }
         }
         var table = Resources.Load<TextAsset>("Data/Battlefield").text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
