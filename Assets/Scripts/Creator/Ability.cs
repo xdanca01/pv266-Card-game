@@ -47,7 +47,7 @@ public class Ability : MonoBehaviour, IAbility, Interactable
             .MaskedImage("Artwork", new Rect(0, 0.4f, 4, 4), "Icons", spriteName, type.ToFSColor());
         var ability = Card.gameobject.GetOrAddComponent<Ability>();      
         ability.Card = Card;
-        ability.Background = Background.New(Card);
+        ability.Background = Background.New(Card, Card.gameobject);
         ability.percentage = percentage;
         ability.low = low;
         ability.high = high;

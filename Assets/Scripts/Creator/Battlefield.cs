@@ -54,24 +54,28 @@ public class Battlefield : MonoBehaviour
     public static Battlefield New(string title, Dictionary<string, Unit> units,
         Dictionary<string, Upgrade> upgrades, GameObject parent, uint rowsCount, uint columnsCount)
     {
-        var gameobject = new GameObject(title);
-        var battlefield = gameobject.AddComponent<Battlefield>();
-        gameobject.transform.parent = parent.transform;
+        var creator = new Creator(title, parent);    
+        var battlefield = creator.gameobject.AddComponent<Battlefield>();
+        var gameobject = creator.gameobject;
+        gameobject.GetComponent<RectTransform>().SetParent(parent.transform);
         battlefield.AllySlots = new CardSlot[rowsCount, columnsCount];
         battlefield.EnemySlots = new CardSlot[rowsCount, columnsCount];
         battlefield.actions = new();
         Vector2 GetPosition(uint row, uint column, bool friendly) => new(
             (column + (float)(friendly ? 0 : columnsCount + 0.5f) + 1) * Generator.ColumnSize,
             -(row + 2) * Generator.RowSize);
+        var allies = creator.FindGameObject("Allies");
+        var enemies = creator.FindGameObject("Enemies");
+        var placements = creator.FindGameObject("Placements");
         for (uint row = 0; row < rowsCount; row++)
         {
             for (uint column = 0; column < columnsCount; column++)
             {
                 battlefield.AllySlots[row, column] = CardSlot.New(
-                    "Ally Row " + row + " Column " + column, gameobject,
+                    creator, "Ally Row " + row + " Column " + column, allies,
                     GetPosition(row, column, true), battlefield, CardSlotType.Ally);
                 battlefield.EnemySlots[row, column] = CardSlot.New(
-                    "Enemy Row " + row + " Column " + column, gameobject,
+                    creator, "Enemy Row " + row + " Column " + column, enemies,
                     GetPosition(row, column, false), battlefield, CardSlotType.Enemy);
             }
         }
@@ -103,7 +107,7 @@ public class Battlefield : MonoBehaviour
         {
             foreach (var (hero, i) in Deck.instance.deckOfHeroes.Select((val, i) => (val, i)))
             {
-                CardSlot slot = CardSlot.New("Placement Slot " + i, gameobject,
+                CardSlot slot = CardSlot.New(creator, "Placement Slot " + i, placements,
                     new Vector2(i * (Generator.ColumnSize), -(rowsCount + 2) * Generator.RowSize),  
                     battlefield, CardSlotType.Placement);
                 slot.SetUnit(hero.data.FreshCopy(gameobject));
@@ -112,7 +116,7 @@ public class Battlefield : MonoBehaviour
             var numberOfHeroes = Deck.instance.deckOfHeroes.Count;
             foreach (var (upgrade, i) in Deck.instance.deckOfUpgrades.Select((val, i) => (val,i)))
             {
-                CardSlot slot = CardSlot.New("Placement Slot " + i, gameobject,
+                CardSlot slot = CardSlot.New(creator, "Placement Slot " + i, placements,
                     new Vector2((numberOfHeroes + i) * (Generator.ColumnSize), -(rowsCount + 2) * Generator.RowSize),
                     battlefield, CardSlotType.Placement);
                 slot.SetUpgrade(upgrade.data.FreshCopy(gameobject));
