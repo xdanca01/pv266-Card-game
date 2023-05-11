@@ -118,7 +118,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (actionInProgress.Assign(this))
         {
             var executor = actionInProgress.GetExecutor();
-            executor.actionLine = executor.creator.Line("Action",
+            executor.actionLine = executor.creator.Line(executor.gameObject.name + " Action",
                 executor.gameObject.transform.position,
                 transform.position,
                 actionInProgress.color);

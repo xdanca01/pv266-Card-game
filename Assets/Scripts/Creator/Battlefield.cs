@@ -55,13 +55,14 @@ public class Battlefield : MonoBehaviour
     public static Battlefield New(string title, Dictionary<string, Unit> units,
         Dictionary<string, Upgrade> upgrades, GameObject parent, uint rowsCount, uint columnsCount)
     {
-        var creator = new Creator(title, parent);    
+        var creator = new Creator(title, parent);
         var battlefield = creator.gameobject.AddComponent<Battlefield>();
-        
         var gameobject = creator.gameobject;
         var battleLayout = gameobject.AddComponent<VerticalLayoutGroup>();
-        battleLayout.childForceExpandWidth = false; 
-        battleLayout.childForceExpandHeight = false;        
+        battleLayout.childForceExpandHeight = false;
+        battleLayout.childForceExpandWidth = false;
+        battleLayout.childControlWidth = false;
+        battleLayout.childControlHeight = false;
         gameobject.GetComponent<RectTransform>().SetParent(parent.transform);
         battlefield.AllySlots = new CardSlot[rowsCount, columnsCount];
         battlefield.EnemySlots = new CardSlot[rowsCount, columnsCount];
@@ -162,7 +163,6 @@ public class Battlefield : MonoBehaviour
     }
 
     public CardSlot[,] Slots(bool ally) => ally ? AllySlots : EnemySlots;
-    private CardSlot Get(CardPosition position) => Slots(position.Ally)[position.Row, position.Column];
 
     public CardPosition FindPosition(CardSlot of)
     {

@@ -25,14 +25,6 @@ public class MapController : MonoBehaviour
         _startIsland = CurrentIsland;
     }
 
-    public void SetBattlefieldCamera()
-    {
-        var camera = CameraController.instance.BattlefieldCamera;
-        camera.orthographicSize = Generator.WorldHeight / 2f;
-        camera.transform.position = new Vector3(Generator.WorldWidth / 2f, Generator.WorldHeight / 2f, camera.transform.position.z);
-        CameraController.instance.CameraBattlefield();
-    }
-
     public void StartBattle(IslandController newIsland)
     {
         //Cant go to this island
@@ -56,7 +48,7 @@ public class MapController : MonoBehaviour
         {
             GameObject generator = GameObject.FindGameObjectWithTag("Generator");
             generator.GetComponent<Generator>().CreateOnlyBattlefield(CurrentIsland.IslandName);
-            SetBattlefieldCamera();
+            CameraController.instance.CameraBattlefield();
         }
     }
 
