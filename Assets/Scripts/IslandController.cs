@@ -18,7 +18,7 @@ public enum IslandType
 public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler ,IPointerClickHandler
 {
     public bool ActiveIsland { get; set; }
-    public bool IslandCanBeNext { get; set; }
+    public bool IslandCanBeNext { get; set; } = false;
     [SerializeField] public IslandType typeOfIsland;
     [SerializeField] public String IslandName;
     [SerializeField] private bool _generateRandomVisual;
@@ -32,7 +32,7 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     [SerializeField] private LineRenderer _lineRendererPrefab;
     
-    [SerializeField] private IslandController[] _nextIslands;
+    [SerializeField] public IslandController[] _nextIslands;
 
     [SerializeField] private GameObject _isladInfo;
     [SerializeField] private GameObject _activeCircle;
@@ -78,28 +78,27 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
         if (ActiveIsland)
         {
             showButtonInChild();
-            _activeCircle.SetActive(true);
+            _activeCircle.SetActive(false);
             foreach (var lineRenderer in _nextIsladsLineRenderer)
             {
                 lineRenderer.startColor = Color.green;
                 lineRenderer.endColor = Color.green;
             }
-            foreach (var nextIsland in _nextIslands)
-            {
-                nextIsland.IslandCanBeNext = true;
-            }
         }
         else
         {
-            _activeCircle.SetActive(false);
+            if (IslandCanBeNext)
+            {
+                _activeCircle.SetActive(true);
+            }
+            else
+            {
+                _activeCircle.SetActive(false);
+            }
             foreach (var lineRenderer in _nextIsladsLineRenderer)
             {
                 lineRenderer.startColor = Color.white;
                 lineRenderer.endColor = Color.white;
-            }
-            foreach (var nextIsland in _nextIslands)
-            {
-                nextIsland.IslandCanBeNext = false;
             }
         }
     }
@@ -129,6 +128,22 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
             line.transform.parent = transform;
             line.widthMultiplier = 0.1f;
             line.SetPositions(new Vector3[] { transform.position, nextIsland.transform.position });
+            lineList.Add(line);
+
+            line = Instantiate(_lineRendererPrefab);
+            line.transform.parent = transform;
+            line.widthMultiplier = 0.1f;
+            float vecLength = 0.5f;
+            Vector3 dir = nextIsland.transform.position - transform.position;
+            Vector3 leftPoint = nextIsland.transform.position - (Quaternion.Euler(0, 0, -45) * dir.normalized) * vecLength;
+            line.SetPositions(new Vector3[] { leftPoint - 0.3f * dir, nextIsland.transform.position - 0.3f * dir });
+            lineList.Add(line);
+
+            line = Instantiate(_lineRendererPrefab);
+            line.transform.parent = transform;
+            line.widthMultiplier = 0.1f;
+            Vector3 rightPoint = nextIsland.transform.position - (Quaternion.Euler(0, 0, 45) * dir.normalized) * vecLength;
+            line.SetPositions(new Vector3[] { rightPoint - 0.3f * dir, nextIsland.transform.position - 0.3f * dir });
             lineList.Add(line);
             //line.gameObject.SetActive(false);
         }
@@ -168,7 +183,10 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             i.GetComponent<IslandController>().HidePopup();
         }
-        _isladInfo.SetActive(true);
+        if (IslandCanBeNext)
+        {
+            _isladInfo.SetActive(true);
+        }
     }
 
     public void HidePopup()

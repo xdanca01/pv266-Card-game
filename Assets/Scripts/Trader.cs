@@ -130,7 +130,14 @@ public class Trader : MonoBehaviour
             GameObject u = Instantiate(ShopItemPrefab, BuyGrid.transform);
             Button button = u.GetComponent<Button>();
             ShopItem data = u.GetComponent<ShopItem>();
-            data.InitItem(hero.name, hero.data.MAX_HP.ToString(), "30");
+            if(hero.name == "Barrel")
+            {
+                data.InitItem(hero.name, hero.data.MAX_HP.ToString(), "14");
+            }
+            else
+            {
+                data.InitItem(hero.name, hero.data.MAX_HP.ToString(), "30");
+            }
             button.onClick.AddListener(delegate () { PreviewHero(hero, false); });
         }
     }
@@ -155,7 +162,14 @@ public class Trader : MonoBehaviour
             GameObject u = Instantiate(ShopItemPrefab, SellGrid.transform);
             Button button = u.GetComponent<Button>();
             ShopItem data = u.GetComponent<ShopItem>();
-            data.InitItem(hero.name, hero.data.MAX_HP.ToString(), "15");
+            if (hero.name == "Barrel")
+            {
+                data.InitItem(hero.name, hero.data.MAX_HP.ToString(), "7");
+            }
+            else
+            {
+                data.InitItem(hero.name, hero.data.MAX_HP.ToString(), "15");
+            }
             button.onClick.AddListener(delegate () { PreviewHero(hero, true); });
         }
     }
@@ -223,12 +237,24 @@ public class Trader : MonoBehaviour
 
     public void BuyHero(Deck.HeroData hero)
     {
-        if(Deck.instance.coins < 30)
+        if(hero.name == "Barrel")
         {
-            return;
+            if (Deck.instance.coins < 14)
+            {
+                return;
+            }
+            Deck.instance.coins -= 14;
+            Deck.instance.addHero(hero.data, hero.name);
         }
-        Deck.instance.coins -= 30;
-        Deck.instance.addHero(hero.data, hero.name);
+        else
+        {
+            if (Deck.instance.coins < 30)
+            {
+                return;
+            }
+            Deck.instance.coins -= 30;
+            Deck.instance.addHero(hero.data, hero.name);
+        }
 
         foreach (var h in deckOfHeroes)
         {
@@ -264,7 +290,14 @@ public class Trader : MonoBehaviour
     public void SellHero(Deck.HeroData hero)
     {
         Deck.instance.removeHero(hero);
-        Deck.instance.coins += 15;
+        if(hero.name == "Barrel")
+        {
+            Deck.instance.coins += 7;
+        }
+        else
+        {
+            Deck.instance.coins += 15;
+        }
         Refresh();
     }
 

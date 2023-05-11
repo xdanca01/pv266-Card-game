@@ -310,7 +310,7 @@ public class Deck : MonoBehaviour
     
     public bool possibleHero(Unit hero)
     {
-        List<string> names = new List<string> { "Warrior", "Archer", "Mage", "Barbarian", "Rogue", "Shaman" };
+        List<string> names = new List<string> { "Warrior", "Archer", "Mage", "Barbarian", "Rogue", "Shaman", "Barrel" };
         if(names.Contains(hero.name))
         {
             return true;

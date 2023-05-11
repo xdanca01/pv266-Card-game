@@ -23,6 +23,10 @@ public class MapController : MonoBehaviour
             OnGenerateIslands?.Invoke(_seed);
         CurrentIsland.ActiveIsland = true;
         _startIsland = CurrentIsland;
+        foreach (var island in _startIsland._nextIslands)
+        {
+            island.IslandCanBeNext = true;
+        }
     }
 
     public void SetBattlefieldCamera(Battlefield battlefield, bool hasPlacementSlots)
@@ -49,6 +53,14 @@ public class MapController : MonoBehaviour
         }
         newIsland.ActiveIsland = true;
         CurrentIsland.ActiveIsland = false;
+        foreach(var island in CurrentIsland._nextIslands)
+        {
+            island.IslandCanBeNext = false;
+        }
+        foreach (var island in newIsland._nextIslands)
+        {
+            island.IslandCanBeNext = true;
+        }
         CurrentIsland = newIsland;
         if (newIsland == _startIsland)
         {
@@ -72,5 +84,10 @@ public class MapController : MonoBehaviour
         GameObject.FindGameObjectWithTag("Generator").GetComponent<Generator>().battlefield.NextRound();
         ++loop;
         _loopText.SetText("TURN " + loop.ToString());
+    }
+
+    public void SetActiveAndNext(IslandController newIsland)
+    {
+
     }
 }
