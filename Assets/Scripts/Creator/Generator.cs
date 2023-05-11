@@ -14,8 +14,8 @@ public class Generator : MonoBehaviour
     private Dictionary<string, Ability> abilitiesGenerated;
     private Dictionary<string, Unit> unitsGenerated;
     public Battlefield battlefield { get; private set; }
-    public static readonly float WorldWidth = 80;
-    public static readonly float WorldHeight = 45;
+    public static readonly float WorldWidth = 88;
+    public static readonly float WorldHeight = 49.5f;
 
     public static string GetColumn(string columnName, string[] columns, string[] columnNames)
     {

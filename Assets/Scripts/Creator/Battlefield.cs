@@ -70,7 +70,7 @@ public class Battlefield : MonoBehaviour
         var sides = creator.FindGameObject("Sides");
         var rectSides = sides.GetComponent<RectTransform>();
         rectSides.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Generator.WorldWidth);
-        var bottomSize = 1.25f * Generator.RowSize + 2;
+        var bottomSize = 1.2f * Generator.RowSize + 2;
         rectSides.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Generator.WorldHeight - bottomSize);
         var horizontal = sides.AddComponent<HorizontalLayoutGroup>();       
         horizontal.childControlHeight = true;
@@ -86,6 +86,7 @@ public class Battlefield : MonoBehaviour
             gridLayout.spacing = new Vector2(Generator.ColumnSize - Creator.cardWidthWithBorder, Generator.RowSize - Creator.cardHeightWithBorder);
             gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             gridLayout.childAlignment = TextAnchor.MiddleCenter;
+            gridLayout.padding = new RectOffset(0, 0, 2, 0);
             gridLayout.constraintCount = (int) columnsCount;
             var image = gameobject.AddComponent<Image>();
             image.color = friendly ? new Color(120f / 255f, 113f / 255f, 53f / 255f) : new Color(120f / 255f, 71 / 255f, 55f / 255f);
