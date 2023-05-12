@@ -144,7 +144,7 @@ public class Battlefield : MonoBehaviour
         {
             foreach (var (hero, i) in Deck.instance.deckOfHeroes.Select((val, i) => (val, i)))
             {
-                CardSlot slot = CardSlot.New(creator, "Placement Slot " + i, placements,
+                CardSlot slot = CardSlot.New(creator, "Placement Unit " + i, placements,
                     new Vector2(i * (Generator.ColumnSize), -(rowsCount + 2) * Generator.RowSize),  
                     battlefield, CardSlotType.Placement);
                 slot.SetUnit(hero.data.FreshCopy(gameobject));
@@ -153,7 +153,7 @@ public class Battlefield : MonoBehaviour
             var numberOfHeroes = Deck.instance.deckOfHeroes.Count;
             foreach (var (upgrade, i) in Deck.instance.deckOfUpgrades.Select((val, i) => (val,i)))
             {
-                CardSlot slot = CardSlot.New(creator, "Placement Slot " + i, placements,
+                CardSlot slot = CardSlot.New(creator, "Placement Upgrade " + i, placements,
                     new Vector2((numberOfHeroes + i) * (Generator.ColumnSize), -(rowsCount + 2) * Generator.RowSize),
                     battlefield, CardSlotType.Placement);
                 slot.SetUpgrade(upgrade.data.FreshCopy(gameobject));
