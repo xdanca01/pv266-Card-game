@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Image = UnityEngine.UI.Image;
+using UnityEngine.UI;
 
 [Flags]
 public enum CardFlag
@@ -29,6 +31,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private LineRenderer actionLine;
     private Background empty;
     private CardSlotType type;
+    private LineAnimator animator;
 
     public static CardSlot New(Creator creator, string reason, GameObject parent, Vector2 position, Battlefield battlefield, CardSlotType type)
     {
@@ -81,12 +84,67 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
+    class LineAnimator : MonoBehaviour
+    {
+        private Vector3[] positions;
+        private int currentIndex = 0;
+        private float delta = 0;
+        private static float speed = 5;
+        private LineRenderer lineRenderer;
+
+        public void SetRenderer(LineRenderer renderer)
+        {
+            this.lineRenderer = renderer;
+            this.positions = new Vector3[renderer.positionCount];
+            var length = renderer.GetPositions(this.positions);
+            // remove arrow
+            this.positions = this.positions.Take(length - 3).ToArray();
+        }
+        public bool Animate()
+        {
+            if (currentIndex + 1 >= positions.Length)
+            {
+                return false;
+            }
+            delta += Time.deltaTime * speed;
+            if (delta > 1)
+            {
+                delta = 0;
+                currentIndex += 1;
+                if (currentIndex + 1 >= positions.Length)
+                {
+                    return false;
+                }
+            }
+            transform.position = Vector3.Lerp(positions[currentIndex], positions[currentIndex + 1], delta);
+            return true;
+        }
+        public void Clear()
+        {
+            Destroy(lineRenderer.gameObject);
+            Destroy(gameObject);
+        }
+        void Update()
+        {
+            if (!Animate())
+            {
+                Clear();
+            }
+        }
+    }
+
     public void RemoveActionLine()
     {
         if (actionLine != default)
         {
-            Destroy(actionLine.gameObject);
-            actionLine = null;
+            var go = creator.FindGameObject(gameObject.name + " animation");
+            var img = go.AddComponent<Image>();
+            var rect = go.GetComponent<RectTransform>();
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 5);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 5);
+            img.color = FSColor.Orange.ToColor();
+            go.AddComponent<LineAnimator>().SetRenderer(actionLine);            
+            this.actionLine = null;
         }
     }
 
