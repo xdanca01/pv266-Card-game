@@ -223,10 +223,6 @@ public class Battlefield : MonoBehaviour
                 PlacementSlots.RemoveAt(i);
             }
         }
-        foreach (var (slot, i) in PlacementSlots.Select((slot, i) => (slot, i)))
-        {
-            slot.SetPosition(new Vector2(i * (Generator.ColumnSize), -(AllySlots.GetLength(0) + 2) * Generator.RowSize));
-        }
     }
 
     private void ForEachUnit(Action<Unit> action)
