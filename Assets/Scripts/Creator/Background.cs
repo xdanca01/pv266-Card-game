@@ -21,9 +21,9 @@ public class Background : MonoBehaviour
         return background;
     }
 
-    public static Background New(Creator creator)
+    public static Background New(Creator creator, GameObject parent)
     {
-        return NewWithDimensions(creator, creator.gameobject, new Rect(0, 0, Creator.cardWidthWithBorder, Creator.cardHeightWithBorder));
+        return NewWithDimensions(creator, parent, new Rect(0, 0, Creator.cardWidthWithBorder, Creator.cardHeightWithBorder));
     }
 
     public void SetColor(FSColor color)

@@ -4,8 +4,8 @@ Archer,24,Long Bow,Short Sword,Magic Apple,,,64,archer
 Mage,12,Staff,Fireball,Healing Prayer,,,64,Deadly Shock
 Octopus,50,Eat,Waves,Sink,Healing spring,,98,kraken
 Tentacle,1,Whip,,,,,8,deep-tentacle
-Stone,15,,,,Immuvable,,0,Guardians Fall
-Tree,10,,,,Immuvable,,0,Ancestral Spirit Tree
+Stone,15,,,,Immovable,,0,Guardians Fall
+Tree,10,,,,Immovable,,0,Ancestral Spirit Tree
 One Arm Pirate,30,Hook,Wood kick,,,,40,Spearman
 Pirate Parrot,15,Claw,,,,,21,Raven
 Pirate Captain,50,Gun shot,Barrel explosion,,,,64,Nun
@@ -13,9 +13,9 @@ Piranha,15,Piranha Bite,,,,,21,Karma
 Shark,30,Shark bite,,,,,42,Merfolk Rider
 Monkey,25,Poop throw,Stick hit,,,,29,Heavy Load
 Gorilla,50,Punch,Charge,,,,60,Goblin Climber
-Barrel,10,,,,Immuvable,,0,Barrel
+Barrel,10,,,,Immovable,,0,Barrel
 Mermaid,35,Sing,Drown,,,,43,Merfolk Female Noble
-Reef,15,,,,Immuvable,,0,Lake Rock
+Reef,15,,,,Immovable,,0,Lake Rock
 Barbarian,48,Battleaxe,Mace,Battle cry,,,,Barbarian Dwarf
 Rogue,18,Dagger,Assassination,Hideaway,,,,assassin+female
 Shaman,42,Thunder rod,Call lighting,War drums,,,,crelanu

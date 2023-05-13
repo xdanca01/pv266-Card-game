@@ -30,11 +30,12 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private Background empty;
     private CardSlotType type;
 
-    public static CardSlot New(string reason, GameObject parent, Vector2 position, Battlefield battlefield, CardSlotType type)
+    public static CardSlot New(Creator creator, string reason, GameObject parent, Vector2 position, Battlefield battlefield, CardSlotType type)
     {
-        var creator = new Creator(reason, parent);
-        var cardSlot = creator.gameobject.AddComponent<CardSlot>();
-        cardSlot.empty = Background.New(creator);
+        var gameObject = creator.FindGameObject(reason);
+        gameObject.GetComponent<RectTransform>().SetParent(parent.transform);
+        var cardSlot = gameObject.AddComponent<CardSlot>();
+        cardSlot.empty = Background.New(creator, gameObject);
         cardSlot.creator = creator;
         cardSlot.gameObject.transform.position = position;
         cardSlot.battlefield = battlefield;        
@@ -107,7 +108,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         if (actionInProgress == default)
         {
-            if (!this.unit.HasEffect(EffectType.Immuvable))
+            if (!this.unit.HasEffect(EffectType.Immovable))
             {
                 actionInProgress = new MoveAction(battlefield, this);
                 AddHighlights();
@@ -117,7 +118,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (actionInProgress.Assign(this))
         {
             var executor = actionInProgress.GetExecutor();
-            executor.actionLine = executor.creator.Line("Action",
+            executor.actionLine = executor.creator.Line(executor.gameObject.name + " Action",
                 executor.gameObject.transform.position,
                 transform.position,
                 actionInProgress.color);

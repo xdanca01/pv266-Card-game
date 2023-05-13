@@ -39,7 +39,7 @@ public class MapController : MonoBehaviour
         StartBattle(CurrentIsland);
     }
 
-public void SetBattlefieldCamera(Battlefield battlefield, bool hasPlacementSlots)
+    public void SetBattlefieldCamera(Battlefield battlefield, bool hasPlacementSlots)
     {
         var camera = CameraController.instance.BattlefieldCamera;
         var rows = Math.Max(battlefield.AllySlots.GetLength(0), battlefield.EnemySlots.GetLength(0)) + (hasPlacementSlots ? 1 : 0);
@@ -85,8 +85,8 @@ public void SetBattlefieldCamera(Battlefield battlefield, bool hasPlacementSlots
 
     public void ChangeLoop()
     {
-        GameObject.FindGameObjectWithTag("Generator").SetActive(true);
-        GameObject.FindGameObjectWithTag("Generator").GetComponent<Generator>().battlefield.NextRound();
+        generator.gameObject.SetActive(true);
+        generator.battlefield.NextRound();
         ++loop;
         _loopText.SetText("TURN " + loop.ToString());
     }

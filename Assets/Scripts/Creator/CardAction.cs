@@ -75,7 +75,7 @@ public class MoveAction : CardAction
         List<CardSlot> list = new();
         foreach (var cardSlot in slots)
         {
-            if (cardSlot != this.executor && (cardSlot.IsEmpty() || !cardSlot.GetUnit().HasEffect(EffectType.Immuvable)))
+            if (cardSlot != this.executor && (cardSlot.IsEmpty() || !cardSlot.GetUnit().HasEffect(EffectType.Immovable)))
             {
                 list.Add(cardSlot);
             }

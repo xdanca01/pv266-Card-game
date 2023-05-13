@@ -29,7 +29,7 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
             .MaskedImage("Artwork", new Rect(-1, 0.4f, 4, 5), "Artwork", artwork, FSColor.White);
         var unit = Card.gameobject.AddComponent<Unit>();
         unit.Card = Card;
-        unit.Background = Background.New(Card);
+        unit.Background = Background.New(Card, unit.gameObject);
         unit.badge = Badge.New(Card, hp, FSColor.Red);
         unit.HP = hp;
         unit.MAX_HP = hp;

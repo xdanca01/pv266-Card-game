@@ -14,6 +14,8 @@ public class Generator : MonoBehaviour
     private Dictionary<string, Ability> abilitiesGenerated;
     private Dictionary<string, Unit> unitsGenerated;
     public Battlefield battlefield { get; private set; }
+    public static readonly float WorldWidth = 88;
+    public static readonly float WorldHeight = 49.5f;
 
     public static string GetColumn(string columnName, string[] columns, string[] columnNames)
     {
@@ -56,10 +58,7 @@ public class Generator : MonoBehaviour
             var icon = GetColumn("Icon", columns, columnNames);
             var type = AbilityTypeUtils.Parse(GetColumn("Type", columns, columnNames));
             var ability = Ability.New(parent, title, type, percentage, low, high, icon);
-            if (!Application.isPlaying)
-            {
-                ability.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), RowSize * (i / columnsCount + 1)));
-            }
+            ability.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), RowSize * (i / columnsCount + 1)));
             abilities.Add(title.ToLower(), ability);
         }
         return abilities;
@@ -84,10 +83,7 @@ public class Generator : MonoBehaviour
             var icon = GetColumn("Icon", columns, columnNames);
             var color = FSColorMethods.Parse(GetColumn("Color", columns, columnNames));
             var upgrade = Upgrade.New(parent, title, description, iconTitle, iconDescription, icon, color);
-            if (!Application.isPlaying)
-            {
-                upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount + 1), RowSize * (i / columnsCount + 1)));
-            }
+            upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount + 1), RowSize * (i / columnsCount + 1)));
             upgrades.Add(title.ToLower(), upgrade);
         }
         if (Application.isPlaying)
@@ -126,10 +122,7 @@ public class Generator : MonoBehaviour
             var secondUpgradeStr = GetColumn("Second Upgrade", columns, columnNames).ToLower();
             var secondUpgrade = secondUpgradeStr != "" ? upgrades[secondUpgradeStr] : null;
             var unit = Unit.New(parent, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
-            if (!Application.isPlaying)
-            {
-                unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), -RowSize * (i / columnsCount + 2)));
-            }
+            unit.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount) - ColumnSize * (columnsCount + 1), -RowSize * (i / columnsCount + 2)));
             units.Add(title, unit);
         }
         if (Application.isPlaying)
