@@ -39,6 +39,6 @@ Material:
     m_Ints: []
     m_Floats:
     - _Number_Of_Dashes: 4
-    - _Speed: 6
+    - _Speed: 2
     m_Colors: []
   m_BuildTextureStacks: []

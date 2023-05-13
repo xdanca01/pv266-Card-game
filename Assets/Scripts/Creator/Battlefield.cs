@@ -22,6 +22,8 @@ public class Battlefield : MonoBehaviour
 
     private Dictionary<CardSlot, CardAction> actions;
 
+    public string IslandName;
+
     public record CardPosition {
         public bool Ally { get; init; }
         public uint Row { get; init; }
@@ -272,7 +274,26 @@ public class Battlefield : MonoBehaviour
         {
             Debug.Log("Good Job :)");
             CameraController.instance.CameraIslands();
-            Rewards.instance.GiveSomeReward();
+            if(this.gameObject.name == "Tutorial 1")
+            {
+                Unit h;
+                Deck.instance.heroes.TryGetValue(new string("Shaman"), out h);
+                Rewards.instance.GiveHero(h);
+            }
+            else if(this.gameObject.name == "Tutorial 2")
+            {
+                Unit h;
+                Deck.instance.heroes.TryGetValue(new string("Mage"), out h);
+                Rewards.instance.GiveHero(h);
+            }
+            else if (this.gameObject.name == "Tutorial 3")
+            {
+                Rewards.instance.GiveUpgrade();
+            }
+            else
+            {
+                Rewards.instance.GiveSomeReward();
+            }
             return true;
         }
         if (!HasAnyUnitWithAbility() && !PlacementSlots.Any())

@@ -80,6 +80,20 @@ public class Deck : MonoBehaviour
 
     private void LoadData()
     {
+        deckOfHeroes = new();
+        List<string> heroNames = new() { "Warrior" };
+        foreach (var hero in heroes)
+        {
+            if(possibleHero(hero.Value) == true && heroNames.Contains(hero.Key))
+            {
+                HeroData data = new HeroData(hero.Value, LastAvailableID++, hero.Key, true);
+                deckOfHeroes.Add(data);
+            }
+        }
+    }
+
+    public void LoadUpgrades()
+    {
         deckOfUpgrades = new();
         foreach (var upgrade in upgrades)
         {
@@ -89,16 +103,6 @@ public class Deck : MonoBehaviour
                 deckOfUpgrades.Add(data);
             }
         };
-        deckOfHeroes = new();
-        List<string> heroNames = new() { "Warrior", "Mage", "Shaman" };
-        foreach (var hero in heroes)
-        {
-            if(possibleHero(hero.Value) == true && heroNames.Contains(hero.Key))
-            {
-                HeroData data = new HeroData(hero.Value, LastAvailableID++, hero.Key, true);
-                deckOfHeroes.Add(data);
-            }
-        }
     }
 
     public List<HeroData> getHeroes()
@@ -310,7 +314,7 @@ public class Deck : MonoBehaviour
     
     public bool possibleHero(Unit hero)
     {
-        List<string> names = new List<string> { "Warrior", "Archer", "Mage", "Barbarian", "Rogue", "Shaman" };
+        List<string> names = new List<string> { "Warrior", "Archer", "Mage", "Barbarian", "Rogue", "Shaman", "Barrel" };
         if(names.Contains(hero.name))
         {
             return true;

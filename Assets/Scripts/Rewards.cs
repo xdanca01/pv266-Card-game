@@ -205,4 +205,16 @@ public class Rewards : MonoBehaviour
             GiveCoins(20, 25);
         }
     }
+
+    //For tutorial purposes
+    public void GiveHero(Unit hero)
+    {
+        Deck.instance.addHero(hero, hero.name);
+    }
+
+    //For tutorial purposes
+    public void GiveUpgrade()
+    {
+        Deck.instance.LoadUpgrades();
+    }
 }

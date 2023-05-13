@@ -10,11 +10,13 @@ public class MapController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _loopText;
     [SerializeField] private bool _randomSeed;
     [SerializeField] private int _seed;
+    [SerializeField] private Generator generator;
     public static event Action<int> OnGenerateIslands;
     int loop = 1;
 
     [field: SerializeField] public IslandController CurrentIsland { get; private set; }
     private IslandController _startIsland;
+
     void Start()
     {
         if(_randomSeed)
@@ -23,19 +25,49 @@ public class MapController : MonoBehaviour
             OnGenerateIslands?.Invoke(_seed);
         CurrentIsland.ActiveIsland = true;
         _startIsland = CurrentIsland;
+        foreach (var island in _startIsland._nextIslands)
+        {
+            island.IslandCanBeNext = true;
+        }
+        StartCoroutine(LateStart(0.1f));
+    }
+
+    IEnumerator LateStart(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        //Your Function You Want to Call
+        StartBattle(CurrentIsland);
+    }
+
+    public void SetBattlefieldCamera(Battlefield battlefield, bool hasPlacementSlots)
+    {
+        var camera = CameraController.instance.BattlefieldCamera;
+        var rows = Math.Max(battlefield.AllySlots.GetLength(0), battlefield.EnemySlots.GetLength(0)) + (hasPlacementSlots ? 1 : 0);
+        var cols = battlefield.AllySlots.GetLength(1) + battlefield.EnemySlots.GetLength(1);
+        var midX = (cols / 2.0f + 0.75f) * Generator.ColumnSize;
+        var midY = (-rows / 2.0f - 1.5f) * Generator.RowSize;
+        var height = rows * Generator.RowSize;
+        var width = (cols + 0.5f) * Generator.ColumnSize / camera.aspect;
+        var border = 1.2f; // 20% on the sides
+        camera.orthographicSize = border * (Mathf.Max(width, height) / 2.0f);
+        camera.transform.position = new Vector3(midX, midY, camera.transform.position.z);
+        CameraController.instance.CameraBattlefield();
     }
 
     public void StartBattle(IslandController newIsland)
     {
-        //Cant go to this island
-        if (CurrentIsland.IsPreviousFor(newIsland) == false)
-        {
-            return;
-        }
-        newIsland.ActiveIsland = true;
         CurrentIsland.ActiveIsland = false;
+        newIsland.ActiveIsland = true;
+        foreach(var island in CurrentIsland._nextIslands)
+        {
+            island.IslandCanBeNext = false;
+        }
+        foreach (var island in newIsland._nextIslands)
+        {
+            island.IslandCanBeNext = true;
+        }
         CurrentIsland = newIsland;
-        if (newIsland == _startIsland)
+        if (newIsland.name == "Aban")
         {
             ChangeLoop();
         }
@@ -46,16 +78,22 @@ public class MapController : MonoBehaviour
         }
         else
         {
-            GameObject generator = GameObject.FindGameObjectWithTag("Generator");
-            generator.GetComponent<Generator>().CreateOnlyBattlefield(CurrentIsland.IslandName);
+            var battlefield = generator.CreateOnlyBattlefield(CurrentIsland.IslandName);
             CameraController.instance.CameraBattlefield();
+            //SetBattlefieldCamera(battlefield, true);
         }
     }
 
     public void ChangeLoop()
     {
-        GameObject.FindGameObjectWithTag("Generator").GetComponent<Generator>().battlefield.NextRound();
+        generator.gameObject.SetActive(true);
+        generator.battlefield.NextRound();
         ++loop;
         _loopText.SetText("TURN " + loop.ToString());
+    }
+
+    public void SetActiveAndNext(IslandController newIsland)
+    {
+
     }
 }
