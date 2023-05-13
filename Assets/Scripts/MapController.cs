@@ -10,11 +10,13 @@ public class MapController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _loopText;
     [SerializeField] private bool _randomSeed;
     [SerializeField] private int _seed;
+    [SerializeField] private Generator generator;
     public static event Action<int> OnGenerateIslands;
     int loop = 1;
 
     [field: SerializeField] public IslandController CurrentIsland { get; private set; }
     private IslandController _startIsland;
+
     void Start()
     {
         if(_randomSeed)
@@ -27,9 +29,17 @@ public class MapController : MonoBehaviour
         {
             island.IslandCanBeNext = true;
         }
+        StartCoroutine(LateStart(0.1f));
     }
 
-    public void SetBattlefieldCamera(Battlefield battlefield, bool hasPlacementSlots)
+    IEnumerator LateStart(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        //Your Function You Want to Call
+        StartBattle(CurrentIsland);
+    }
+
+public void SetBattlefieldCamera(Battlefield battlefield, bool hasPlacementSlots)
     {
         var camera = CameraController.instance.BattlefieldCamera;
         var rows = Math.Max(battlefield.AllySlots.GetLength(0), battlefield.EnemySlots.GetLength(0)) + (hasPlacementSlots ? 1 : 0);
@@ -46,13 +56,8 @@ public class MapController : MonoBehaviour
 
     public void StartBattle(IslandController newIsland)
     {
-        //Cant go to this island
-        if (CurrentIsland.IsPreviousFor(newIsland) == false)
-        {
-            return;
-        }
-        newIsland.ActiveIsland = true;
         CurrentIsland.ActiveIsland = false;
+        newIsland.ActiveIsland = true;
         foreach(var island in CurrentIsland._nextIslands)
         {
             island.IslandCanBeNext = false;
@@ -62,7 +67,7 @@ public class MapController : MonoBehaviour
             island.IslandCanBeNext = true;
         }
         CurrentIsland = newIsland;
-        if (newIsland == _startIsland)
+        if (newIsland.name == "Aban")
         {
             ChangeLoop();
         }
@@ -73,14 +78,14 @@ public class MapController : MonoBehaviour
         }
         else
         {
-            GameObject generator = GameObject.FindGameObjectWithTag("Generator");
-            var battlefield = generator.GetComponent<Generator>().CreateOnlyBattlefield(CurrentIsland.IslandName);
+            var battlefield = generator.CreateOnlyBattlefield(CurrentIsland.IslandName);
             SetBattlefieldCamera(battlefield, true);
         }
     }
 
     public void ChangeLoop()
     {
+        GameObject.FindGameObjectWithTag("Generator").SetActive(true);
         GameObject.FindGameObjectWithTag("Generator").GetComponent<Generator>().battlefield.NextRound();
         ++loop;
         _loopText.SetText("TURN " + loop.ToString());

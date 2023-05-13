@@ -62,6 +62,7 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
         var GoButton = this.transform.GetComponentInChildren<Button>(true);
         _goButton = GoButton.gameObject;
     }
+
     private void OnEnable()
     {
         MapController.OnGenerateIslands += GenerateIsland;
