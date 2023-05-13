@@ -79,7 +79,8 @@ public class MapController : MonoBehaviour
         else
         {
             var battlefield = generator.CreateOnlyBattlefield(CurrentIsland.IslandName);
-            SetBattlefieldCamera(battlefield, true);
+            CameraController.instance.CameraBattlefield();
+            //SetBattlefieldCamera(battlefield, true);
         }
     }
 
