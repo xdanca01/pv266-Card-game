@@ -18,8 +18,8 @@ Fihankra,Lava Floor,ALLY,1,3
 Fihankra,Barrel,HOSTILE,1,1
 Fihankra,Barrel,HOSTILE,2,1
 Fihankra,Pirate Captain,HOSTILE,1,4
-Fihankra,Pirate Parrot,HOSTILE,1,2
-Fihankra,One Arm Pirate,HOSTILE,2,2
+Fihankra,One Arm Pirate,HOSTILE,1,2
+Fihankra,Pirate Parrot,HOSTILE,2,2
 Dwenini aben,Piranha,HOSTILE,1,1
 Dwenini aben,Piranha,HOSTILE,2,1
 Dwenini aben,Piranha,HOSTILE,1,2
@@ -46,10 +46,13 @@ Sankofa,Ice Floor,ALLY,3,2
 Sankofa,Mermaid,HOSTILE,3,3
 Sankofa,Mermaid,HOSTILE,2,3
 Sankofa,Mermaid,HOSTILE,1,3
-Sepow,Octopus,HOSTILE,1,1
 Tutorial 1,Pirate Parrot,HOSTILE,1,1
 Tutorial 2,Monkey,HOSTILE,1,2
 Tutorial 2,Tree,ALLY,1,2
 Tutorial 3,Gorilla,HOSTILE,1,2
 Tutorial 3,Double Attack,ALLY,1,1
 Tutorial 3,Lava Floor,ALLY,1,2
+Sepow,Dragon,HOSTILE,2,2
+Sepow,Dragon Guard,HOSTILE,2,1
+Sepow,Dragon Guard,HOSTILE,1,1
+Sepow,Dragon Guard,HOSTILE,3,1

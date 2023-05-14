@@ -292,7 +292,7 @@ public class Battlefield : MonoBehaviour
             }
             else
             {
-                Rewards.instance.GiveSomeReward();
+                Rewards.instance.GiveSomeReward(gameObject.name);
             }
             return true;
         }

@@ -12,6 +12,16 @@ public enum Difficulty
 public class Rewards : MonoBehaviour
 {
     public static Rewards instance { get; private set; }
+    private Dictionary<string, Difficulty> difficulties = new Dictionary<string, Difficulty>(){ 
+        { "Adinkira 'hene", Difficulty.Easy },
+        { "Dono", Difficulty.Hard },
+        { "Dwenini aben", Difficulty.Extreme },
+        { "Fihankra", Difficulty.Hard },
+        { "Kuntinkantan", Difficulty.Hard },
+        { "Nsoroma", Difficulty.Normal },
+        { "Sankofa", Difficulty.Normal },
+        { "Sepow", Difficulty.Extreme }
+    }; 
 
     private void Awake()
     {
@@ -49,10 +59,9 @@ public class Rewards : MonoBehaviour
                 break;
         }
     }
-    public void GiveSomeReward()
+    public void GiveSomeReward(string Map)
     {
-        var difficulties = new Difficulty[] { Difficulty.Easy, Difficulty.Normal, Difficulty.Hard, Difficulty.Extreme };
-        GiveReward(difficulties[Random.Range(0, difficulties.Length)]);
+        GiveReward(difficulties[Map]);
     }
     private void GiveHero()
     {
