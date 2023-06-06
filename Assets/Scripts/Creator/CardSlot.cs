@@ -38,7 +38,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         cardSlot.empty = Background.New(creator, gameObject);
         cardSlot.creator = creator;
         cardSlot.gameObject.transform.position = position;
-        cardSlot.battlefield = battlefield;        
+        cardSlot.battlefield = battlefield;
         cardSlot.flag = CardFlag.None;
         cardSlot.type = type;
         return cardSlot;
@@ -56,7 +56,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-       CardSlotClick();
+        CardSlotClick();
     }
 
     private void RemoveHighlights()
@@ -92,7 +92,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void CardSlotClick()
     {
-        if (!flag.HasFlag(CardFlag.Entered) || (actionInProgress == default && type == CardSlotType.Enemy))  
+        if (!flag.HasFlag(CardFlag.Entered) || (actionInProgress == default && type == CardSlotType.Enemy))
         {
             return;
         }
@@ -134,6 +134,10 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             RemoveHighlights();
             actionInProgress = new AbilityAction(battlefield, this, ability);
             AddHighlights();
+        }
+        else
+        {
+            CardSlotClick();
         }
     }
 
