@@ -49,7 +49,7 @@ public class AI : MonoBehaviour
         {
             return actions;
         }
-        //Todo change from Interface to object
+        
         for(int row = 0; row < bf.AllySlots.GetLength(0); ++row)
         {
             for (int col = 0; col < bf.AllySlots.GetLength(1); ++col)
@@ -122,13 +122,47 @@ public class AI : MonoBehaviour
         return actions;
     }
 
+    private bool isTargetImmovable(CardSlot target)
+    {
+        if (target)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private bool isItNonCoveringImmovable(CardSlot target)
+    {
+        if (isTargetImmovable(target))
+        {
+            List<CardSlot> inFront = new();
+            int col, row;
+            var indexes = IndexesOf(target, b.AllySlots);
+            row = indexes.Item1;
+            col = indexes.Item2;
+            foreach (CardSlot slot in b.AllySlots)
+            {
+                Tuple<int, int> indexes2 = IndexesOf(slot, b.AllySlots);
+                if (row == indexes2.Item1 && !b.AllySlots[indexes2.Item1, indexes2.Item2].IsEmpty() && !isTargetImmovable(slot))
+                {
+                    inFront.Add(slot);
+                }
+            }
+            if(inFront.Count > 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private CardSlot getTargetWithPriority(Dictionary<CardSlot, float> list)
     {
         CardSlot best = null;
         float priority = 0.0f;
         foreach(var unit in list)
         {
-            if(priority < unit.Value)
+            if(priority < unit.Value && !isItNonCoveringImmovable(unit.Key))
             {
                 best = unit.Key;
             }
@@ -155,7 +189,7 @@ public class AI : MonoBehaviour
         foreach(CardSlot slot in b.AllySlots)
         {
             Tuple<int, int> indexes2 = IndexesOf(slot, b.AllySlots);
-            if(row == indexes.Item1 && col <= indexes2.Item2 && !b.AllySlots[indexes2.Item1, indexes2.Item2].IsEmpty())
+            if(row == indexes2.Item1 && col <= indexes2.Item2 && !b.AllySlots[indexes2.Item1, indexes2.Item2].IsEmpty())
             {
                 inFront.Add(slot);
             }

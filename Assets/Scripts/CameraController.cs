@@ -27,6 +27,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] public GameObject BattleUI;
     [SerializeField] public GameObject IslandsUI;
     [SerializeField] private Generator generator;
+    [SerializeField] private GameObject WonPopup;
     int cnt = 0;
 
     void Start()
@@ -94,5 +95,11 @@ public class CameraController : MonoBehaviour
         IslandsUI.SetActive(false);
         BattleUI.SetActive(true);
         generator.gameObject.SetActive(true);
+    }
+
+    public void ShowWonPopup(string reward)
+    {
+        WonPopup.SetActive(true);
+        WonPopup.GetComponent<RewardsUI>().SetRewardsText(reward);
     }
 }

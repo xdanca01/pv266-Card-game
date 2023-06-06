@@ -273,26 +273,29 @@ public class Battlefield : MonoBehaviour
         if (!enemies)
         {
             Debug.Log("Good Job :)");
-            CameraController.instance.CameraIslands();
             if(this.gameObject.name == "Tutorial 1")
             {
                 Unit h;
                 Deck.instance.heroes.TryGetValue(new string("Shaman"), out h);
                 Rewards.instance.GiveHero(h);
+                CameraController.instance.CameraIslands();
             }
             else if(this.gameObject.name == "Tutorial 2")
             {
                 Unit h;
                 Deck.instance.heroes.TryGetValue(new string("Mage"), out h);
                 Rewards.instance.GiveHero(h);
+                CameraController.instance.CameraIslands();
             }
             else if (this.gameObject.name == "Tutorial 3")
             {
                 Rewards.instance.GiveUpgrade();
+                CameraController.instance.CameraIslands();
             }
             else
             {
-                Rewards.instance.GiveSomeReward(gameObject.name);
+                string reward = Rewards.instance.GiveSomeReward(gameObject.name);
+                CameraController.instance.ShowWonPopup(reward);
             }
             return true;
         }
