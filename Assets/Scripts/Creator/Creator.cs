@@ -68,6 +68,7 @@ public class Creator
         TMPro.color = color.ToColor();
         TMPro.horizontalAlignment = HorizontalAlignmentOptions.Center;
         TMPro.verticalAlignment = VerticalAlignmentOptions.Middle;
+        TMPro.enableWordWrapping = true;
         return this;
     }
 
