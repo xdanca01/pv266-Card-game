@@ -2,13 +2,15 @@
 using System.Linq;
 using UnityEngine;
 
-class LineAnimator : MonoBehaviour
+public class LineAnimator : MonoBehaviour
 {
     private Vector3[] positions;
     private int currentIndex = 0;
     private float delta = 0;
     private static float speed = 5;
     private LineRenderer lineRenderer;
+    private CardAction action;
+    private bool isFinished = false;
 
     public void SetRenderer(LineRenderer renderer)
     {
@@ -39,6 +41,8 @@ class LineAnimator : MonoBehaviour
     }
     public void Clear()
     {
+        this.action.Execute();
+        isFinished = true;
         Destroy(lineRenderer.gameObject);
         Destroy(gameObject);
     }
@@ -48,5 +52,15 @@ class LineAnimator : MonoBehaviour
         {
             Clear();
         }
+    }
+
+    public bool IsFinished()
+    {
+        return isFinished;
+    }
+    
+    public void SetAction(CardAction action)
+    {
+        this.action = action;
     }
 }

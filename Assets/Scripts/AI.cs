@@ -168,6 +168,10 @@ public class AI : MonoBehaviour
             }
         }
         List<CardSlot> units = getUnitsInFront(best);
+        if (units.Count == 0)
+        {
+            return null;
+        }
         best = units[units.Count - 1];
         //Target already computed before
         if(targeted.Contains(best) == true)

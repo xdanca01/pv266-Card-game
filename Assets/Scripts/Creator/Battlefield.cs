@@ -6,6 +6,8 @@ using UnityEngine;
 using System.ComponentModel;
 using System;
 using UnityEngine.UI;
+using System.Collections;
+using Unity.VisualScripting;
 
 namespace System.Runtime.CompilerServices
 {
@@ -308,22 +310,27 @@ public class Battlefield : MonoBehaviour
     }
 
     [EditorCools.Button]
-    public void NextRound()
+    public IEnumerator NextRound()
     {
         ForEachUnit(u => u.RoundStart());
         if (ConcludeBattleIfEnded())
         {
-            return;
+            yield return null;
         }
         if (HasAnyUnitWithAbility())
         {
             addAiActions();
         }
+        List<LineAnimator> lineRenderers = new();
         foreach (var action in GetActionsInOrderOfExecution())
         {
-            action.GetExecutor().RemoveActionLine(action);
-            action.Execute();
+            var ln = action.GetExecutor().RemoveActionLine(action);
+            if (ln != null)
+            {
+                lineRenderers.Add(ln);
+            }
         }
+        yield return new WaitUntil(() => lineRenderers.All(ln => ln.IsFinished()));
         actions.Clear();
         ReenumeratePlacementSlots();
         foreach (var ally in AllySlots)
@@ -336,5 +343,6 @@ public class Battlefield : MonoBehaviour
         }
         ForEachUnit(u => u.RoundEnd());
         ConcludeBattleIfEnded();
+        yield return null;
     }
 }

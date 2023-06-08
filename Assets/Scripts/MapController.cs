@@ -11,6 +11,7 @@ public class MapController : MonoBehaviour
     [SerializeField] private bool _randomSeed;
     [SerializeField] private int _seed;
     [SerializeField] private Generator generator;
+    private Coroutine coroutine = null;
     public static event Action<int> OnGenerateIslands;
     int loop = 1;
 
@@ -69,7 +70,7 @@ public class MapController : MonoBehaviour
         CurrentIsland = newIsland;
         if (newIsland.name == "Aban")
         {
-            ChangeLoop();
+            coroutine = StartCoroutine(ChangeLoop());
         }
         if (CurrentIsland.typeOfIsland == IslandType.Trader)
         {
@@ -84,12 +85,21 @@ public class MapController : MonoBehaviour
         }
     }
 
-    public void ChangeLoop()
+    public void NextRoundButton()
+    {
+        if (coroutine == null)
+        {
+            coroutine = StartCoroutine(ChangeLoop());
+        }
+    }
+
+    public IEnumerator ChangeLoop()
     {
         generator.gameObject.SetActive(true);
-        generator.battlefield.NextRound();
+        yield return generator.battlefield.NextRound();
         ++loop;
         _loopText.SetText("TURN " + loop.ToString());
+        coroutine = null;
     }
 
     public void SetActiveAndNext(IslandController newIsland)

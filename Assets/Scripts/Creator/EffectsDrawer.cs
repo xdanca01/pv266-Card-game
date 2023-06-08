@@ -11,7 +11,7 @@ public class EffectsDrawer : SlotDrawer<Upgrade, UpgradeSlot, EffectsDrawer>
     Canvas canvas;
 
     public static EffectsDrawer New(Creator creator)
-    {
+    {        
         var border = Creator.cardWidthWithBorder - Creator.cardWidth;
         var x = Creator.cardWidthWithBorder / 2 + border / 2 + Creator.hexagonWidth / 2;
         var y = 0;

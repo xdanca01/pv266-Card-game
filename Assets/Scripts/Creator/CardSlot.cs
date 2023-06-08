@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Image = UnityEngine.UI.Image;
@@ -81,21 +82,25 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-    public void RemoveActionLine(CardAction action)
+    public LineAnimator RemoveActionLine(CardAction action)
     {
-        if (actionLine != default)
+        if (actionLine == default)
         {
-            var go = creator.FindGameObject(gameObject.name + " animation");
-            var img = go.AddComponent<Image>();
-            var rect = go.GetComponent<RectTransform>();
-            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 5);
-            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 5);
-            img.color = action.color.ToColor();
-            img.sprite = action.sprite;
-            var ln = go.AddComponent<LineAnimator>(); 
-            ln.SetRenderer(actionLine);            
-            this.actionLine = null;
+            action.Execute();
+            return null;
         }
+        var go = creator.FindGameObject(gameObject.name + " animation");
+        var img = go.AddComponent<Image>();
+        var rect = go.GetComponent<RectTransform>();
+        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 5);
+        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 5);
+        img.color = action.color.ToColor();
+        img.sprite = action.sprite;
+        var ln = go.AddComponent<LineAnimator>();
+        ln.SetRenderer(actionLine);
+        ln.SetAction(action);
+        this.actionLine = null;
+        return ln;
     }
 
     public void CardSlotClick()
