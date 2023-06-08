@@ -36,8 +36,7 @@ public abstract class CardAction
             return false;
         }
         this.target = target;
-        executor.actionLine = executor.creator.Line(executor.gameObject.name + " Action",
-            executor.gameObject.transform.position, target.transform.position, color);
+        executor.AddLine(target.transform.position, color);
         battlefield.AddAction(this);
         return true;
     }

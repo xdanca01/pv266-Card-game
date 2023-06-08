@@ -23,11 +23,11 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private Unit unit;
     private Upgrade upgrade;
-    public Creator creator;
+    private Creator creator;
     private Battlefield battlefield;
     private static CardAction actionInProgress;
     private CardFlag flag;
-    public LineRenderer actionLine;
+    private LineRenderer actionLine;
     private Background empty;
     private CardSlotType type;
 
@@ -294,5 +294,11 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     internal void SetPosition(Vector2 position)
     {
         this.gameObject.transform.position = position;
+    }
+
+    internal void AddLine(Vector3 position, FSColor color)
+    {
+        this.actionLine = creator.Line(gameObject.name + " Action",
+            gameObject.transform.position, position, color);
     }
 }
