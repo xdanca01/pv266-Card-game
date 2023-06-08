@@ -23,11 +23,11 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private Unit unit;
     private Upgrade upgrade;
-    private Creator creator;
+    public Creator creator;
     private Battlefield battlefield;
     private static CardAction actionInProgress;
     private CardFlag flag;
-    private LineRenderer actionLine;
+    public LineRenderer actionLine;
     private Background empty;
     private CardSlotType type;
 
@@ -130,11 +130,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         if (actionInProgress.Assign(this))
         {
-            var executor = actionInProgress.GetExecutor();
-            executor.actionLine = executor.creator.Line(executor.gameObject.name + " Action",
-                executor.gameObject.transform.position,
-                transform.position,
-                actionInProgress.color);
+
         }
         RemoveHighlights();
         actionInProgress = default;
