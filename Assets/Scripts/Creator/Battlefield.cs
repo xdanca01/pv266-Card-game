@@ -280,24 +280,36 @@ public class Battlefield : MonoBehaviour
                 Unit h;
                 Deck.instance.heroes.TryGetValue(new string("Shaman"), out h);
                 Rewards.instance.GiveHero(h);
-                CameraController.instance.CameraIslands();
+                CameraController.instance.ShowWonPopup("shaman", "crelanu");
             }
             else if(this.gameObject.name == "Tutorial 2")
             {
                 Unit h;
                 Deck.instance.heroes.TryGetValue(new string("Mage"), out h);
                 Rewards.instance.GiveHero(h);
-                CameraController.instance.CameraIslands();
+                CameraController.instance.ShowWonPopup("mage", "Deadly Shock");
             }
             else if (this.gameObject.name == "Tutorial 3")
             {
                 Rewards.instance.GiveUpgrade();
-                CameraController.instance.CameraIslands();
+                CameraController.instance.ShowWonPopup("upgrade", "Armory");
             }
             else
             {
-                string reward = Rewards.instance.GiveSomeReward(gameObject.name);
-                CameraController.instance.ShowWonPopup(reward);
+                (RewardType, string) reward = Rewards.instance.GiveSomeReward(gameObject.name);
+                
+                switch (reward.Item1)
+                {
+                    case RewardType.Upgrade:
+                        CameraController.instance.ShowWonPopup(reward.Item2, "Armory");
+                        break;
+                    case RewardType.Coins:
+                        CameraController.instance.ShowWonPopup(reward.Item2, "Swanport");
+                        break;
+                    case RewardType.Hero:
+                        CameraController.instance.ShowWonPopup(reward.Item2, "Sequoia Saplings");
+                        break;
+                }
             }
             return true;
         }

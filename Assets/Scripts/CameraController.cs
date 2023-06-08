@@ -100,10 +100,15 @@ public class CameraController : MonoBehaviour
         generator.gameObject.SetActive(true);
     }
 
-    public void ShowWonPopup(string reward)
+    public void ShowWonPopup(string reward, string artwork)
     {
         RewardsPopUp.SetActive(true);
-        RewardsPopUp.GetComponent<RewardsUI>().SetRewardsText(reward);
+        var rUI = RewardsPopUp.GetComponent<RewardsUI>();
+        rUI.SetRewardsText(reward);
+        if (artwork != "")
+        {
+            rUI.SetUI(artwork);
+        }
     }
 
     public void ShowWonPopUp()

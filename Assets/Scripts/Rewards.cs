@@ -9,6 +9,14 @@ public enum Difficulty
     Hard,
     Extreme
 }
+
+public enum RewardType
+{
+    Upgrade, // armory
+    Coins, // swanport
+    Hero // sequoia
+}
+
 public class Rewards : MonoBehaviour
 {
     [SerializeField] RewardsUI RewardsUUI;
@@ -35,38 +43,28 @@ public class Rewards : MonoBehaviour
             instance = this;
         }
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    public string GiveReward(Difficulty difficulty)
+    public (RewardType, string) GiveReward(Difficulty difficulty)
     {
-        string Rew = "";
         float rewardByChance = UnityEngine.Random.Range(0.0f, 1.0f);
         switch (difficulty)
         {
             case Difficulty.Easy:
-                Rew = RewardEasy(rewardByChance);
-                break;
+                return RewardEasy(rewardByChance);
             case Difficulty.Normal:
-                Rew = RewardNormal(rewardByChance);
-                break;
+                return RewardNormal(rewardByChance);
             case Difficulty.Hard:
-                Rew = RewardHard(rewardByChance);
-                break;
+                return RewardHard(rewardByChance);
+            default:
             case Difficulty.Extreme:
-                Rew = RewardExtreme(rewardByChance);
-                break;
+                return RewardExtreme(rewardByChance);
         }
-        return Rew;
     }
-    public string GiveSomeReward(string Map)
+    public (RewardType, string) GiveSomeReward(string Map)
     {
         return GiveReward(difficulties[Map]);
     }
-    private string GiveHero()
+    private (RewardType, string) GiveHero()
     {
         string Rew = "";
         Dictionary<string, Unit> heroes = filterHeroes(Deck.instance.heroes);
@@ -83,7 +81,7 @@ public class Rewards : MonoBehaviour
             }
             ++cnt;
         }
-        return Rew;
+        return (RewardType.Hero, Rew);
     }
 
     private Dictionary<string, Upgrade> filterUpgrades(Dictionary<string, Upgrade> list)
@@ -112,15 +110,97 @@ public class Rewards : MonoBehaviour
         return l;
     }
 
-    private string GiveAbility(int min, int max)
+
+
+    private (RewardType, string) RewardEasy(float chance)
+    {
+        //40% Upgrade
+        if(chance <= 0.4f)
+        {
+            return GiveUpgrade(1, 1);
+            
+        }
+        //60%
+        return GiveCoins(3, 5);
+    }
+
+    private (RewardType, string) RewardNormal(float chance)
+    {
+        string Rew;
+        //25% Ability
+        if (chance <= 0.25f)
+        {
+            return GiveUpgrade(1, 1);
+        }
+        //25% Upgrade
+        else if (chance <= 0.50f)
+        {
+            return GiveUpgrade(1, 1);
+        }
+        //50% coins
+        else
+        {
+            return GiveCoins(5, 10);
+        }
+    }
+
+    private (RewardType, string) RewardHard(float chance)
+    {
+        //30% Ability
+        if (chance <= 0.3f)
+        {
+            return GiveAbility(1, 2);
+        }
+        //30% Upgrade
+        else if (chance <= 0.60f)
+        {
+            return GiveUpgrade(1, 2);
+        }
+        //40% coins
+        else
+        {
+            return GiveCoins(10, 15);
+        }
+    }
+
+    private (RewardType, string) RewardExtreme(float chance)
+    {
+        //30% Ability
+        if (chance <= 0.3f)
+        {
+            return GiveUpgrade(1, 3);
+        }
+        //10% Hero
+        if (chance <= 0.40f)
+        {
+            return GiveHero();
+        }
+        //30% Upgrade
+        if (chance <= 0.70f)
+        {
+            return GiveUpgrade(1, 2);
+        }
+        //30% coins
+        return GiveCoins(20, 25);
+    }
+
+    private (RewardType, string) GiveCoins(int min, int max)
+    {
+        int coins = UnityEngine.Random.Range(min, max);
+        Debug.Log("You recieved " + coins + " coins!");
+        Deck.instance.coins += coins;
+        return (RewardType.Coins, coins + " coins");
+    }
+
+    private (RewardType, string) GiveAbility(int min, int max)
     {
         //TODO
         return GiveUpgrade(min, max);
     }
-    private string GiveUpgrade(int min, int max)
+    private (RewardType, string) GiveUpgrade(int min, int max)
     {
         Dictionary<string, Upgrade> upgrades = filterUpgrades(Deck.instance.upgrades);
-        int numberOfUpgrades = UnityEngine.Random.Range(min, max+1);
+        int numberOfUpgrades = UnityEngine.Random.Range(min, max + 1);
         Debug.Log("You recieved " + numberOfUpgrades + " new upgrades!");
         for (int i = 0; i < numberOfUpgrades; ++i)
         {
@@ -136,111 +216,20 @@ public class Rewards : MonoBehaviour
                 ++cnt;
             }
         }
-        return numberOfUpgrades + " upgrades";
-    }
-
-    private string GiveCoins(int min, int max)
-    {
-        int coins = UnityEngine.Random.Range(min, max);
-        Debug.Log("You recieved " + coins + " coins!");
-        Deck.instance.coins += coins;
-        return coins + " coins";
-    }
-
-    private string RewardEasy(float chance)
-    {
-        string Rew;
-        //40% Upgrade
-        if(chance <= 0.4f)
-        {
-            Rew = GiveUpgrade(1, 1);
-        }
-        //60%
-        else
-        {
-            Rew = GiveCoins(3, 5);
-        }
-        return Rew;
-    }
-
-    private string RewardNormal(float chance)
-    {
-        string Rew;
-        //25% Ability
-        if (chance <= 0.25f)
-        {
-            Rew = GiveUpgrade(1, 1);
-        }
-        //25% Upgrade
-        else if (chance <= 0.50f)
-        {
-            Rew = GiveUpgrade(1, 1);
-        }
-        //50% coins
-        else
-        {
-            Rew = GiveCoins(5, 10);
-        }
-        return Rew;
-    }
-
-    private string RewardHard(float chance)
-    {
-        string Rew;
-        //30% Ability
-        if (chance <= 0.3f)
-        {
-            Rew = GiveAbility(1, 2);
-        }
-        //30% Upgrade
-        else if (chance <= 0.60f)
-        {
-            Rew = GiveUpgrade(1, 2);
-        }
-        //40% coins
-        else
-        {
-            Rew = GiveCoins(10, 15);
-        }
-        return Rew;
-    }
-
-    private string RewardExtreme(float chance)
-    {
-        string Rew;
-        //30% Ability
-        if (chance <= 0.3f)
-        {
-            Rew = GiveUpgrade(1, 3);
-        }
-        //10% Hero
-        else if (chance <= 0.40f)
-        {
-            Rew = GiveHero();
-        }
-        //30% Upgrade
-        else if (chance <= 0.70f)
-        {
-            Rew = GiveUpgrade(1, 2);
-        }
-        //30% coins
-        else
-        {
-            Rew = GiveCoins(20, 25);
-        }
-        return Rew;
+        return (RewardType.Upgrade, numberOfUpgrades + " upgrades");
     }
 
     //For tutorial purposes
-    public string GiveHero(Unit hero)
+    public (RewardType, string) GiveHero(Unit hero)
     {
         Deck.instance.addHero(hero, hero.name);
-        return "hero: " + hero;
+        return (RewardType.Hero, "hero: " + hero.name);
     }
 
     //For tutorial purposes
-    public void GiveUpgrade()
+    public (RewardType, string) GiveUpgrade()
     {
         Deck.instance.LoadUpgrades();
+        return (RewardType.Upgrade, "upgrade");
     }
 }

@@ -170,7 +170,7 @@ public class AI : MonoBehaviour
         List<CardSlot> units = getUnitsInFront(best);
         if (units.Count == 0)
         {
-            return null;
+            return best;
         }
         best = units[units.Count - 1];
         //Target already computed before
