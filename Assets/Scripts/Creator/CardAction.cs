@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class CardAction
 {
@@ -9,12 +11,14 @@ public abstract class CardAction
     protected CardSlot target;
     protected Battlefield battlefield;
     public FSColor color { get; private set; }
+    public Sprite sprite { get; private set; }
 
-    public CardAction(Battlefield battlefield, CardSlot executor, FSColor color)
+    public CardAction(Battlefield battlefield, CardSlot executor, FSColor color, Sprite sprite)
     {
         this.battlefield = battlefield;
         this.executor = executor;
         this.color = color;
+        this.sprite = sprite;
     }
 
     public CardSlot GetExecutor()
@@ -23,6 +27,7 @@ public abstract class CardAction
     }
 
     public abstract IReadOnlyList<CardSlot> PossibleTargets();
+
 
     public bool Assign(CardSlot target)
     {
@@ -41,7 +46,7 @@ public abstract class CardAction
 public class UpgradeAction : CardAction
 {
     private Upgrade upgrade;
-    public UpgradeAction(Battlefield battlefield, CardSlot executor) : base(battlefield, executor, executor.GetUpgrade().Color) 
+    public UpgradeAction(Battlefield battlefield, CardSlot executor) : base(battlefield, executor, executor.GetUpgrade().Color, executor.GetUpgrade().Icon.GetSprite()) 
     {
         this.upgrade = executor.GetUpgrade();
     }
@@ -66,7 +71,12 @@ public class UpgradeAction : CardAction
 
 public class MoveAction : CardAction
 {
-    public MoveAction(Battlefield battlefield, CardSlot executor) : base(battlefield, executor, FSColor.Blue) { }
+    private static Sprite GetImage()
+    {
+        return Resources.Load<Sprite>("Icons/run");
+    }
+
+    public MoveAction(Battlefield battlefield, CardSlot executor) : base(battlefield, executor, FSColor.Blue, GetImage()) { }
 
     public override IReadOnlyList<CardSlot> PossibleTargets()
     {
@@ -107,7 +117,7 @@ public class AbilityAction : CardAction
 {
     private Ability ability;
 
-    public AbilityAction(Battlefield battlefield, CardSlot executor, Ability ability) : base(battlefield, executor, ability.Type.ToFSColor())
+    public AbilityAction(Battlefield battlefield, CardSlot executor, Ability ability) : base(battlefield, executor, ability.Type.ToFSColor(), ability.Icon.GetSprite())
     {
         this.ability = ability;
     }

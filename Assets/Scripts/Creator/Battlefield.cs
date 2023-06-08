@@ -321,7 +321,7 @@ public class Battlefield : MonoBehaviour
         }
         foreach (var action in GetActionsInOrderOfExecution())
         {
-            action.GetExecutor().RemoveActionLine();
+            action.GetExecutor().RemoveActionLine(action);
             action.Execute();
         }
         actions.Clear();

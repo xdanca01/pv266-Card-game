@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Icon : MonoBehaviour
 {
@@ -46,6 +47,11 @@ public class Icon : MonoBehaviour
     private GameObject UpdateImage()
     {
         return creator.MaskedImageGameObject("Image", gameObject, new Rect(0, 0, 2, 2), "Icons", spriteName, color, 0.5f);
+    }
+
+    public Sprite GetSprite()
+    {
+        return Resources.Load<Sprite>("Icons/"+spriteName);
     }
 
     public Func<GameObject, Icon> FreshCopy;

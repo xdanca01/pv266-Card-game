@@ -81,12 +81,20 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-    public void RemoveActionLine()
+    public void RemoveActionLine(CardAction action)
     {
         if (actionLine != default)
         {
-            Destroy(actionLine.gameObject);
-            actionLine = null;
+            var go = creator.FindGameObject(gameObject.name + " animation");
+            var img = go.AddComponent<Image>();
+            var rect = go.GetComponent<RectTransform>();
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 5);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 5);
+            img.color = action.color.ToColor();
+            img.sprite = action.sprite;
+            var ln = go.AddComponent<LineAnimator>(); 
+            ln.SetRenderer(actionLine);            
+            this.actionLine = null;
         }
     }
 
