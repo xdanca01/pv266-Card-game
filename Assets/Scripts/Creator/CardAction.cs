@@ -129,7 +129,7 @@ public class AbilityAction : CardAction
     {
         var executorUnit = executor.GetUnit();
         var targetUnit = target.GetUnit();
-        if (this.ability.Percentage <= Random.Range(1, 101))
+        if (Random.Range(1, 101) > this.ability.Percentage)
         {
             switch (Type)
             {

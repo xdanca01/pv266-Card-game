@@ -27,7 +27,10 @@ public class CameraController : MonoBehaviour
     [SerializeField] public GameObject BattleUI;
     [SerializeField] public GameObject IslandsUI;
     [SerializeField] private Generator generator;
-    [SerializeField] private GameObject WonPopup;
+    [SerializeField] private GameObject RewardsPopUp;
+    [SerializeField] private GameObject WonPopUp;
+    [SerializeField] private GameObject LostPopUp;
+
     int cnt = 0;
 
     void Start()
@@ -99,7 +102,17 @@ public class CameraController : MonoBehaviour
 
     public void ShowWonPopup(string reward)
     {
-        WonPopup.SetActive(true);
-        WonPopup.GetComponent<RewardsUI>().SetRewardsText(reward);
+        RewardsPopUp.SetActive(true);
+        RewardsPopUp.GetComponent<RewardsUI>().SetRewardsText(reward);
+    }
+
+    public void ShowWonPopUp()
+    {
+        WonPopUp.SetActive(true);
+    }
+
+    public void ShowLostPopUp()
+    {
+        LostPopUp.SetActive(true);
     }
 }

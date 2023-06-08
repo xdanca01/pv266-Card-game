@@ -303,7 +303,7 @@ public class Battlefield : MonoBehaviour
         }
         if (!HasAnyUnitWithAbility() && !PlacementSlots.Any())
         {
-            Debug.Log("You Died :(");
+            CameraController.instance.ShowLostPopUp();
             return true;
         }
         return false;
