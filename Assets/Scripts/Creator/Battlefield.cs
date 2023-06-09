@@ -280,19 +280,27 @@ public class Battlefield : MonoBehaviour
                 Unit h;
                 Deck.instance.heroes.TryGetValue(new string("Shaman"), out h);
                 Rewards.instance.GiveHero(h);
-                CameraController.instance.ShowWonPopup("shaman", "crelanu");
+                for (int i = 0; i < 10; i++)
+                {
+                    Rewards.instance.GiveReward(Difficulty.Extreme);
+                }
+                CameraController.instance.ShowPopUp("shaman", "crelanu");
             }
             else if(this.gameObject.name == "Tutorial 2")
             {
                 Unit h;
                 Deck.instance.heroes.TryGetValue(new string("Mage"), out h);
                 Rewards.instance.GiveHero(h);
-                CameraController.instance.ShowWonPopup("mage", "Deadly Shock");
+                CameraController.instance.ShowPopUp("mage", "Deadly Shock");
             }
             else if (this.gameObject.name == "Tutorial 3")
             {
                 Rewards.instance.GiveUpgrade();
-                CameraController.instance.ShowWonPopup("upgrade", "Armory");
+                CameraController.instance.ShowPopUp("upgrade", "Armory");
+            }
+            else if (this.gameObject.name == "Sepow")
+            {
+                CameraController.instance.ShowWonPopUp();
             }
             else
             {
@@ -301,13 +309,13 @@ public class Battlefield : MonoBehaviour
                 switch (reward.Item1)
                 {
                     case RewardType.Upgrade:
-                        CameraController.instance.ShowWonPopup(reward.Item2, "Armory");
+                        CameraController.instance.ShowPopUp(reward.Item2, "Armory");
                         break;
                     case RewardType.Coins:
-                        CameraController.instance.ShowWonPopup(reward.Item2, "Swanport");
+                        CameraController.instance.ShowPopUp(reward.Item2, "Swanport");
                         break;
                     case RewardType.Hero:
-                        CameraController.instance.ShowWonPopup(reward.Item2, "Sequoia Saplings");
+                        CameraController.instance.ShowPopUp(reward.Item2, "Sequoia Saplings");
                         break;
                 }
             }

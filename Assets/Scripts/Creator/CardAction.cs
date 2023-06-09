@@ -29,7 +29,7 @@ public abstract class CardAction
     public abstract IReadOnlyList<CardSlot> PossibleTargets();
 
 
-    public bool Assign(CardSlot target)
+    public virtual bool Assign(CardSlot target)
     {
         if (!PossibleTargets().Contains(target))
         {

@@ -63,16 +63,22 @@ public static class Effects
         {
             foreach (IAbility ability in self.Abilities)
             {
-                ability.High *= 2;
-                ability.Low *= 2;
+                if (ability.Type != AbilityType.Heal)
+                {
+                    ability.High *= 2;
+                    ability.Low *= 2;
+                }
             }
         }
         public void RoundEnd(IUnit self)
         {
             foreach (IAbility ability in self.Abilities)
             {
-                ability.High /= 2;
-                ability.Low /= 2;
+                if (ability.Type != AbilityType.Heal)
+                {
+                    ability.High /= 2;
+                    ability.Low /= 2;
+                }
             }
         }
         public void Once(IUnit self)
@@ -83,7 +89,7 @@ public static class Effects
 
     private class IceFloor : IEffect
     { 
-        public EffectType Type => EffectType.DoubleAttack;
+        public EffectType Type => EffectType.IceFloor;
 
         public void RoundStart(IUnit self)
         {

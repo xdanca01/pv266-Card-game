@@ -30,6 +30,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private LineRenderer actionLine;
     private Background empty;
     private CardSlotType type;
+    private CardAction action;
 
     public static CardSlot New(Creator creator, string reason, GameObject parent, Vector2 position, Battlefield battlefield, CardSlotType type)
     {
@@ -100,6 +101,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         ln.SetRenderer(actionLine);
         ln.SetAction(action);
         this.actionLine = null;
+        this.action = null;
         return ln;
     }
 
@@ -121,7 +123,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         if (actionInProgress == default)
         {
-            if (!this.unit.HasEffect(EffectType.Immovable))
+            if (this.battlefield.PlacementSlots.Contains(this) || !this.unit.HasEffect(EffectType.Immovable))
             {
                 actionInProgress = new MoveAction(battlefield, this);
                 AddHighlights();
@@ -130,7 +132,7 @@ public class CardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         if (actionInProgress.Assign(this))
         {
-
+            action = actionInProgress;
         }
         RemoveHighlights();
         actionInProgress = default;
