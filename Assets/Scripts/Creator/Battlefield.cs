@@ -280,10 +280,6 @@ public class Battlefield : MonoBehaviour
                 Unit h;
                 Deck.instance.heroes.TryGetValue(new string("Shaman"), out h);
                 Rewards.instance.GiveHero(h);
-                for (int i = 0; i < 10; i++)
-                {
-                    Rewards.instance.GiveReward(Difficulty.Extreme);
-                }
                 CameraController.instance.ShowPopUp("shaman", "crelanu");
             }
             else if(this.gameObject.name == "Tutorial 2")
