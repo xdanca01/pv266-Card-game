@@ -1,8 +1,9 @@
 Title,Unit or Effect,Side,Row,Column
 Adinkira 'hene,Stone,ALLY,2,3
 Adinkira 'hene,Double Attack,ALLY,2,2
-Adinkira 'hene,Warrior,HOSTILE,2,2
-Adinkira 'hene,Lava Floor,HOSTILE,1,1
+Adinkira 'hene,Archer,HOSTILE,2,2
+Adinkira 'hene,Tree,HOSTILE,2,1
+Adinkira 'hene,Archer,HOSTILE,1,1
 Dono,Octopus,HOSTILE,1,2
 Dono,Tentacle,HOSTILE,1,1
 Dono,Tentacle,HOSTILE,2,1
