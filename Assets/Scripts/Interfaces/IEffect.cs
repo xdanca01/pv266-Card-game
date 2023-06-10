@@ -46,7 +46,10 @@ public enum EffectType
     Poison,
     LavaFloor,
     IceFloor,
-    Immovable
+    Immovable,
+    Headshot,
+    SwingAttack,
+    HealingBoost
 }
 
 public static class Effects
@@ -125,6 +128,52 @@ public static class Effects
         }
     }
 
+    public class Headshot : IEffect
+    {
+        public EffectType Type => EffectType.Headshot;
+        public void Once(IUnit self)
+        {
+            foreach (IAbility ability in self.Abilities)
+            {
+                if (ability.Type == AbilityType.HeavyAttack)
+                {
+                    ability.Low = ability.High;
+                }
+            }
+        }
+    }
+
+    public class SwingAttack : IEffect
+    {
+        public EffectType Type => EffectType.SwingAttack;
+        public void Once(IUnit self)
+        {
+            foreach (IAbility ability in self.Abilities)
+            {
+                if (ability.Type == AbilityType.LightAttack)
+                {
+                    ability.Percentage = 100;
+                }
+            }
+        }
+    }
+
+    public class HealingBoost : IEffect
+    {
+        public EffectType Type => EffectType.HealingBoost;
+        public void Once(IUnit self)
+        {
+            foreach (IAbility ability in self.Abilities)
+            {
+                if (ability.Type == AbilityType.Heal)
+                {
+                    ability.Low += 5;
+                    ability.High += 5;
+                }
+            }
+        }
+    }
+
     private class Immuvable : IEffect
     {
         public EffectType Type => EffectType.Immovable;
@@ -140,6 +189,9 @@ public static class Effects
         EffectType.Immovable => new Immuvable(),
         EffectType.LavaFloor => new LavaFloor(),
         EffectType.IceFloor => new IceFloor(),
+        EffectType.Headshot => new Headshot(),
+        EffectType.SwingAttack => new SwingAttack(),
+        EffectType.HealingBoost => new HealingBoost(),
         _ => throw new NotImplementedException(effect.ToString()),
     };
 }
