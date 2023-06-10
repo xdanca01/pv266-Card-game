@@ -38,6 +38,7 @@ public class MapController : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         //Your Function You Want to Call
         StartBattle(CurrentIsland);
+        Tutorial.instance.ContinueTutorial();
     }
 
     public void SetBattlefieldCamera(Battlefield battlefield, bool hasPlacementSlots)

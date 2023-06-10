@@ -200,6 +200,7 @@ public class IslandController : MonoBehaviour, IPointerEnterHandler, IPointerExi
         GameObject map = GameObject.FindGameObjectsWithTag("MapController")[0];
         MapController controller = map.GetComponent<MapController>();
         controller.StartBattle(this);
+        Tutorial.instance.ContinueTutorial();
     }
 
     public bool IsPreviousFor(IslandController nextIsland)
