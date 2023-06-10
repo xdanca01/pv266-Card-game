@@ -34,12 +34,12 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
         unit.HP = hp;
         unit.MAX_HP = hp;
         unit.abilities = AbilityDrawer.New(Card);
-        unit.abilities.Set(0, firstAbility);
-        unit.abilities.Set(1, secondAbility);
-        unit.abilities.Set(2, thirdAbility);
+        unit.abilities.Set(0, firstAbility != null ? firstAbility.FreshCopy(unit.abilities.gameObject) : null);
+        unit.abilities.Set(1, secondAbility != null ? secondAbility.FreshCopy(unit.abilities.gameObject) : null);
+        unit.abilities.Set(2, thirdAbility != null ? thirdAbility.FreshCopy(unit.abilities.gameObject) : null);
         unit.upgrades = UpgradeDrawer.New(Card);
-        unit.upgrades.Set(0, firstUpgrade);
-        unit.upgrades.Set(1, secondUpgrade);
+        unit.upgrades.Set(0, firstUpgrade != null ? firstUpgrade.FreshCopy(unit.upgrades.gameObject) : null);
+        unit.upgrades.Set(1, secondUpgrade != null ? secondUpgrade.FreshCopy(unit.upgrades.gameObject) : null);
         unit.effects = EffectsDrawer.New(Card);
         unit.effects.Hide();
         unit.FreshCopy = (GameObject parent) => Unit.New(parent, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);

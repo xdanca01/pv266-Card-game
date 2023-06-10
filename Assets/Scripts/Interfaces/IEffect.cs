@@ -59,7 +59,7 @@ public static class Effects
     {
         public EffectType Type => EffectType.DoubleAttack;
 
-        public void RoundStart(IUnit self)
+        public void Once(IUnit self)
         {
             foreach (IAbility ability in self.Abilities)
             {
@@ -70,44 +70,18 @@ public static class Effects
                 }
             }
         }
-        public void RoundEnd(IUnit self)
-        {
-            foreach (IAbility ability in self.Abilities)
-            {
-                if (ability.Type != AbilityType.Heal)
-                {
-                    ability.High /= 2;
-                    ability.Low /= 2;
-                }
-            }
-        }
-        public void Once(IUnit self)
-        {
-            RoundStart(self);
-        }
     }
 
     private class IceFloor : IEffect
     { 
         public EffectType Type => EffectType.IceFloor;
 
-        public void RoundStart(IUnit self)
+        public void Once(IUnit self)
         {
             foreach (IAbility ability in self.Abilities)
             {
                 ability.Percentage /= 2;
             }
-        }
-        public void RoundEnd(IUnit self)
-        {
-            foreach (IAbility ability in self.Abilities)
-            {
-                ability.Percentage *= 2;
-            }
-        }
-        public void Once(IUnit self)
-        {
-            RoundStart(self);
         }
     }
     

@@ -44,6 +44,7 @@ public class Upgrade : MonoBehaviour, IUpgrade, Interactable
         }        
         upgrade.FreshCopy = (GameObject parent) => New(parent, title, description, iconTitle, iconDescription, icon, color);
         upgrade.Icon.gameObject.SetActive(false);
+        upgrade.gameObject.transform.Translate(Vector3.one * 100f);
         return upgrade;
     }
 }
