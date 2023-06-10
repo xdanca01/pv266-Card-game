@@ -56,6 +56,19 @@ public class Battlefield : MonoBehaviour
         this.actions[action.GetExecutor()] = action;
     }
 
+    private static Dictionary<string, Unit> scaleUnits(Dictionary<string, Unit> units)
+    {
+        float scalingFactor = 1.1f;
+        Dictionary<string, Unit> scaledUnits = new();
+        foreach (var unit in units)
+        {
+            var unitCopy = unit.Value;
+            unitCopy.ScaleAbilities(Mathf.Pow(scalingFactor, MapController.loop));
+            scaledUnits.Add(unit.Key, unit.Value);
+        }
+        return scaledUnits;
+    }
+
     public static Battlefield New(string title, Dictionary<string, Unit> units,
         Dictionary<string, Upgrade> upgrades, GameObject parent, uint rowsCount, uint columnsCount)
     {
@@ -122,6 +135,7 @@ public class Battlefield : MonoBehaviour
         }
         var table = Resources.Load<TextAsset>("Data/Battlefield").text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         var columnNames = table.First().Split(",");
+        var scaledUnits = scaleUnits(units);
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
             var columns = line.Split(",");
@@ -131,15 +145,29 @@ public class Battlefield : MonoBehaviour
             if (someTitle == title)
             {
                 var unitOrEffect = Generator.GetColumn("Unit or Effect", columns, columnNames);
-                var slots = Generator.GetColumn("Side", columns, columnNames) == "ALLY"
-                    ? battlefield.AllySlots : battlefield.EnemySlots;
-                if (units.TryGetValue(unitOrEffect, out Unit unit))
+                var ally = Generator.GetColumn("Side", columns, columnNames) == "ALLY";
+                var slots = ally ? battlefield.AllySlots : battlefield.EnemySlots;
+                if (ally)
                 {
-                    slots[row - 1, column - 1].SetUnit(unit.FreshCopy(gameobject));
+                    if (units.TryGetValue(unitOrEffect, out Unit unit))
+                    {
+                        slots[row - 1, column - 1].SetUnit(unit.FreshCopy(gameobject));
+                    }
+                    else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
+                    {
+                        slots[row - 1, column - 1].SetUpgrade(effect.FreshCopy(gameobject));
+                    }
                 }
-                else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
-                {   
-                    slots[row - 1, column - 1].SetUpgrade(effect.FreshCopy(gameobject));
+                else
+                {
+                    if (scaledUnits.TryGetValue(unitOrEffect, out Unit unit))
+                    {
+                        slots[row - 1, column - 1].SetUnit(unit.FreshCopy(gameobject));
+                    }
+                    else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
+                    {
+                        slots[row - 1, column - 1].SetUpgrade(effect.FreshCopy(gameobject));
+                    }
                 }
             }
         }

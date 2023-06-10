@@ -17,7 +17,6 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
 
     public ReadOnlyCollection<IAbility> Abilities => new(abilities.GetAll().Select(i => (IAbility)i).ToList());
 
-
     public Func<GameObject, Unit> FreshCopy;
 
     public static Unit New(GameObject parent, string title, uint hp,
@@ -45,6 +44,16 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
         unit.FreshCopy = (GameObject parent) => Unit.New(parent, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
         return unit;
     }
+
+    public void ScaleAbilities(float scaleFactor)
+    {
+        foreach(var ability in Abilities)
+        {
+            ability.Low = (uint)(ability.Low * scaleFactor);
+            ability.High = (uint)(ability.High * scaleFactor);
+        }
+    }
+
     public bool HasEffect(EffectType effect)
     {
         return this.effects.GetAll().Concat(this.upgrades.GetAll()).Any(e => e.Effect.Type == effect);
