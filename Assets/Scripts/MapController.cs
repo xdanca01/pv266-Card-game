@@ -62,6 +62,7 @@ public class MapController : MonoBehaviour
     {
         CurrentIsland.ActiveIsland = false;
         newIsland.ActiveIsland = true;
+        turn = 0;
         foreach(var island in CurrentIsland._nextIslands)
         {
             island.IslandCanBeNext = false;

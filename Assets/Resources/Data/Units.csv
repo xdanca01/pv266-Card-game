@@ -2,8 +2,8 @@ Title,HP,First Ability,Second Ability,Third Ability,First Upgrade,Second Upgrade
 Warrior,30,Long Sword,Javelin,Second Wind,,,64,Human Fighter
 Archer,24,Long Bow,Short Sword,Magic Apple,,,64,archer
 Mage,12,Staff,Fireball,Healing Prayer,,,64,Deadly Shock
-Octopus,50,Eat,Waves,Sink,Healing spring,,98,kraken
-Tentacle,1,Whip,,,,,8,deep-tentacle
+Octopus,80,Eat,Waves,Sink,Healing spring,,128,kraken
+Tentacle,1,Whip,,,Poison,,8,deep-tentacle
 Stone,15,,,,Immovable,,0,Guardians Fall
 Tree,10,,,,Immovable,,0,Ancestral Spirit Tree
 One Arm Pirate,30,Hook,Wood kick,,,,40,Spearman

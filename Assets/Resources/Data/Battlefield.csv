@@ -1,5 +1,5 @@
 Title,Unit or Effect,Side,Row,Column
-Adinkira 'hene,Stone,ALLY,2,3
+Adinkira 'hene,Tree,ALLY,2,3
 Adinkira 'hene,Double Attack,ALLY,2,2
 Adinkira 'hene,Archer,HOSTILE,2,2
 Adinkira 'hene,Tree,HOSTILE,2,1
@@ -8,7 +8,7 @@ Dono,Octopus,HOSTILE,1,2
 Dono,Tentacle,HOSTILE,1,1
 Dono,Tentacle,HOSTILE,2,1
 Dono,Tentacle,HOSTILE,2,2
-Dono,Double Attack,ALLY,2,1
+Dono,Ice Floor,ALLY,2,1
 Nsoroma,Gorilla,HOSTILE,2,2
 Nsoroma,Monkey,HOSTILE,1,1
 Nsoroma,Monkey,HOSTILE,3,1
@@ -57,3 +57,6 @@ Sepow,Dragon,HOSTILE,2,2
 Sepow,Dragon Guard,HOSTILE,2,1
 Sepow,Dragon Guard,HOSTILE,1,1
 Sepow,Dragon Guard,HOSTILE,3,1
+Sepow,Lava Floor,ALLY,1,2
+Sepow,Lava Floor,ALLY,2,3
+Sepow,Lava Floor,ALLY,3,1
