@@ -15,6 +15,10 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
     public uint MAX_HP { get; set; }
     public uint HP { get => badge.Count; set => badge.Count = value; }
 
+    private string title;
+
+    private string artwork;
+
     public ReadOnlyCollection<IAbility> Abilities => new(abilities.GetAll().Select(i => (IAbility)i).ToList());
 
     public Func<GameObject, Unit> FreshCopy;
@@ -32,6 +36,8 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
         unit.badge = Badge.New(Card, hp, FSColor.Red);
         unit.HP = hp;
         unit.MAX_HP = hp;
+        unit.artwork = artwork;
+        unit.title = title;
         unit.abilities = AbilityDrawer.New(Card);
         unit.abilities.Set(0, firstAbility != null ? firstAbility.FreshCopy(unit.abilities.gameObject) : null);
         unit.abilities.Set(1, secondAbility != null ? secondAbility.FreshCopy(unit.abilities.gameObject) : null);
@@ -45,26 +51,15 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
         return unit;
     }
 
-    private void RefreshAbilities()
+    public void ScaleHP(float scaleFactor)
     {
+        MAX_HP = (uint)(MAX_HP * scaleFactor);
         var abis = abilities.GetAll();
-        abilities = AbilityDrawer.New(Card);
-        uint cnt = 0;
-        foreach(var ability in abis)
+        while (abis.Count < 3)
         {
-            abilities.Set(cnt, ability != null ? ability.FreshCopy(ability.gameObject) : null);
-            ++cnt;
-        }   
-    }
-
-    public void ScaleAbilities(float scaleFactor)
-    {
-        foreach(var ability in abilities.GetAll())
-        {
-            ability.Low = (uint)(ability.Low * scaleFactor);
-            ability.High = (uint)(ability.High * scaleFactor);
+            abis.Add(null);
         }
-        RefreshAbilities();
+        FreshCopy = (GameObject parent) => Unit.New(parent, title, MAX_HP, abis[0], abis[1], abis[2], null, null, artwork);
     }
 
     public bool HasEffect(EffectType effect)

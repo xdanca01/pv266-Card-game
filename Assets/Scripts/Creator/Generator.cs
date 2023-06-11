@@ -221,4 +221,5 @@ public class Generator : MonoBehaviour
         hero = heroes.Find(name).gameObject;
         return hero;
     }
+
 }

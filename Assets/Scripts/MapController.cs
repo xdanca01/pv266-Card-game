@@ -14,6 +14,7 @@ public class MapController : MonoBehaviour
     private Coroutine coroutine = null;
     public static event Action<int> OnGenerateIslands;
     public static int loop = 0;
+    private bool ignoreLoop = true;
     int turn = 1;
 
     [field: SerializeField] public IslandController CurrentIsland { get; private set; }
@@ -103,6 +104,11 @@ public class MapController : MonoBehaviour
 
     private void NextLoop()
     {
+        if (ignoreLoop)
+        {
+            ignoreLoop = false;
+            return;
+        }
         ++loop;
         generator.gameObject.SetActive(true);
         _loopText.SetText("Loop " + loop.ToString());
