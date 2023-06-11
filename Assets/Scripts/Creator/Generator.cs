@@ -82,7 +82,7 @@ public class Generator : MonoBehaviour
             var iconDescription = GetColumn("Icon Description", columns, columnNames);
             var icon = GetColumn("Icon", columns, columnNames);
             var color = FSColorMethods.Parse(GetColumn("Color", columns, columnNames));
-            var upgrade = Upgrade.New(parent, title, description, iconTitle, iconDescription, icon, color);
+            var upgrade = Upgrade.New(parent, title, description, iconTitle, iconDescription, icon, color); 
             upgrade.Card.SetPosition(new Vector2(ColumnSize * (i % columnsCount + 1), RowSize * (i / columnsCount + 1)));
             upgrades.Add(title.ToLower(), upgrade);
         }

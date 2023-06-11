@@ -37,7 +37,7 @@ public abstract class ItemSlot<I, S> : MonoBehaviour where I: Interactable where
         else
         {
             empty.SetActive(false);
-            icon = interactible.Icon.FreshCopy(gameObject);
+            icon = interactible.Icon.LinkedCopy(gameObject);
             this.interactible = interactible;
         }
     }
