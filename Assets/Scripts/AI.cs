@@ -174,11 +174,20 @@ public class AI : MonoBehaviour
         }
         best = units[units.Count - 1];
         //Target already computed before
-        if(targeted.Contains(best) == true)
+        if(targeted.Contains(best) == true && list.Count > 1)
         {
-
+            var listCopy = list;
+            listCopy.Remove(best);
+            best = getTargetWithPriority(listCopy);
         }
-        targeted.Add(best);
+        if(best == null)
+        {
+            best = targeted[0];
+        }
+        else
+        {
+            targeted.Add(best);
+        }
         return best;
     }
 
@@ -204,6 +213,11 @@ public class AI : MonoBehaviour
     private float getPriorityAttack(IUnit unit)
     {
         float attackScore = 0;
+        //Doesnt have any attack, so we prevent division by 0
+        if(unit.Abilities.Count <= 0)
+        {
+            return 0.0f;
+        }
         foreach(Ability attack in unit.Abilities)
         {
             float chance = (float)attack.Percentage / 100.0f;

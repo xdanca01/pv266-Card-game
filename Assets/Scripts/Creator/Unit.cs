@@ -45,13 +45,26 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
         return unit;
     }
 
+    private void RefreshAbilities()
+    {
+        var abis = abilities.GetAll();
+        abilities = AbilityDrawer.New(Card);
+        uint cnt = 0;
+        foreach(var ability in abis)
+        {
+            abilities.Set(cnt, ability != null ? ability.FreshCopy(ability.gameObject) : null);
+            ++cnt;
+        }   
+    }
+
     public void ScaleAbilities(float scaleFactor)
     {
-        foreach(var ability in Abilities)
+        foreach(var ability in abilities.GetAll())
         {
             ability.Low = (uint)(ability.Low * scaleFactor);
             ability.High = (uint)(ability.High * scaleFactor);
         }
+        RefreshAbilities();
     }
 
     public bool HasEffect(EffectType effect)

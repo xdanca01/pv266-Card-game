@@ -62,9 +62,11 @@ public class Battlefield : MonoBehaviour
         Dictionary<string, Unit> scaledUnits = new();
         foreach (var unit in units)
         {
-            var unitCopy = unit.Value;
+            var unitsParent = GameObject.FindGameObjectWithTag("Units");
+            var unitCopy = unit.Value.FreshCopy(unitsParent);
+            unitCopy.transform.position = unitsParent.transform.position;
             unitCopy.ScaleAbilities(Mathf.Pow(scalingFactor, MapController.loop));
-            scaledUnits.Add(unit.Key, unit.Value);
+            scaledUnits.Add(unit.Key, unitCopy);
         }
         return scaledUnits;
     }
