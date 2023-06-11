@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Deck : MonoBehaviour
 {
     public static Deck instance { get; private set; }
-
+    
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -29,6 +29,8 @@ public class Deck : MonoBehaviour
     [SerializeField] public GameObject DisableButton;
     [SerializeField] public GameObject EnableButton;
     [SerializeField] public Color DisabledColor;
+    [SerializeField] public float scalingFactor = 1.1f;
+    [SerializeField] public float spawnChance = 0.1f;
 
     private bool _generated = false;
 

@@ -9,6 +9,7 @@ public class AI : MonoBehaviour
 {
     private Battlefield b;
     private List<CardSlot> targeted = new();
+    private List<int> targetedRow;
     public static AI instance { get; private set; }
 
     private void Awake()
@@ -31,6 +32,8 @@ public class AI : MonoBehaviour
     /// </returns>
     public Dictionary<CardSlot, CardAction> chooseTargets(Battlefield bf)
     {
+        targetedRow = new();
+        targeted = new();
         b = bf;
         Dictionary<CardSlot, CardAction> actions = new Dictionary<CardSlot, CardAction>();
         //calculate priority
@@ -69,6 +72,7 @@ public class AI : MonoBehaviour
         float wantedChance = UnityEngine.Random.Range(0.6f, 1.0f);
         float damage = 0.0f;
         CardSlot target = getTargetWithPriority(priority);
+        targetedRow.Add(IndexesOf(target, bf.AllySlots).Item1);
         for (int row = 0; row < bf.EnemySlots.GetLength(0); ++row)
         {
             for (int col = 0; col < bf.EnemySlots.GetLength(1); ++col)
@@ -106,17 +110,19 @@ public class AI : MonoBehaviour
                 {
                     damage += (((float)bestAttack.Low + (float)bestAttack.High) / 2.0f);
                     //average chance for each attack
-                    chance += (chance * actions.Count + (float)bestAttack.Percentage / 100.0f) / ((float)actions.Count + 1.0f);
+                    chance = (chance * actions.Count + (float)bestAttack.Percentage / 100.0f) / ((float)actions.Count + 1.0f);
                 }
                 CardAction t = new AbilityAction(bf, bf.EnemySlots[row, col], bestAttack);
                 t.Assign(target);
                 actions.Add(bf.EnemySlots[row, col], t);
-            }
-            if (damage > target.GetUnit().HP && chance >= wantedChance)
-            {
-                //TODO change target to another one in other row if it exists
-                priority.Remove(target);
-                target = getTargetWithPriority(priority);
+                if (damage > target.GetUnit().HP && chance >= wantedChance)
+                {
+                    //TODO change target to another one in other row if it exists
+                    priority.Remove(target);
+                    target = getTargetWithPriority(priority);
+                    targetedRow.Add(IndexesOf(target, bf.AllySlots).Item1);
+                    chance = 0;
+                }
             }
         }
         return actions;
@@ -162,29 +168,43 @@ public class AI : MonoBehaviour
         float priority = 0.0f;
         foreach(var unit in list)
         {
-            if(priority < unit.Value && !isItNonCoveringImmovable(unit.Key))
+            int row = IndexesOf(unit.Key, b.AllySlots).Item1;
+            var foundRow = targetedRow.Contains(row);
+            if (priority < unit.Value && !isItNonCoveringImmovable(unit.Key) && !foundRow)
             {
+                priority = unit.Value;
                 best = unit.Key;
             }
         }
         List<CardSlot> units = getUnitsInFront(best);
-        if (units.Count == 0)
+        if (units == null || units.Count == 0)
         {
-            return best;
+            return targeted[0];
         }
         best = units[units.Count - 1];
         //Target already computed before
-        if(targeted.Contains(best) == true)
+        if(targeted.Contains(best) == true && list.Count > 1)
         {
 
         }
-        targeted.Add(best);
+        if(best == null)
+        {
+            best = targeted[0];
+        }
+        else
+        {
+            targeted.Add(best);
+        }
         return best;
     }
 
     //Including me (hero)
     private List<CardSlot> getUnitsInFront(CardSlot hero)
     {
+        if(hero == null)
+        {
+            return null;
+        }
         List<CardSlot> inFront = new();
         int col, row;
         var indexes = IndexesOf(hero, b.AllySlots);
@@ -204,6 +224,11 @@ public class AI : MonoBehaviour
     private float getPriorityAttack(IUnit unit)
     {
         float attackScore = 0;
+        //Doesnt have any attack, so we prevent division by 0
+        if(unit.Abilities.Count <= 0)
+        {
+            return 0.0f;
+        }
         foreach(Ability attack in unit.Abilities)
         {
             float chance = (float)attack.Percentage / 100.0f;
@@ -240,7 +265,14 @@ public class AI : MonoBehaviour
             {
                 if(hero == slots[row, col])
                 {
-                    return new Tuple<int, int>(row, col);
+                    try
+                    {
+                        return new Tuple<int, int>(row, col);
+                    }
+                    catch
+                    {
+                        Debug.Log("catch");
+                    }
                 }
             }
         }

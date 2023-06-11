@@ -15,8 +15,11 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
     public uint MAX_HP { get; set; }
     public uint HP { get => badge.Count; set => badge.Count = value; }
 
-    public ReadOnlyCollection<IAbility> Abilities => new(abilities.GetAll().Select(i => (IAbility)i).ToList());
+    private string title;
 
+    private string artwork;
+
+    public ReadOnlyCollection<IAbility> Abilities => new(abilities.GetAll().Select(i => (IAbility)i).ToList());
 
     public Func<GameObject, Unit> FreshCopy;
 
@@ -33,6 +36,8 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
         unit.badge = Badge.New(Card, hp, FSColor.Red);
         unit.HP = hp;
         unit.MAX_HP = hp;
+        unit.artwork = artwork;
+        unit.title = title;
         unit.abilities = AbilityDrawer.New(Card);
         unit.abilities.Set(0, firstAbility != null ? firstAbility.FreshCopy(unit.abilities.gameObject) : null);
         unit.abilities.Set(1, secondAbility != null ? secondAbility.FreshCopy(unit.abilities.gameObject) : null);
@@ -45,6 +50,18 @@ public class Unit : MonoBehaviour, IUnit, IPointerEnterHandler, IPointerExitHand
         unit.FreshCopy = (GameObject parent) => Unit.New(parent, title, hp, firstAbility, secondAbility, thirdAbility, firstUpgrade, secondUpgrade, artwork);
         return unit;
     }
+
+    public void ScaleHP(float scaleFactor)
+    {
+        MAX_HP = (uint)(MAX_HP * scaleFactor);
+        var abis = abilities.GetAll();
+        while (abis.Count < 3)
+        {
+            abis.Add(null);
+        }
+        FreshCopy = (GameObject parent) => Unit.New(parent, title, MAX_HP, abis[0], abis[1], abis[2], null, null, artwork);
+    }
+
     public bool HasEffect(EffectType effect)
     {
         return this.effects.GetAll().Concat(this.upgrades.GetAll()).Any(e => e.Effect.Type == effect);

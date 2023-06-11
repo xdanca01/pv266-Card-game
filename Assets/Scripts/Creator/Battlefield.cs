@@ -56,6 +56,26 @@ public class Battlefield : MonoBehaviour
         this.actions[action.GetExecutor()] = action;
     }
 
+    private static Dictionary<string, Unit> scaleUnits(Dictionary<string, Unit> units)
+    {
+        var scalingFactor = Deck.instance.scalingFactor;
+        Dictionary<string, Unit> scaledUnits = new();
+        List<string> nonScalableUnits = new() { "Dragon", "Dragon Guard" };
+        foreach (var unit in units)
+        {
+            var unitsParent = GameObject.FindGameObjectWithTag("Units");
+            var unitCopy = unit.Value.FreshCopy(unitsParent);
+            unitCopy.transform.position = unitsParent.transform.position;
+            //Dont scale non scalable units(Boss)
+            if (!nonScalableUnits.Contains(unit.Key))
+            {
+                unitCopy.ScaleHP(Mathf.Pow(scalingFactor, MapController.loop));
+            }
+            scaledUnits.Add(unit.Key, unitCopy);
+        }
+        return scaledUnits;
+    }
+
     public static Battlefield New(string title, Dictionary<string, Unit> units,
         Dictionary<string, Upgrade> upgrades, GameObject parent, uint rowsCount, uint columnsCount)
     {
@@ -122,6 +142,8 @@ public class Battlefield : MonoBehaviour
         }
         var table = Resources.Load<TextAsset>("Data/Battlefield").text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         var columnNames = table.First().Split(",");
+        var scaledUnits = scaleUnits(units);
+        List<Unit> enemyUnits = new();
         foreach (var (line, i) in table.Skip(1).Select((val, i) => (val, i)))
         {
             var columns = line.Split(",");
@@ -131,18 +153,50 @@ public class Battlefield : MonoBehaviour
             if (someTitle == title)
             {
                 var unitOrEffect = Generator.GetColumn("Unit or Effect", columns, columnNames);
-                var slots = Generator.GetColumn("Side", columns, columnNames) == "ALLY"
-                    ? battlefield.AllySlots : battlefield.EnemySlots;
-                if (units.TryGetValue(unitOrEffect, out Unit unit))
+                var ally = Generator.GetColumn("Side", columns, columnNames) == "ALLY";
+                var slots = ally ? battlefield.AllySlots : battlefield.EnemySlots;
+                if (ally)
                 {
-                    slots[row - 1, column - 1].SetUnit(unit.FreshCopy(gameobject));
+                    if (units.TryGetValue(unitOrEffect, out Unit unit))
+                    {
+                        slots[row - 1, column - 1].SetUnit(unit.FreshCopy(gameobject));
+                    }
+                    else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
+                    {
+                        slots[row - 1, column - 1].SetUpgrade(effect.FreshCopy(gameobject));
+                    }
                 }
-                else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
-                {   
-                    slots[row - 1, column - 1].SetUpgrade(effect.FreshCopy(gameobject));
+                else
+                {
+                    if (scaledUnits.TryGetValue(unitOrEffect, out Unit unit))
+                    {
+                        slots[row - 1, column - 1].SetUnit(unit.FreshCopy(gameobject));
+                        enemyUnits.Add(unit);
+                    }
+                    else if (upgrades.TryGetValue(unitOrEffect.ToLower(), out Upgrade effect))
+                    {
+                        slots[row - 1, column - 1].SetUpgrade(effect.FreshCopy(gameobject));
+                    }
                 }
             }
         }
+        //Add random units
+        //if (title != "Sepow")
+        //{
+        foreach (var slot in battlefield.EnemySlots)
+        {
+            if (slot.GetUnit() == null)
+            {
+                var limitChance = Mathf.Min(1.0f, MapController.loop) * Deck.instance.spawnChance + 0.05 * MapController.loop;
+                var chance = UnityEngine.Random.Range(0.0f, 1.0f);
+                if (chance < limitChance)
+                {
+                    var index = UnityEngine.Random.Range(0, enemyUnits.Count - 1);
+                    slot.SetUnit(enemyUnits[index].FreshCopy(gameobject));
+                }
+            }
+        }
+        //}
         battlefield.PlacementSlots = new();
         if (Application.isPlaying)
         {
