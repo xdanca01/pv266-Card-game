@@ -10,24 +10,40 @@ public class Icon : MonoBehaviour
     public string Title { get => title; set {
             title = value;
             UpdateText();
+            foreach (var icon in linkedCopies)
+            {
+                icon.Title = title;
+            }
         }
     }
     private string description;
     public string Description { get => description; set {
             description = value;
             UpdateText();
+            foreach (var icon in linkedCopies)
+            {
+                icon.Description = description;
+            }
         }
     }
     private string spriteName;
     public string SpriteName { get => spriteName; set {
             spriteName = value;
             UpdateImage();
+            foreach (var icon in linkedCopies)
+            {
+                icon.SpriteName = spriteName;
+            }
         }
     }
     private FSColor color;
     public FSColor Color { get => color; set {
             color = value;
             UpdateImage();
+            foreach (var icon in linkedCopies)
+            {
+                icon.Color = color;
+            }
         }
     }
 
@@ -35,6 +51,10 @@ public class Icon : MonoBehaviour
     public FSColor TextColor { get => textColor; set {
             textColor = value;
             UpdateText();
+            foreach (var icon in linkedCopies)
+            {
+                icon.TextColor = color;
+            }
         }
     }
 
@@ -54,12 +74,17 @@ public class Icon : MonoBehaviour
         return Resources.Load<Sprite>("Icons/"+spriteName);
     }
 
+    private List<Icon> linkedCopies;
+
     public Func<GameObject, Icon> FreshCopy;
+
+    public Func<GameObject, Icon> LinkedCopy;
 
     public static Icon New(Creator creator, GameObject parent, string title, string description, string spriteName, FSColor color)
     {
         var gameobject = creator.FindGameObject("Icon", parent);
         var icon = gameobject.AddComponent<Icon>();
+        icon.linkedCopies = new();
         icon.creator = creator;
         creator.SetRect(gameobject, parent.GetComponent<RectTransform>().rect);
         icon.spriteName = spriteName;
@@ -71,6 +96,12 @@ public class Icon : MonoBehaviour
         icon.TextColor = FSColor.White;
         gameobject.transform.position = parent.transform.position;
         icon.FreshCopy = (GameObject parent) => Icon.New(icon.creator, parent, icon.Title, icon.Description, icon.spriteName, icon.color);
+        icon.LinkedCopy = (GameObject parent) => {
+            var ic = Icon.New(icon.creator, parent, icon.Title, icon.Description, icon.spriteName, icon.color);
+            icon.linkedCopies.Add(ic);
+            return ic;
+        };
         return icon;
     }
+
 }
