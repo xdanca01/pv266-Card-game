@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -229,7 +230,14 @@ public class Rewards : MonoBehaviour
     //For tutorial purposes
     public (RewardType, string) GiveUpgrade()
     {
-        Deck.instance.LoadUpgrades();
+        GiveUpgrade(1,1);
         return (RewardType.Upgrade, "upgrade");
+    }
+
+
+    public (RewardType, string) GiveTenCoins()
+    {
+        GiveCoins(10, 11);
+        return (RewardType.Coins, "10 coins");
     }
 }

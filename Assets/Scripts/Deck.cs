@@ -324,7 +324,7 @@ public class Deck : MonoBehaviour
 
     public bool possibleUpgrade(Upgrade upgrade)
     {
-        List<string> names = new List<string> { "Double Attack", "Healing spring", "Poison" };
+        List<string> names = new List<string> { "Double Attack", "Poison", "Headshot", "Swing Attack", "Healing Boost" };
         if (names.Contains(upgrade.name))
         {
             return true;

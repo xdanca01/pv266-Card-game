@@ -3,17 +3,9 @@ Poison,Creature you hit is Poisoned. It takes 3 damage each round.,Hit,Poisoned,
 Healing Spring,You receive 5 hp each round,Healing,5 HP,water-fountain,Red
 Poisoned,Take 3 damage on the begining of each turn.,Poisoned,3 DMG,bird-mask,Violet
 Double Attack,You deal twice as much damage to enemies,Double,Attack,crossed-swords,Orange
-Revive,You get 1 more chance to show what you got. Revive with half HP.,Angel wings,Revive,angel-wings,White
-Stone Skin,You stood in magical mud; it looks like some kind of protection for you. The damage dealt to you is halved.,Stone skin,Stone skin,golem-head,Black
-Ice Floor,You stand on ice ground. Your chance to hit attack is halved.,Ice,Ice,frozen-block,Blue
-Lava Floor,You get 3 damage each round.,Lava,Lava,lava,Red
-Eye for Weakness,You deal 4 more damage if your attacks success.,Eye,Eye,burning-eye,Orange
-Swing Attack,Deal full damage to target and half damage to other enemies in same column.,Swing,Swing,axe-swing,Orange
-Ghost,After you get damage the next round you will be non targetable.,Ghost,Ghost,ghost-ally,White
-Dissarm,You have 50% chance to dissarm enemy after successfull attack.,Dissarm,Dissarm,drop-weapon,Orange
-Lucky Hit,You have 50% chance to increase ability success by 20%,Lucky hit,Lucky hit,dice-fire,Green
-Human Shield,You will get damage instead of ally in same column. The damage is reduced by 50%.,Human shield,Human shield,leapfrog,Red
-Headshot,You will always deal maximum damage on attack success.,Headshot,Headshot,headshot,Orange
-Stun,You have 50% chance to stun target.,Stun,Stun,stoned-skull,White
-Charge,You can attack over 1 object/person.,Charge,Charge,running-ninja,White
+Ice Floor,You stand on ice ground. Your chance to hit attack is halved.,Ice,Floor,frozen-block,Blue
+Lava Floor,You get 3 damage each round.,Lava,Floor,lava,Red
 Immovable,Unit can't move.,Immovable,,stone-tower,Violet
+Headshot,Heavy attack does maximum amount of damage.,Headshot,,headshot,Orange
+Swing Attack,Light attack always succeeds.,Swing,Attack,axe-swing,Yellow
+Healing Boost,Your heal restores 5 more hitpoints.,Healing,Boost,healing,Red

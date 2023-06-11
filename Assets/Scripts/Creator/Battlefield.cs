@@ -315,14 +315,13 @@ public class Battlefield : MonoBehaviour
             else if(this.gameObject.name == "Tutorial 2")
             {
                 Unit h;
-                Deck.instance.heroes.TryGetValue(new string("Mage"), out h);
-                Rewards.instance.GiveHero(h);
-                CameraController.instance.ShowPopUp("mage", "Deadly Shock");
+                Rewards.instance.GiveUpgrade();
+                CameraController.instance.ShowPopUp("upgrade", "Armory");
             }
             else if (this.gameObject.name == "Tutorial 3")
             {
-                Rewards.instance.GiveUpgrade();
-                CameraController.instance.ShowPopUp("upgrade", "Armory");
+                Rewards.instance.GiveTenCoins();
+                CameraController.instance.ShowPopUp("10 coins", "Elven Forest");
             }
             else if (this.gameObject.name == "Sepow")
             {
@@ -347,7 +346,7 @@ public class Battlefield : MonoBehaviour
             }
             return true;
         }
-        if (!HasAnyUnitWithAbility() && !PlacementSlots.Any())
+        if (!HasAnyUnitWithAbility() && PlacementSlots.All(slot => slot.GetUnit() == null))
         {
             CameraController.instance.ShowLostPopUp();
             return true;
