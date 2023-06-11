@@ -316,7 +316,7 @@ public class Battlefield : MonoBehaviour
             }
             return true;
         }
-        if (!HasAnyUnitWithAbility() && !PlacementSlots.Any())
+        if (!HasAnyUnitWithAbility() && PlacementSlots.All(slot => slot.GetUnit() == null))
         {
             CameraController.instance.ShowLostPopUp();
             return true;
